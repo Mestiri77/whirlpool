@@ -9,10 +9,8 @@ const PriceM_Category = sequelize.define('PriceM_Category', {
     },
     idCategory: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true // Remove autoIncrement: true from this field
     }
-  });
-  
+});
 
-module.exports= PriceM_Category;
+module.exports = PriceM_Category;
