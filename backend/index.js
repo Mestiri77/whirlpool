@@ -14,6 +14,10 @@ const pricemrouter=require('./Router/PriceR')
 const referencerouter=require('./Router/RefR.js')
 const selloutrouter=require('./Router/SelloutR.js')
 const usersrouter=require('./Router/UsersR.js')
+const UserRoot = require ('./routerAuth/userRoot.js')
+const {authenticateUser} = require('./middelwhere/auth.js')
+const authentication = require('./routerAuth/AuthRoot.js')
+
 
 app.use(cors());
 app.use(express.json());
@@ -31,6 +35,11 @@ app.use('/api/pricem',pricemrouter)
 app.use('/api/reference',referencerouter)
 app.use('api/sellout',selloutrouter)
 app.use('api/users',usersrouter)
+//auth route (public)
+app.use("/auth", authentication);
+
+//all routes below this middelware are secure
+// app.use(authenticateUser);
 
 const PORT = 3000;
 
