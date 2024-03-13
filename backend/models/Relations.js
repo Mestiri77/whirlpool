@@ -49,15 +49,15 @@ Reference.belongsToMany(Sellout, { through: 'Reference_has_Sellout', foreignKey:
 Sellout.belongsToMany(Reference, { through: 'Reference_has_Sellout', foreignKey: 'Sellout_idSellout' });
 
 
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Database tables synchronized successfully.");
+// sequelize
+//   .sync()
+//   .then(() => {
+//     console.log("Database tables synchronized successfully.");
     // Start your application or perform any other actions here
-  })
-  .catch((error) => {
-    console.error("Error synchronizing database:", error);
-  });
+  // })
+  // .catch((error) => {
+  //   console.error("Error synchronizing database:", error);
+  // });
 
 // Export Models
 module.exports = {
