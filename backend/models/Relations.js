@@ -53,11 +53,11 @@ Sellout.belongsToMany(Reference, { through: 'Reference_has_Sellout', foreignKey:
 //   .sync()
 //   .then(() => {
 //     console.log("Database tables synchronized successfully.");
-    // Start your application or perform any other actions here
-  // })
-  // .catch((error) => {
-  //   console.error("Error synchronizing database:", error);
-  // });
+//     // Start your application or perform any other actions here
+//   })
+//   .catch((error) => {
+//     console.error("Error synchronizing database:", error);
+//   });
 
 // Export Models
 module.exports = {
