@@ -1,5 +1,5 @@
 const PDV = require('../models/Pdv.js');
-
+const User = require("../models/Users.js")
 // Create
 async function createPDV(req, res) {
   try {
@@ -70,6 +70,31 @@ async function deletePDV(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+const getnamepdv = async (req, res) => {
+    const name = req.body.name;
+
+    try {
+        const pdv = await PDV.findAll({
+            include: [{
+                model: User,
+                where: { name: name }
+            }]
+        });
+
+        if (pdv.length === 0) {
+            res.status(404).json({ message: 'No PDV found for the given user name' });
+            return;
+        }
+
+        // Supposons que vous voulez récupérer le nom du premier PDV trouvé
+        const namepdv = pdv.pdvname;
+        res.json({ namepdv });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
 module.exports = {
   createPDV,

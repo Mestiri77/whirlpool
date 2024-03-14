@@ -123,6 +123,32 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+const getnamebyid = async (req, res) => {
+  const userid = req.params.id; // Use req.params.id instead of req.param.id
+
+  try {
+    const one = await User.findByPk(userid);
+    const name = one.name; // Assuming 'name' is a property of the 'User' model
+
+    // Send the name as a response
+    res.status(200).json({ name: name });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error' });
+  }
+};
+
+const getonebyid=async(req,res)=>{
+  const userid = req.params.id; // Use req.params.id instead of req.param.id
+  try{
+    const data=await User.findOne({where:{id:userid}})
+    res.status(201).json(data)
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error' });
+  }
+}
+
 module.exports = {
   getAllUsers,
   getUserById,
