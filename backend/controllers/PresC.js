@@ -3,12 +3,45 @@ const Presence = require('../models/Presence.js');
 // Create
 async function createPresence(req, res) {
   try {
-    const { datePr, checkin, checkout, position } = req.body;
-    const presence = await Presence.create({ datePr, checkin, checkout, position });
+    const presence = await Presence.create(req.body);
     res.status(201).json(presence);
   } catch (error) {
     console.error('Error creating Presence:', error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+}
+async function addcheckin(res,req){
+  try{
+      const id =req.params.id;
+      const timecheckin=req.body.timecheckin;
+      const checkin= await Presence.create({checkin:timecheckin});
+      res.json(checkin)
+  }
+  catch (error){
+      res.send(error)
+  }
+}
+
+async function addposition(req,res){
+  try{
+  const id=req.prams.id;
+  const position=req.body.position;
+  const pos=await Presence.create ({position:position})
+  res.json(pos)
+}
+catch(err){
+  res.status(500).send("Server Error",err)
+}
+}
+async function addcheckout(req,res){
+  try{
+      const id=req.prams.id
+      const timecheckout=req.body.timecheckout;
+      const checkout=await Presence.create({checkout:timecheckout})
+      res.json(checkout)
+  }
+  catch(err){
+      res.status(500).send("Server Error",err)
   }
 }
 
@@ -71,40 +104,7 @@ async function deletePresence(req, res) {
   }
 }
 
-async function addcheckin(res,req){
-    try{
-        const id =req.params.id;
-        const timecheckin=req.body.timecheckin;
-        const checkin= await Presence.create({checkin:timecheckin});
-        res.json(checkin)
-    }
-    catch (error){
-        res.send(error)
-    }
-}
 
-async function addposition(req,res){
-    try{
-    const id=req.prams.id;
-    const position=req.body.position;
-    const pos=await Presence.create ({position:position})
-    res.json(pos)
-}
-catch(err){
-    res.status(500).send("Server Error",err)
-}
-}
-async function addcheckout(req,res){
-    try{
-        const id=req.prams.id
-        const timecheckout=req.body.timecheckout;
-        const checkout=await Presence.create({checkout:timecheckout})
-        res.json(checkout)
-    }
-    catch(err){
-        res.status(500).send("Server Error",err)
-    }
-}
 
 
 
@@ -113,7 +113,11 @@ module.exports = {
   getAllPresences,
   getPresenceById,
   updatePresence,
-  deletePresence
+  deletePresence,
+  addcheckin,
+  addcheckout,
+  addposition
+
 };
 
 

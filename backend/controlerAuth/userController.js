@@ -156,5 +156,7 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getAllAnimateur,
-  getAllmanager
+  getAllmanager,
+  getnamebyid,
+  getonebyid
 };

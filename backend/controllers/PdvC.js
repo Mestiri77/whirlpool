@@ -101,5 +101,6 @@ module.exports = {
   getAllPDVs,
   getPDVById,
   updatePDV,
-  deletePDV
+  deletePDV,
+  getnamepdv
 };

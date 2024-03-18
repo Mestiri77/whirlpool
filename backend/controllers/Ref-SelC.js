@@ -3,8 +3,7 @@ const Reference_has_Sellout = require('../models/Ref-Sel.js');
 // Create
 async function createReference_has_Sellout(req, res) {
   try {
-    const { Reference_idReference, Sellout_idSellout } = req.body;
-    const reference_has_sellout = await Reference_has_Sellout.create({ Reference_idReference, Sellout_idSellout });
+    const reference_has_sellout = await Reference_has_Sellout.create(req.body);
     res.status(201).json(reference_has_sellout);
   } catch (error) {
     console.error('Error creating Reference_has_Sellout:', error);

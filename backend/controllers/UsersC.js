@@ -3,8 +3,7 @@ const Users = require('../models/Users.js');
 // Create
 async function createUser(req, res) {
   try {
-    const { name, lastname, email, password, role } = req.body;
-    const user = await Users.create({ name, lastname, email, password, role });
+    const user = await Users.create(req.body);
     res.status(201).json(user);
   } catch (error) {
     console.error('Error creating user:', error);
@@ -22,6 +21,19 @@ async function getAllUsers(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+const getrolbyid = async (req,res)=>{
+  try{
+    const id= req.params.id;
+    const user=await Users.findByPk(id)
+    res.status(200).json(user.role)
+  }
+  catch (error) {
+    console.error('Error getting users:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 
 // Read one
 async function getUserById(req, res) {
@@ -76,5 +88,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  getrolbyid
 };
