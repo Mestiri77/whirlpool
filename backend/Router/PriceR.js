@@ -9,7 +9,7 @@ router.get('/priceMs/:id', priceMController.getPriceMById);
 router.put('/priceMs/:id', priceMController.updatePriceM);
 router.delete('/priceMs/:id', priceMController.deletePriceM);
 router.get ('/getCategori/:Pdvname/:dateC',priceMController.findCategoriePriceMps) // get all category 
-router.get('/getpricemap/:categoryname',priceMController,priceMController.findpricemap)//get price map
+router.get('/getpricemap/:categoryname',priceMController.findpricemap)//get price map
 
 
 module.exports = router;
