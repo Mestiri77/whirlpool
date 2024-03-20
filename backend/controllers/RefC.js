@@ -127,5 +127,7 @@ module.exports = {
   getAllReferences,
   getReferenceById,
   updateReference,
-  deleteReference
+  deleteReference,
+  getidcategory,
+  getidmarque
 };

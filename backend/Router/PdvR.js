@@ -8,5 +8,6 @@ router.get('/pdvs', pdvController.getAllPDVs);
 router.get('/pdvs/:id', pdvController.getPDVById);
 router.put('/pdvs/:id', pdvController.updatePDV);
 router.delete('/pdvs/:id', pdvController.deletePDV);
+router.get('/pdvs',pdvController.getnamepdv )
 
 module.exports = router;
