@@ -1,10 +1,12 @@
 const Reference = require('../models/Reference.js');
+const Marque = require ('../models/Marque.js')
+const Category=require('../models/Category.js')
 
 // Create
 async function createReference(req, res) {
   try {
-    const { Referencename } = req.body;
-    const reference = await Reference.create({ Referencename });
+    const  oneReference = req.body;
+    const reference = await Reference.create({ oneReference });
     res.status(201).json(reference);
   } catch (error) {
     console.error('Error creating Reference:', error);
@@ -71,10 +73,61 @@ async function deleteReference(req, res) {
   }
 }
 
+const getidmarque = async (req, res) => {
+    const name = req.body.name;
+
+    try {
+        const reference = await Reference.findOne({
+            include: [{
+                model: Marque,
+                where: { marquename: name }
+            }]
+        });
+
+        if (!reference) {
+            res.status(404).json({ message: 'No reference found for the given marque name' });
+            return;
+        }
+
+        const idMarque = reference.idMarque; // Supposons que l'ID de la marque soit stocké dans une colonne 'id' du modèle Marque
+        res.status(200).json({ idMarque });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+const getidcategory = async (req, res) => {
+    const name = req.body.name;
+
+    try {
+        const reference = await Reference.findOne({
+            include: [{
+                model: Category,
+                where: { Categoryname: name }
+            }]
+        });
+
+        if (!reference) {
+            res.status(404).json({ message: 'No reference found for the given marque name' });
+            return;
+        }
+
+        const idCategory = reference.idCategory; // Supposons que l'ID de la marque soit stocké dans une colonne 'id' du modèle Marque
+        res.status(200).json({ idCategory });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+
 module.exports = {
   createReference,
   getAllReferences,
   getReferenceById,
   updateReference,
-  deleteReference
+  deleteReference,
+  getidcategory,
+  getidmarque
 };

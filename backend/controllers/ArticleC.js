@@ -3,10 +3,10 @@ const Article = require('../models/Article.js');
 // Create
 async function createArticle(req, res) {
   try {
-    const { couleur, typeC, capacite, prix } = req.body;
-    const article = await Article.create({ couleur, typeC, capacite, prix });
+    const onearticle = req.body;
+    const article = await Article.create({ onearticle });
     res.status(201).json(article);
-  } catch (error) {
+  } catch (error) { 
     console.error('Error creating article:', error);
     res.status(500).json({ message: 'Internal server error' });
   }

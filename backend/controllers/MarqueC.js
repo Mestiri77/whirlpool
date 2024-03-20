@@ -70,6 +70,17 @@ async function deleteMarque(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+// const getidbyname =(req,res)=>{
+//     try{
+//         const name=req.params.name;
+//         const result=Marque.findOne( { where : { marquename : name } })
+//         res.json(result.idMarque)
+//     }
+//     catch(err){
+//         console.error(err);
+//         res.status(500).send("erreur")
+//     }
+// }
 
 module.exports = {
   createMarque,
