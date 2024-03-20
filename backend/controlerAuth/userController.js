@@ -54,13 +54,14 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
+    const { name,lastname, email, password, role } = req.body;
 
-    console.log('Received registration request:', { fullName, email, role });
+    console.log('Received registration request:', { name, email, role });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      fullName,
+      name,
+      lastname,
       email,
       password: hashedPassword,
       role,
@@ -73,10 +74,33 @@ const createUser = async (req, res) => {
     res.status(500).json({ error: 'Error creating user' });
   }
 };
+const createAnimateur = async (req, res) => {
+    try {
+      const { name,lastname, email, password, role,PDV_idPDV } = req.body;
+  
+      console.log('Received registration request:', { name, email, role });
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await User.create({
+        name,
+        lastname,
+        email,
+        password: hashedPassword,
+        role,
+        PDV_idPDV
+      });
+  
+      console.log('animateur created:', newUser);
+      res.status(201).json(newUser);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ error: 'Error creating user' });
+    }
+  };
 
 const updateUserById = async (req, res) => {
     const userId = req.params.id;
-    const { fullName, email, password } = req.body;
+    const { name,lastname, email, password } = req.body;
   
     try {
       const user = await User.findByPk(userId);
@@ -85,7 +109,8 @@ const updateUserById = async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      user.fullName = fullName;
+      user.name = name;
+      user.lastname=lastname,
       user.email = email;
   
       // If a new password is provided, update the password
@@ -150,6 +175,7 @@ const getonebyid=async(req,res)=>{
 }
 
 module.exports = {
+    createAnimateur,
   getAllUsers,
   getUserById,
   createUser,

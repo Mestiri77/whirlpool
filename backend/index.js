@@ -33,8 +33,8 @@ app.use('/api/presences',presencerouter)
 app.use('/api/pricecateg',pricatrouter)
 app.use('/api/pricem',pricemrouter)
 app.use('/api/reference',referencerouter)
-app.use('api/sellout',selloutrouter)
-app.use('api/users',UserRoot)
+app.use('/api/sellout',selloutrouter)
+app.use('/api/users',UserRoot)
 //auth route (public)
 app.use("/auth", authentication);
 
