@@ -1,4 +1,6 @@
 const Sellout = require('../models/Sellout.js');
+const Sequelize = require('sequelize');
+
 
 // Create
 async function createSellout(req, res) {
@@ -70,8 +72,51 @@ async function deleteSellout(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+// get sellout rapport 
+async function getSellout(req, res) {
+  try {
+    const results = await sellout.findAll({
+      include: [
+        {
+          model: refferencename,
+          include: [
+            {
+              model: article,
+              include: [
+                {
+                  model: exposition,
+                  where: {
+                    idpdv: Sequelize.col('sellout.idpdv') // Join condition for exposition
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: pdv,
+          where: {
+            name: req.params.pdvname // Filter by pdv name
+          }
+        }
+      ],
+      where: {
+        dateCr: {
+          [Sequelize.Op.between]: [req.params.dateCr, req.params.dateCr] // Filter by date range
+        }
+      }
+    });
+    console.log(results);
+    res.json(results); // Assuming you're sending JSON response
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' }); // Sending error response
+  }
+}
+
 
 module.exports = {
+  getSellout,
   createSellout,
   getAllSellouts,
   getSelloutById,
