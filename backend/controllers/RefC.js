@@ -5,8 +5,8 @@ const Category=require('../models/Category.js')
 // Create
 async function createReference(req, res) {
   try {
-    const  oneReference = req.body;
-    const reference = await Reference.create({ oneReference });
+    const {Referencename,Marque_idMarque,Category_idCategory}=req.body;
+    const reference = await Reference.create({Referencename,Marque_idMarque,Category_idCategory});
     res.status(201).json(reference);
   } catch (error) {
     console.error('Error creating Reference:', error);
@@ -44,12 +44,11 @@ async function getReferenceById(req, res) {
 async function updateReference(req, res) {
   try {
     const { id } = req.params;
-    const { Referencename } = req.body;
     const reference = await Reference.findByPk(id);
     if (!reference) {
       return res.status(404).json({ message: 'Reference not found' });
     }
-    await reference.update({ Referencename });
+    await reference.update(req.body);
     res.status(200).json(reference);
   } catch (error) {
     console.error('Error updating Reference:', error);
@@ -72,9 +71,9 @@ async function deleteReference(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-
+//////////////////////////////////
 const getidmarque = async (req, res) => {
-    const name = req.body.name;
+    const name = req.body;
 
     try {
         const reference = await Reference.findOne({
@@ -97,7 +96,7 @@ const getidmarque = async (req, res) => {
     }
 };
 const getidcategory = async (req, res) => {
-    const name = req.body.name;
+    const name = req.body;
 
     try {
         const reference = await Reference.findOne({

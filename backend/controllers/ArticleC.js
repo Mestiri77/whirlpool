@@ -3,8 +3,7 @@ const Article = require('../models/Article.js');
 // Create
 async function createArticle(req, res) {
   try {
-    const onearticle = req.body;
-    const article = await Article.create({ onearticle });
+    const article = await Article.create( req.body );
     res.status(201).json(article);
   } catch (error) { 
     console.error('Error creating article:', error);
@@ -42,12 +41,12 @@ async function getArticleById(req, res) {
 async function updateArticle(req, res) {
   try {
     const { id } = req.params;
-    const { couleur, typeC, capacite, prix } = req.body;
+    const { coloeur, typeC, capacite, prix } = req.body;
     const article = await Article.findByPk(id);
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
-    await article.update({ couleur, typeC, capacite, prix });
+    await article.update({ coloeur, typeC, capacite, prix });
     res.status(200).json(article);
   } catch (error) {
     console.error('Error updating article:', error);

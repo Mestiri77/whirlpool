@@ -1,7 +1,6 @@
 const Sellout = require('../models/Sellout.js');
 const Sequelize = require('sequelize');
 
-
 // Create
 async function createSellout(req, res) {
   try {
@@ -75,7 +74,7 @@ async function deleteSellout(req, res) {
 // get sellout rapport 
 async function getSellout(req, res) {
   try {
-    const results = await sellout.findAll({
+    const results = await Sellout.findAll({
       include: [
         {
           model: refferencename,
@@ -96,13 +95,13 @@ async function getSellout(req, res) {
         {
           model: pdv,
           where: {
-            name: req.params.pdvname // Filter by pdv name
+            name: req.body.pdvname // Filter by pdv name
           }
         }
       ],
       where: {
         dateCr: {
-          [Sequelize.Op.between]: [req.params.dateCr, req.params.dateCr] // Filter by date range
+          [Sequelize.Op.between]: [req.body.dateCr, req.body.dateCr] // Filter by date range
         }
       }
     });
