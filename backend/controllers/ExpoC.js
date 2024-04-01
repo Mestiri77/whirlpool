@@ -166,11 +166,11 @@ async function getOtherMarque (req,res){
           ]
         }
       ],
-      where: {
-        marquename: {
-          [Sequelize.Op.ne]: 'Whirlpool' // Op.ne représente l'opérateur de non égalité
-        }
-      }
+      // where: {
+      //   marquename: {
+      //     [Sequelize.Op.ne]: 'Whirlpool' // Op.ne représente l'opérateur de non égalité
+      //   }
+      // }
     })
       res.status(200).json('Les autre marque est ', other);
     }catch(err) {

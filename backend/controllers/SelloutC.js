@@ -1,6 +1,9 @@
 const Sellout = require('../models/Sellout.js');
 const Sequelize = require('sequelize');
-
+const Article = require('./ArticleC.js')
+const Exposition = require ('./ExpoC.js')
+const Refference = require ('./RefC.js')
+const Pdv = require ('./PdvC.js')
 
 // Create
 async function createSellout(req, res) {
@@ -75,18 +78,18 @@ async function deleteSellout(req, res) {
 // get sellout rapport 
 async function getSellout(req, res) {
   try {
-    const results = await sellout.findAll({
+    const results = await Sellout.findAll({
       include: [
         {
-          model: refferencename,
+          model: Refference,
           include: [
             {
-              model: article,
+              model: Article,
               include: [
                 {
-                  model: exposition,
+                  model: Exposition,
                   where: {
-                    idpdv: Sequelize.col('sellout.idpdv') // Join condition for exposition
+                    idpdv: Sequelize.col('Sellout.idpdv') // Join condition for exposition
                   }
                 }
               ]
@@ -94,7 +97,7 @@ async function getSellout(req, res) {
           ]
         },
         {
-          model: pdv,
+          model: Pdv,
           where: {
             name: req.params.pdvname // Filter by pdv name
           }
