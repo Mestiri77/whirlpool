@@ -7,8 +7,7 @@ const Marque = require ('./MarqueC.js')
 // Create
 async function createExposition(req, res) {
   try {
-    const { dateCr } = req.body;
-    const exposition = await Exposition.create({ dateCr });
+    const exposition = await Exposition.create(req.body);
     res.status(201).json(exposition);
   } catch (error) {
     console.error('Error creating exposition:', error);

@@ -99,13 +99,13 @@ async function getSellout(req, res) {
         {
           model: Pdv,
           where: {
-            name: req.params.pdvname // Filter by pdv name
+            name: req.body.pdvname // Filter by pdv name
           }
         }
       ],
       where: {
         dateCr: {
-          [Sequelize.Op.between]: [req.params.dateCr, req.params.dateCr] // Filter by date range
+          [Sequelize.Op.between]: [req.body.dateCr, req.body.dateCr] // Filter by date range
         }
       }
     });

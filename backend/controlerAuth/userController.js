@@ -32,7 +32,15 @@ try {
   res.status(500).json({ error: 'Error' });
 }
 };
-
+const getadmin = async (req, res) => {
+  try {
+    const users = await User.findAll({where:{role:"admin"}});
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error' });
+  }
+  };
 
 const getUserById = async (req, res) => {
   const userId = req.params.id;
@@ -166,7 +174,7 @@ const getnamebyid = async (req, res) => {
 const getonebyid=async(req,res)=>{
   const userid = req.params.id; // Use req.params.id instead of req.param.id
   try{
-    const data=await User.findOne({where:{id:userid}})
+    const data=await User.findOne({where:{idusers:userid}})
     res.status(201).json(data)
   }catch (error) {
     console.error(error);
@@ -184,5 +192,6 @@ module.exports = {
   getAllAnimateur,
   getAllmanager,
   getnamebyid,
-  getonebyid
+  getonebyid,
+  getadmin
 };
