@@ -15,4 +15,5 @@ router.delete('/:id', userController.deleteUserById);
 router.post('/creatuser',userController.createUser)
 router.post('/creatanim',userController.createAnimateur)
 
+
 module.exports = router;
