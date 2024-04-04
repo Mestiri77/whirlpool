@@ -1,183 +1,325 @@
 import * as React from "react";
-import {
-  FlatList,
-  ScrollView,
-  View,
-  StyleSheet,
-  Image,
-  Text,
-} from "react-native";
+import { Image } from "expo-image";
+import { StyleSheet, View, Text } from "react-native";
+import { Color, FontSize, FontFamily, Border } from "../GlobalStyles";
 
-function Login() {
+const Login = () => {
   return (
-    <View style={styles.view1}>
-      <View style={styles.view2}>
-        <Text>Login</Text>
-      </View>
-      <View style={styles.view3}>
-        <Text>Email</Text>
-      </View>
-      <View style={styles.view4}>
-        <Text>Enter your email</Text>
-      </View>
-      <View style={styles.view5} />
-      <View style={styles.view6}>
-        <Text>Password</Text>
-      </View>
-      <View style={styles.view7}>
-        <View style={styles.view8}>
-          <Text>Enter your password</Text>
-        </View>
-        <Image
-          resizeMode="auto"
-          source={{
-            uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/c01f578c0e06eea688cb7a592ffb7e79b824395a1a304ffb18adfc8e5aaf4d42?apiKey=354f2f8c1f9f40aca64d3ce2e19fda26&",
-          }}
-          style={styles.image1}
-        />
-      </View>
-      <View style={styles.view9} />
-      <View style={styles.view10}>
-        <View style={styles.view11}>
-          <View style={styles.view12} />
-          <View style={styles.view13}>
-            <Text>Stay logged in?</Text>
+    <View style={[styles.login, styles.loginBg]}>
+      <Image
+        style={[styles.path3948Icon, styles.iconLayout]}
+        contentFit="cover"
+        source={require("../assets/path3948.png")}
+      />
+      <Image
+        style={[styles.vectorIcon, styles.iconLayout]}
+        contentFit="cover"
+        source={require("../assets/vector.png")}
+      />
+      <Image
+        style={[styles.vectorIcon, styles.iconLayout]}
+        contentFit="cover"
+        source={require("../assets/vector.png")}
+      />
+      <View style={styles.loginPosition}>
+        <View style={[styles.loginColor, styles.loginPosition]}>
+          <Image
+            style={styles.loginColorChild}
+            contentFit="cover"
+            source={require("../assets/group-3931.png")}
+          />
+          <View style={styles.loginColorItem} />
+          <View style={styles.groupParent}>
+            <View style={[styles.ellipseParent, styles.ellipseLayout]}>
+              <Image
+                style={[styles.ellipseParent, styles.ellipseLayout]}
+                contentFit="cover"
+                source={require("../assets/ellipse-3932.png")}
+              />
+              <View style={[styles.image101, styles.imageLayout]} />
+            </View>
+            <View style={[styles.ellipseGroup, styles.ellipseLayout]}>
+              <Image
+                style={[styles.ellipseParent, styles.ellipseLayout]}
+                contentFit="cover"
+                source={require("../assets/ellipse-3932.png")}
+              />
+              <View style={[styles.image102, styles.imageLayout]} />
+            </View>
           </View>
+          <View style={styles.loginColorInner}>
+            <View>
+              <View>
+                <Text style={styles.email}>Email</Text>
+                <View style={styles.enterYourEmailParent}>
+                  <Text style={styles.enterYourEmail}>Enter your email</Text>
+                  <View style={styles.frameChild} />
+                </View>
+              </View>
+              <View style={styles.frameGroup}>
+                <View>
+                  <Text style={styles.email}>Password</Text>
+                  <View style={styles.enterYourEmailParent}>
+                    <View style={styles.enterYourPasswordParent}>
+                      <Text style={styles.enterYourEmail}>
+                        Enter your password
+                      </Text>
+                      <Image
+                        style={styles.vectorIcon2}
+                        contentFit="cover"
+                        source={require("../assets/vector1.png")}
+                      />
+                    </View>
+                    <View style={styles.frameChild} />
+                  </View>
+                </View>
+                <View style={styles.groupContainer}>
+                  <View style={styles.stayLoggedInParent}>
+                    <Text
+                      style={[styles.stayLoggedIn, styles.stayLoggedInTypo]}
+                    >
+                      Stay logged in?
+                    </Text>
+                    <View style={styles.groupInner} />
+                  </View>
+                  <Text style={styles.stayLoggedInTypo}>Forgot Password?</Text>
+                </View>
+              </View>
+              <View style={styles.groupWrapper}>
+                <View style={styles.rectangleLayout}>
+                  <View
+                    style={[styles.rectangleView, styles.rectangleLayout]}
+                  />
+                  <Text style={[styles.login1, styles.loginTypo]}>Login</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <Text style={[styles.login2, styles.loginTypo]}>Login</Text>
+          <Text style={[styles.login2, styles.loginTypo]}>Login</Text>
         </View>
-        <View style={styles.view14}>
-          <Text>Forgot Password?</Text>
-        </View>
-      </View>
-      <View style={styles.view15}>
-        <Text>Login</Text>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  view1: {
-    borderRadius: 20,
-    boxShadow: "28px 33px 62px 20px rgba(137, 84, 0, 0.13)",
-    backgroundColor: "#FFF",
-    display: "flex",
-    width: "100%",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "0 20px 80px",
+  loginBg: {
+    overflow: "hidden",
+    backgroundColor: Color.colorWhite,
   },
-  view2: {
-    backgroundColor: "rgba(253, 193, 0, 1)",
-    alignSelf: "stretch",
-    width: "100%",
-    alignItems: "start",
-    color: "#FFF",
-    whiteSpace: "nowrap",
-    justifyContent: "center",
-    padding: "125px 26px 92px",
-    font: "48px Quicksand, sans-serif ",
-  },
-  view3: {
-    color: "#000",
-    fontFamily: "Nunito, sans-serif",
-    marginTop: 22,
-  },
-  view4: {
-    color: "#ADADAD",
-    marginTop: 20,
-    font: "400 15px Quicksand, sans-serif ",
-  },
-  view5: {
-    borderColor: "rgba(173, 173, 173, 1)",
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "#ADADAD",
-    marginTop: 4,
-    width: 320,
-    flexShrink: 0,
+  iconLayout: {
+    maxHeight: "100%",
     maxWidth: "100%",
-    height: 1,
+    position: "absolute",
+    overflow: "hidden",
   },
-  view6: {
-    color: "#000",
-    fontFamily: "Nunito, sans-serif",
+  loginPosition: {
+    left: "0%",
+    bottom: "0%",
+    right: "0%",
+    top: "0%",
+    height: "100%",
+    position: "absolute",
+    width: "100%",
+  },
+  ellipseLayout: {
+    width: 40,
+    top: 0,
+    height: 40,
+    position: "absolute",
+  },
+  imageLayout: {
+    height: 19,
+    width: 19,
+    top: 11,
+    position: "absolute",
+  },
+  stayLoggedInTypo: {
+    color: Color.colorDimgray,
+    fontSize: FontSize.size_xs,
+    fontFamily: FontFamily.quicksandRegular,
+    textAlign: "left",
+  },
+  rectangleLayout: {
+    height: 50,
+    width: 319,
+  },
+  loginTypo: {
+    color: Color.colorWhite,
+    fontFamily: FontFamily.quicksandBold,
+    textAlign: "left",
+    fontWeight: "700",
+    position: "absolute",
+  },
+  path3948Icon: {
+    height: "20.89%",
+    width: "50.59%",
+    top: "76.9%",
+    right: "136.9%",
+    bottom: "2.22%",
+    left: "-87.49%",
+  },
+  vectorIcon: {
+    height: "2.64%",
+    width: "4.74%",
+    top: "92.21%",
+    right: "18.48%",
+    bottom: "5.15%",
+    left: "76.78%",
+  },
+  loginColorChild: {
+    top: -95,
+    left: -12,
+    width: 480,
+    height: 380,
+    position: "absolute",
+  },
+  loginColorItem: {
+    top: 259,
+    borderTopLeftRadius: Border.br_xl,
+    borderTopRightRadius: Border.br_xl,
+    width: 422,
+    height: 553,
+    left: 0,
+    position: "absolute",
+    backgroundColor: Color.colorWhite,
+  },
+  ellipseParent: {
+    left: 0,
+  },
+  image101: {
+    left: 39,
+    transform: [
+      {
+        rotate: "180deg",
+      },
+    ],
+  },
+  image102: {
+    left: 10,
+  },
+  ellipseGroup: {
+    left: 71,
+  },
+  groupParent: {
+    top: 701,
+    left: 146,
+    width: 111,
+    display: "none",
+    height: 40,
+    position: "absolute",
+  },
+  email: {
+    fontFamily: FontFamily.nunitoBold,
+    color: Color.colorBlack,
+    textAlign: "left",
+    fontWeight: "700",
+    fontSize: FontSize.size_lg,
+  },
+  enterYourEmail: {
+    fontSize: FontSize.size_mini,
+    color: Color.colorDarkgray,
+    fontFamily: FontFamily.quicksandRegular,
+    textAlign: "left",
+  },
+  frameChild: {
+    borderStyle: "solid",
+    borderColor: Color.colorDarkgray,
+    borderTopWidth: 1,
+    height: 1,
+    marginTop: 5,
+    width: 320,
+  },
+  enterYourEmailParent: {
+    marginTop: 20,
+  },
+  vectorIcon2: {
+    width: 16,
+    height: 10,
+    marginLeft: 152,
+  },
+  enterYourPasswordParent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stayLoggedIn: {
+    left: 22,
+    top: 0,
+    position: "absolute",
+  },
+  groupInner: {
+    top: 1,
+    borderRadius: 2,
+    backgroundColor: "#eee",
+    width: 15,
+    height: 15,
+    left: 0,
+    position: "absolute",
+  },
+  stayLoggedInParent: {
+    width: 107,
+    height: 16,
+  },
+  groupContainer: {
+    justifyContent: "space-between",
+    marginTop: 18,
+    flexDirection: "row",
+    width: 320,
+  },
+  frameGroup: {
     marginTop: 36,
   },
-  view7: {
-    alignItems: "stretch",
-    display: "flex",
-    marginTop: 20,
-    width: "100%",
-    maxWidth: 320,
-    paddingRight: 9,
-    gap: 20,
-    fontSize: 15,
-    color: "#ADADAD",
-    fontWeight: "400",
-    justifyContent: "space-between",
-  },
-  view8: {
-    fontFamily: "Quicksand, sans-serif",
-  },
-  image1: {
-    fill: "#ADADAD",
-    position: "relative",
-    width: 16,
-    flexShrink: 0,
-    margin: "auto 0",
-    aspectRatio: "1.45",
-  },
-  view9: {
-    borderColor: "rgba(173, 173, 173, 1)",
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "#ADADAD",
-    marginTop: 4,
-    width: 320,
-    flexShrink: 0,
-    maxWidth: "100%",
-    height: 1,
-  },
-  view10: {
-    justifyContent: "space-between",
-    alignItems: "stretch",
-    display: "flex",
-    marginTop: 18,
-    width: "100%",
-    maxWidth: 320,
-    gap: 20,
-    fontSize: 12,
-    color: "#707070",
-    fontWeight: "400",
-  },
-  view11: { display: "flex", alignItems: "stretch", gap: 7, padding: "1px 0" },
-  view12: {
-    borderRadius: 2,
-    backgroundColor: "#EEE",
-    width: 15,
-    flexShrink: 0,
-    height: 15,
-  },
-  view13: {
-    fontFamily: "Quicksand, sans-serif",
-    margin: "auto 0",
-  },
-  view14: {
-    fontFamily: "Quicksand, sans-serif",
-  },
-  view15: {
-    fontFamily: "Quicksand, sans-serif",
+  rectangleView: {
     borderRadius: 50,
-    backgroundColor: "#FDC100",
-    width: "100%",
-    maxWidth: 320,
-    alignItems: "center",
-    color: "#FFF",
-    whiteSpace: "nowrap",
+    backgroundColor: "#fdc100",
+    top: 0,
+    position: "absolute",
+    left: 0,
+  },
+  login1: {
+    top: 13,
+    left: 136,
+    fontSize: FontSize.size_lg,
+    color: Color.colorWhite,
+    fontFamily: FontFamily.quicksandBold,
+  },
+  groupWrapper: {
     justifyContent: "center",
-    margin: "36px 0 45px",
-    padding: "17px 60px",
+    marginTop: 36,
+    alignItems: "center",
+  },
+  loginColorInner: {
+    top: 307,
+    left: 51,
+    alignItems: "center",
+    position: "absolute",
+  },
+  login2: {
+    top: 112,
+    left: 26,
+    fontSize: FontSize.size_29xl,
+  },
+  loginColor: {
+    borderRadius: Border.br_xl,
+    shadowColor: "rgba(137, 84, 0, 0.13)",
+    shadowOffset: {
+      width: 28,
+      height: 33,
+    },
+    shadowRadius: 62,
+    elevation: 62,
+    shadowOpacity: 1,
+    overflow: "hidden",
+    backgroundColor: Color.colorWhite,
+  },
+  login: {
+    borderRadius: 30,
+    flex: 1,
+    height: 757,
+    width: "100%",
+    overflow: "hidden",
   },
 });
 
-export default Login
+export default Login;
