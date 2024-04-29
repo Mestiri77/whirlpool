@@ -1,39 +1,20 @@
-const Stack = createNativeStackNavigator();
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import Login from "./screens/Login";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import Login from './interfaces-gen/components/login'
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
-
-const App = () => {
-  const [hideSplashScreen, setHideSplashScreen] = React.useState(true);
-
-  const [fontsLoaded, error] = useFonts({
-    "Nunito-Bold": require("./assets/fonts/Nunito-Bold.ttf"),
-    "Quicksand-Regular": require("./assets/fonts/Quicksand-Regular.ttf"),
-    "Quicksand-Bold": require("./assets/fonts/Quicksand-Bold.ttf"),
-  });
-
-  if (!fontsLoaded && !error) {
-    return null;
-  }
-
+export default function App() {
   return (
-    <>
-      <NavigationContainer>
-        {hideSplashScreen ? (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        ) : null}
-      </NavigationContainer>
-    </>
+    <View style={styles.container}>
+      <Login/>
+      <StatusBar style="auto" />
+    </View>
   );
-};
-export default App;
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+
+  },
+});
