@@ -1,11 +1,11 @@
 import React ,{ useState } from "react";
 import { StyleSheet, View,Text, TextInput, TouchableOpacity } from "react-native";
-import { CheckBox } from '@rneui/themed';
+import { Picker } from '@react-native-picker/picker';
 const Divider = () => (
   <View style={styles.divider} />
 );
 
-const InputField = ({ label, placeholder, isPassword }) => (
+const InputField = ({ label, placeholder, isPassword, onchagetext }) => (
   <>
     <Text style={styles.label}>{label}</Text>
     <TextInput
@@ -13,13 +13,16 @@ const InputField = ({ label, placeholder, isPassword }) => (
       placeholder={placeholder}
       secureTextEntry={isPassword}
       autoCapitalize="none"
+      onChangeText={onchagetext}
     />
   </>
 );
 
 const LoginScreen = () => {
-  const [checked, setChecked] = React.useState(true);
-  const toggleCheckbox = () => setChecked(!checked);
+  const [email , setEmail]=React.useState("")
+  const [password ,setPassword]=React.useState("")
+  const [selectedValue, setSelectedValue] = useState("");
+
 
   return (
     <View style={styles.container}>
@@ -27,29 +30,35 @@ const LoginScreen = () => {
         <Text style={styles.headerText}>Login</Text>
       </View>
       <View style={styles.formContainer}>
-        <InputField style={styles.inputs} label="Email" placeholder="Enter your email" isPassword={false} />
+        <InputField style={styles.inputs} label="Email" placeholder="Enter your email" isPassword={false} onchangeText={setEmail} />
         <Divider />
-        <InputField label="Password" placeholder="Enter your password" isPassword={true} />
+        <InputField label="Password" placeholder="Enter your password" isPassword={true} onchangeText={setPassword} />
         <Divider />
-        <View style={styles.rememberForgotContainer}>
-        <CheckBox
-           checked={checked}
-           onPress={toggleCheckbox}
-           iconType="material-community"
-           checkedIcon="checkbox-outline"
-           uncheckedIcon={'checkbox-blank-outline'}
-         />
-          <Text style={styles.rememberMeText}>Stay logged in?</Text>
-        </View>
+      <View style={styles.roles}>
+      <Text>Veuillez choisir votre role :</Text>
+      <Picker
+        selectedValue={selectedValue}
+        style={{ height: 50, width: 170 }}
+        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+      >
+        
+        <Picker.Item label="Animateur" value="Animateur" />
+        <Picker.Item label="Admin" value="Admin " />
+        <Picker.Item label="Manager" value="Manager" />
+      </Picker>
+      </View>
         <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
-      </View>
+      </View>  
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  roles:{
+    marginTop:10,
+  },
   container: {
     borderRadius: 20,
     backgroundColor: "#FFF",
@@ -97,6 +106,7 @@ const styles = StyleSheet.create({
   rememberMeText: {
     fontSize: 12,
     color: "#707070",
+    
   },
   forgotPasswordText: {
     fontSize: 12,
