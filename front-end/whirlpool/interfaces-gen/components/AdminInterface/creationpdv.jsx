@@ -8,7 +8,9 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { Input, Box, Center, NativeBaseProvider, Button } from "native-base";
+import { CheckIcon,Input,  Select, Box, Center, NativeBaseProvider, Button ,Stack, Icon} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
@@ -20,6 +22,21 @@ const [affanim, setAffanim] = React.useState(false);
 const [categ,setCateg] =React.useState(false);
 const [marque, setMarque] = React.useState(false);
 const [ref,setRef]=React.useState(false)
+const [service, setService] = React.useState("");
+
+const myRef = React.useRef({});
+React.useEffect(() => {
+  const styleObj = {
+    backgroundColor: "#facc15",
+    borderColor: "#CA8A04",
+    borderWidth: 1,
+    borderRadius: 4
+  }; //@ts-ignore
+
+  myRef.current.setNativeProps({
+    style: styleObj
+  });
+}, [myRef]);
 
   function RowItem({ text, truc,settruc}) {
     return (
@@ -35,31 +52,77 @@ const [ref,setRef]=React.useState(false)
       </View>
     );
   }
+  const Example = () => {
+    const [service, setService] = React.useState(""); // Use useState from React
+  
+    return (
+      <Center>
+        <Box maxW="400">
+          <Select
+            selectedValue={service}
+            minWidth="240"
+            accessibilityLabel="Region"
+            placeholder="Region"
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            mt={1}
+            onValueChange={itemValue => setService(itemValue)}
+          >
+            <Select.Item label="UX Research" value="ux" />
+            <Select.Item label="Web Development" value="web" />
+            <Select.Item label="Cross Platform Development" value="cross" />
+            <Select.Item label="UI Designing" value="ui" />
+            <Select.Item label="Backend Development" value="backend" />
+            <Select.Item label="UX Research" value="ux" />
+            <Select.Item label="Web Development" value="web" />
+            <Select.Item label="Cross Platform Development" value="cross" />
+            <Select.Item label="UI Designing" value="ui" />
+            <Select.Item label="Backend Development" value="backend" />
+            <Select.Item label="UX Research" value="ux" />
+            <Select.Item label="Web Development" value="web" />
+            <Select.Item label="Cross Platform Development" value="cross" />
+            <Select.Item label="UI Designing" value="ui" />
+            <Select.Item label="Backend Development" value="backend" />
+          </Select>
+        </Box>
+      </Center>
+    );
+  };
   const renderform =(key)=>{
-    if ( pdv) {
+    if (key==='pdv'&& pdv) {
       return (
-        <View>
-        <Center flex={1} px="3">
-          <Box alignItems="center">
-            <Input mx="3" placeholder="Input" w="100%" />
-          </Box>
-        </Center>
-        <Center flex={1} px="3">
-          <Box alignItems="center">
-            <Input mx="3" placeholder="Input" w="100%" />
-          </Box>
-        </Center>
-        <Center flex={1} px="3">
-            <Box alignItems="center">
-          <Button onPress={() => console.log("hello world")}>Click Me</Button>
-            </Box>
+        <View style={styles.inputs}>
+           <Center flex={1} px="3">
+          <Stack space={4} w="100%" alignItems="center">
+            <Input 
+              w={{
+                base: "75%",
+                md: "25%"
+              }} 
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+              } 
+              placeholder="Point de vente" 
+            />
+           
+          </Stack>
+        <Example />
+          <Box alignItems="center" py={4}>
+      <Button size="sm" variant={"solid"} _text={{
+      color: "#1F2937"
+    }} ref={myRef} px="3">
+        Send
+      </Button>
+    </Box>; 
         </Center>
         </View>
       )
     }
-    else if ( affanim){
+    else if ( key==='affanim'&& affanim){
       return (
-      <View>
+      <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
           <Input mx="3" placeholder="Input" w="100%" />
@@ -78,9 +141,9 @@ const [ref,setRef]=React.useState(false)
       </View>
       )
     }
-    else if (categ){
+    else if (key==='categ'&& categ){
       return (
-      <View>
+      <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
           <Input mx="3" placeholder="Input" w="100%" />
@@ -94,9 +157,9 @@ const [ref,setRef]=React.useState(false)
       </View>
       )
     }
-    else if (marque){
+    else if (key==='marque'&& marque){
       return (
-      <View>
+      <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
           <Input mx="3" placeholder="Input" w="100%" />
@@ -110,9 +173,9 @@ const [ref,setRef]=React.useState(false)
       </View>
       )
     }
-    else if (ref){
+    else if (key==='ref'&& ref){
       return (
-      <View>
+      <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
           <Input mx="3" placeholder="Input" w="100%" />
@@ -120,7 +183,7 @@ const [ref,setRef]=React.useState(false)
       </Center>
       <Center flex={1} px="3">
           <Box alignItems="center">
-        <Button onPress={() => console.log("hello world")}>Click Me</Button>
+        <Button   onPress={() => console.log("hello world")}>Click Me</Button>
           </Box>
       </Center>
       </View>
@@ -140,15 +203,15 @@ const [ref,setRef]=React.useState(false)
         />
      <ScrollView>
         <RowItem text="Point de vente" truc={pdv} settruc={setPdv} />
-        {pdv&&renderform()}
+        {pdv&&renderform('pdv')}
         <RowItem text="Affectation Animatrice" truc={affanim} settruc={setAffanim}/>
-        {affanim&&renderform()}
+        {affanim&&renderform('affanim')}
         <RowItem text="Categories" truc={categ} settruc={setCateg}/>
-        {categ&&renderform()}
+        {categ&&renderform('categ')}
         <RowItem text="Marques"truc={marque} settruc={setMarque} />
-        {marque&&renderform()}
+        {marque&&renderform('marque')}
         <RowItem text="References" truc={ref} settruc={setRef}/>
-        {ref&&renderform()}
+        {ref&&renderform('ref')}
       </ScrollView>
       </View>
 
@@ -158,6 +221,11 @@ const [ref,setRef]=React.useState(false)
 }
 
 const styles = StyleSheet.create({
+
+  inputs:{
+    marginTop:'5%',
+    marginBottom:'5%',
+  },
   view1: {
     flex: 1,
     alignItems: 'flex-start',
