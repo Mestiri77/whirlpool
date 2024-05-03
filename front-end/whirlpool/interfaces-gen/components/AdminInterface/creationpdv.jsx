@@ -1,16 +1,8 @@
 import * as React from "react";
-import {
-  FlatList,
-  ScrollView,
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-} from "react-native";
-import { CheckIcon,Input,  Select, Box, Center, NativeBaseProvider, Button ,Stack, Icon} from "native-base";
+import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,Button} from "react-native";
+import { CheckIcon,Input,  Select, Box, Center, NativeBaseProvider,Stack, Icon} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import axios from 'axios';
 
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
@@ -22,21 +14,28 @@ const [affanim, setAffanim] = React.useState(false);
 const [categ,setCateg] =React.useState(false);
 const [marque, setMarque] = React.useState(false);
 const [ref,setRef]=React.useState(false)
-const [service, setService] = React.useState("");
+const [nomspdv,setNomspdv]=React.useState([]);
+const [nompdv,setNompdv]=React.useState("");
+const [nomcateg,setNomcateg]=React.useState('')
+const [nommarq,setNommar]=React.useState('')
+const [nomref,setNomref]=React.useState("")
+const [pdvs, setPdvs] = React.useState([]);
 
-const myRef = React.useRef({});
-React.useEffect(() => {
-  const styleObj = {
-    backgroundColor: "#facc15",
-    borderColor: "#CA8A04",
-    borderWidth: 1,
-    borderRadius: 4
-  }; //@ts-ignore
 
-  myRef.current.setNativeProps({
-    style: styleObj
-  });
-}, [myRef]);
+const fetchPdvsname = async () => {
+  try {
+    const response = await axios.get('http://192.168.1.18:3000/api/pdvs/pdvs');
+    const pdvNames = response.data.map(pdv => pdv.pdvname);
+    setNomspdv(pdvNames);
+    console.log(pdvNames);
+  } catch (error) {
+    console.error('Error fetching PDVs:', error)
+  }
+}
+
+React.useEffect(()=>{
+  fetchPdvsname();
+},[])
 
   function RowItem({ text, truc,settruc}) {
     return (
@@ -52,17 +51,43 @@ React.useEffect(() => {
       </View>
     );
   }
-  const Example = () => {
+  const Example = ({text}) => {
     const [service, setService] = React.useState(""); // Use useState from React
+    if(text=='Point de Vente'){
+      return (
+        <Center>
+          <Box maxW="400">
+            <Select
+              selectedValue={service}
+              minWidth="240"
+              accessibilityLabel={text}
+              placeholder= {text}
+              _selectedItem={{
+                bg: "teal.600",
+                endIcon: <CheckIcon size="5" />
+              }}
+              mt={1}
+              onValueChange={itemValue => setService(itemValue)}
+            >
+            {nomspdv.map(el=>{
+              return(
+              <Select.Item label={el} value={el} />
+            )
+            })}
   
+            </Select>
+          </Box>
+        </Center>
+      );
+    }
     return (
       <Center>
         <Box maxW="400">
           <Select
             selectedValue={service}
             minWidth="240"
-            accessibilityLabel="Region"
-            placeholder="Region"
+            accessibilityLabel={text}
+            placeholder= {text}
             _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
@@ -75,16 +100,7 @@ React.useEffect(() => {
             <Select.Item label="Cross Platform Development" value="cross" />
             <Select.Item label="UI Designing" value="ui" />
             <Select.Item label="Backend Development" value="backend" />
-            <Select.Item label="UX Research" value="ux" />
-            <Select.Item label="Web Development" value="web" />
-            <Select.Item label="Cross Platform Development" value="cross" />
-            <Select.Item label="UI Designing" value="ui" />
-            <Select.Item label="Backend Development" value="backend" />
-            <Select.Item label="UX Research" value="ux" />
-            <Select.Item label="Web Development" value="web" />
-            <Select.Item label="Cross Platform Development" value="cross" />
-            <Select.Item label="UI Designing" value="ui" />
-            <Select.Item label="Backend Development" value="backend" />
+
           </Select>
         </Box>
       </Center>
@@ -108,14 +124,10 @@ React.useEffect(() => {
             />
            
           </Stack>
-        <Example />
-          <Box alignItems="center" py={4}>
-      <Button size="sm" variant={"solid"} _text={{
-      color: "#1F2937"
-    }} ref={myRef} px="3">
-        Send
-      </Button>
-    </Box>; 
+        <Example text="Region" />
+        <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <Text style={styles.btnText}>Valideé</Text>
+      </TouchableOpacity>
         </Center>
         </View>
       )
@@ -124,19 +136,15 @@ React.useEffect(() => {
       return (
       <View style={styles.inputs}>
       <Center flex={1} px="3">
-        <Box alignItems="center">
-          <Input mx="3" placeholder="Input" w="100%" />
-        </Box>
+      <Example text="Point de Vente"  />
       </Center>
       <Center flex={1} px="3">
-        <Box alignItems="center">
-          <Input mx="3" placeholder="Input" w="100%" />
-        </Box>
+      <Example text="Animatrice" />
       </Center>
       <Center flex={1} px="3">
-          <Box alignItems="center">
-        <Button onPress={() => console.log("hello world")}>Click Me</Button>
-          </Box>
+          <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <Text style={styles.btnText}>Valider</Text>
+      </TouchableOpacity>
       </Center>
       </View>
       )
@@ -150,9 +158,9 @@ React.useEffect(() => {
         </Box>
       </Center>
       <Center flex={1} px="3">
-          <Box alignItems="center">
-        <Button onPress={() => console.log("hello world")}>Click Me</Button>
-          </Box>
+      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <Text style={styles.btnText}>Valider</Text>
+      </TouchableOpacity>
       </Center>
       </View>
       )
@@ -166,9 +174,9 @@ React.useEffect(() => {
         </Box>
       </Center>
       <Center flex={1} px="3">
-          <Box alignItems="center">
-        <Button onPress={() => console.log("hello world")}>Click Me</Button>
-          </Box>
+      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <Text style={styles.btnText}>Valider</Text>
+      </TouchableOpacity>
       </Center>
       </View>
       )
@@ -182,9 +190,9 @@ React.useEffect(() => {
         </Box>
       </Center>
       <Center flex={1} px="3">
-          <Box alignItems="center">
-        <Button   onPress={() => console.log("hello world")}>Click Me</Button>
-          </Box>
+      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <Text style={styles.btnText}>Valider</Text>
+      </TouchableOpacity>
       </Center>
       </View>
       )
@@ -221,7 +229,19 @@ React.useEffect(() => {
 }
 
 const styles = StyleSheet.create({
-
+  btns: {
+    backgroundColor: '#FDC100', // Background color of the button
+    padding: 10,
+    borderRadius: 5,
+    width:150,
+    marginTop:"5%",
+    
+  },
+  btnText: {
+    color: 'white', // Text color
+    fontSize: 16,
+    textAlign:"center"
+  },
   inputs:{
     marginTop:'5%',
     marginBottom:'5%',
