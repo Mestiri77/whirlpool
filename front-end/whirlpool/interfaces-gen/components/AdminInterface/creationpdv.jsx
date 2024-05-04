@@ -9,33 +9,94 @@ const leftimage = require('../../../assets/icons8-right-50.png');
 const downicon = require('../../../assets/icons8-down-50.png')
 
 function Creationpdv() {
+const [load,setload]=React.useState(false)  
 const [pdv,setPdv]=React.useState(false);
 const [affanim, setAffanim] = React.useState(false);
 const [categ,setCateg] =React.useState(false);
 const [marque, setMarque] = React.useState(false);
 const [ref,setRef]=React.useState(false)
 const [nomspdv,setNomspdv]=React.useState([]);
-const [nompdv,setNompdv]=React.useState("");
+const [nomsanims,setNomanims]=React.useState([]);
+const [nomsanim,setNomanim]=React.useState('Animatrices');
+const [nompdv,setNompdv]=React.useState("Point de Vente");
 const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
+const [region,setRegion]=React.useState('Region')
 const [pdvs, setPdvs] = React.useState([]);
+const port='192.168.142.26'
 
+const Regions=["Ariana","Béja","Ben Arous","Bizerte","Gabès","Gafsa","Jendouba","Kairouan","Kasserine","Kébili","Kef","Mahdia","Manouba","Médenine","Monastir","Nabeul","Sfax","Sidi Bouzid","Siliana","Sousse","Tataouine","Tozeur","Tunis","Zaghouan"]
 
+const Pdv={
+  pdvname:nompdv,
+  location:region
+}
+////////////////////////FUNCTIONS///////////////////////////
 const fetchPdvsname = async () => {
   try {
-    const response = await axios.get('http://192.168.1.18:3000/api/pdvs/pdvs');
+    const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
     const pdvNames = response.data.map(pdv => pdv.pdvname);
     setNomspdv(pdvNames);
-    console.log(pdvNames);
   } catch (error) {
     console.error('Error fetching PDVs:', error)
   }
 }
 
+const fetchAnimname=async ()=>{
+  try{
+    const response=await axios.get('http://'+port+':3000/api/users/')
+    const nameAnims= response.data.map(el=>(el.name+' '+el.lastname))
+    console.log(nameAnims);
+    setNomanims(nameAnims)
+  }
+  catch (error) {
+    console.error('Error fetching Anims:', error)
+  }
+}
+
+const Addpdvs=async (info)=>{
+  try{
+    axios.post('http://'+port+':3000/api/pdvs/pdvs',info)
+    console.log('pdv aded');
+    setload(!load)
+  }
+   catch (error) {
+    console.error('Error adding point de vente:', error)
+  }
+}
+const AddCateg=async (info)=>{
+  try{
+      axios.post('http://'+port+':3000/api/categories/categories',{Categoryname:info})
+      setload(!load)
+  }
+   catch (error) {
+    console.error('Error adding Category', error)
+  }
+}
+const AddMarque=async (info)=>{
+  try{
+    axios.post('http://'+port+':3000/api/marques/marques',{marquename:info})
+    setload(!load)
+  }
+  catch (error) {
+    console.error('Error adding Marque', error)
+  }
+}
+const AddRef=async(info)=>{
+  try{
+    axios.post('http://'+port+':3000/api/reference/references',{Referencename:info})
+    setload(!load)
+  }
+  catch (error) {
+    console.error('Error adding Marque', error)
+  }
+}
 React.useEffect(()=>{
   fetchPdvsname();
-},[])
+  fetchAnimname()
+},[load])
+////////////////////////FUNCTIONS///////////////////////////
 
   function RowItem({ text, truc,settruc}) {
     return (
@@ -52,22 +113,21 @@ React.useEffect(()=>{
     );
   }
   const Example = ({text}) => {
-    const [service, setService] = React.useState(""); // Use useState from React
     if(text=='Point de Vente'){
       return (
         <Center>
           <Box maxW="400">
             <Select
-              selectedValue={service}
+              selectedValue={nompdv}
               minWidth="240"
-              accessibilityLabel={text}
-              placeholder= {text}
+              accessibilityLabel={nompdv}
+              placeholder= {nompdv}
               _selectedItem={{
                 bg: "teal.600",
                 endIcon: <CheckIcon size="5" />
               }}
               mt={1}
-              onValueChange={itemValue => setService(itemValue)}
+              onValueChange={itemValue => setNompdv(itemValue)}
             >
             {nomspdv.map(el=>{
               return(
@@ -80,27 +140,51 @@ React.useEffect(()=>{
         </Center>
       );
     }
-    return (
-      <Center>
+    else if(text=='Animatrices'){
+      return(
+        <Center>
         <Box maxW="400">
           <Select
-            selectedValue={service}
+            selectedValue={nomsanim}
             minWidth="240"
-            accessibilityLabel={text}
-            placeholder= {text}
+            accessibilityLabel={nomsanim}
+            placeholder= {nomsanim}
             _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
             }}
             mt={1}
-            onValueChange={itemValue => setService(itemValue)}
+            onValueChange={itemValue => setNomanim(itemValue)}
           >
-            <Select.Item label="UX Research" value="ux" />
-            <Select.Item label="Web Development" value="web" />
-            <Select.Item label="Cross Platform Development" value="cross" />
-            <Select.Item label="UI Designing" value="ui" />
-            <Select.Item label="Backend Development" value="backend" />
+          {nomsanims.map(el=>{
+            return(
+            <Select.Item label={el} value={el} />
+          )
+          })}
 
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    return (
+      <Center>
+        <Box maxW="400">
+          <Select
+            selectedValue={region}
+            minWidth="240"
+            accessibilityLabel={region}
+            placeholder= {region}
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            mt={1}
+            onValueChange={itemValue => setRegion(itemValue)}
+          >
+            {Regions.map(el=>(
+              <Select.Item label={el} value={el} />
+            ))}
           </Select>
         </Box>
       </Center>
@@ -121,11 +205,12 @@ React.useEffect(()=>{
                 <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder="Point de vente" 
+              onChangeText={item=>setNompdv(item)}
             />
            
           </Stack>
         <Example text="Region" />
-        <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+        <TouchableOpacity onPress={() =>{ Addpdvs(Pdv),console.log('add',Pdv);}} style={styles.btns}>
         <Text style={styles.btnText}>Valideé</Text>
       </TouchableOpacity>
         </Center>
@@ -139,7 +224,7 @@ React.useEffect(()=>{
       <Example text="Point de Vente"  />
       </Center>
       <Center flex={1} px="3">
-      <Example text="Animatrice" />
+      <Example text="Animatrices" />
       </Center>
       <Center flex={1} px="3">
           <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
@@ -154,11 +239,11 @@ React.useEffect(()=>{
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Input" w="100%" />
+          <Input mx="3" placeholder="Category" onChangeText={item=>setNomcateg(item)}  w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddCateg(nomcateg)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -170,11 +255,11 @@ React.useEffect(()=>{
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Input" w="100%" />
+          <Input mx="3" placeholder="Marque" onChangeText={item=>setNommar(item)} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddMarque(nommarq)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -186,11 +271,11 @@ React.useEffect(()=>{
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Input" w="100%" />
+          <Input mx="3" placeholder="Reference" onChangeText={item=>setNomref(item)} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddRef(nomref)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
