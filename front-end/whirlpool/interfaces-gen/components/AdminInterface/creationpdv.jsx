@@ -23,8 +23,10 @@ const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
 const [region,setRegion]=React.useState('Region')
+const [iduser,setIdUser]=React.useState([])
+const [idpdv,setIdpdv]=React.useState([])
 const [pdvs, setPdvs] = React.useState([]);
-const port='192.168.142.26'
+const port='192.168.1.145'
 
 const Regions=["Ariana","Béja","Ben Arous","Bizerte","Gabès","Gafsa","Jendouba","Kairouan","Kasserine","Kébili","Kef","Mahdia","Manouba","Médenine","Monastir","Nabeul","Sfax","Sidi Bouzid","Siliana","Sousse","Tataouine","Tozeur","Tunis","Zaghouan"]
 
@@ -42,11 +44,26 @@ const fetchPdvsname = async () => {
     console.error('Error fetching PDVs:', error)
   }
 }
-
+const getpdvByname=async(info)=>{
+  try{
+router.get('/namepdv',pdvController.getOnePDV)
+    let response=await axios.get("http://"+port+":3000/api/pdvs/namepdv",{info})
+    setIdpdv(response.data.idPDV)
+    setload(!load)
+  }
+  catch (error) {
+    console.error('Error fetching PDVs:', error)
+  }
+}
 const fetchAnimname=async ()=>{
   try{
     const response=await axios.get('http://'+port+':3000/api/users/')
-    const nameAnims= response.data.map(el=>(el.name+' '+el.lastname))
+    const nameAnims= response.data.map(el=>{
+      console.log(el.role);
+      if(el.role=='animateur'){
+        return el.name+' '+el.lastname
+      }
+    })
     console.log(nameAnims);
     setNomanims(nameAnims)
   }
@@ -54,6 +71,17 @@ const fetchAnimname=async ()=>{
     console.error('Error fetching Anims:', error)
   }
 }
+const getIdbyname=async(name,lastname)=>{
+  try{
+    const response=await axios.get('http://'+port+':3000/api/users/nameuser',{name:name,lastname:lastname})
+    setIdUser(response.data)
+    setload(!load)
+  }
+  catch (error) {
+    console.error('Error fetching Anims:', error)
+  }
+}
+
 
 const Addpdvs=async (info)=>{
   try{
@@ -92,11 +120,40 @@ const AddRef=async(info)=>{
     console.error('Error adding Marque', error)
   }
 }
+const updateAnimByPdv=async(id,data)=> {
+  try{
+    axios.put('http://'+port+':3000/api/users/animbypdv/'+id, data);
+    setload(!load)
+  }
+  catch (error) {
+    console.error('Error adding Marque', error)
+  }
+}
 React.useEffect(()=>{
   fetchPdvsname();
   fetchAnimname()
 },[load])
 ////////////////////////FUNCTIONS///////////////////////////
+
+  const affectanim=(nameanim,namepdv)=>{
+    let name=''
+    let lastname=''
+    if(nameanim!==""){
+      const parts = nameanim.split(' ');
+      name=parts[0]
+      lastname=parts[1]
+    }
+    Promise.all([
+      getIdbyname(name, lastname), // Fetch user ID by name and last name
+      getpdvByname(namepdv)        // Fetch PDV by name
+    ]).then(results => {
+      const [userId, pdvId] = results;
+      updateAnimByPdv(userId, pdvId); // Update assuming this function requires userId and pdvId
+    })
+    .catch(error => {
+      console.error('Error in operation:', error);
+    });
+  }
 
   function RowItem({ text, truc,settruc}) {
     return (
@@ -227,7 +284,7 @@ React.useEffect(()=>{
       <Example text="Animatrices" />
       </Center>
       <Center flex={1} px="3">
-          <TouchableOpacity onPress={() => console.log('Button Pressed!')} style={styles.btns}>
+          <TouchableOpacity onPress={() => {updateAnimByPdv()}} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>

@@ -105,6 +105,31 @@ const createAnimateur = async (req, res) => {
       res.status(500).json({ error: 'Error creating user' });
     }
   };
+const getuserbyname=async(req,res)=>{
+  let nom=req.body.name
+  let prenom=req.body.lastname
+  try{
+    const userbyName=await User.findOne({where:{name:nom,lastname:prenom}})
+    res.json(userbyName)
+  } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ error: 'Error creating user' });
+    }
+}
+const updateAnimByPdv=async (req,res)=>{
+  let iduser=req.params.id
+  let  pdvid=req.body.PDV_idPDV
+  try {
+    const user = await User.findByPk(iduser);
+    if(user.role=="animateur"){
+      await user.update({PDV_idPDV:pdvid})
+    }
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error' });
+  }
+}
 
 const updateUserById = async (req, res) => {
     const userId = req.params.id;
@@ -193,5 +218,7 @@ module.exports = {
   getAllmanager,
   getnamebyid,
   getonebyid,
-  getadmin
+  getadmin,
+  updateAnimByPdv,
+  getuserbyname
 };
