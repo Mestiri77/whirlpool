@@ -14,6 +14,8 @@ router.put('/:id', userController.updateUserById);
 router.delete('/:id', userController.deleteUserById);
 router.post('/creatuser',userController.createUser)
 router.post('/creatanim',userController.createAnimateur)
+router.put('/animbypdv/:id',userController.updateAnimByPdv)
+router.get( '/nameuser',userController.getuserbyname)
 
 
 module.exports = router;
