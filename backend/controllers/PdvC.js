@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const PDV = require('../models/Pdv.js');
 const User = require("../models/Users.js")
 // Create
@@ -18,6 +19,18 @@ async function getAllPDVs(req, res) {
     const pdvs = await PDV.findAll();
     res.status(200).json(pdvs);
   } catch (error) {
+    console.error('Error getting PDVs:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+ 
+async  function getOnePDV(req, res){
+  try{
+    const name=req.body
+    const result=await PDV.findOne({where:{pdvname:name}})
+    res.json(result)
+  }
+  catch (error) {
     console.error('Error getting PDVs:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -102,5 +115,6 @@ module.exports = {
   getPDVById,
   updatePDV,
   deletePDV,
-  getnamepdv
+  getnamepdv,
+  getOnePDV
 };

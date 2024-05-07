@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList } from 'react-native';
 import axios from 'axios';
 
+const fetchArticles = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:3000/api/articles/articles');
+    setArticles(response.data);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+  }
+};
 const CrudeArticle = () => {
   const [articles, setArticles] = useState([]);
   const [formData, setFormData] = useState({
@@ -12,14 +20,7 @@ const CrudeArticle = () => {
   });
 
   // Function to fetch all articles
-  const fetchArticles = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:3000/api/articles/articles');
-      setArticles(response.data);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    }
-  };
+ 
 
   // Function to handle form submission for creating/updating an article
   const handleSubmit = async () => {
@@ -99,3 +100,6 @@ const CrudeArticle = () => {
 }
 
 export default CrudeArticle;
+module.exports={
+  fetchArticles
+}
