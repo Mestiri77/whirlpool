@@ -64,7 +64,25 @@ const [oneRef,setOneRef]=React.useState("Reférence")
           </Center>;
       };
 
-      const RenderInput= (text)=>{
+      const RenderInput= (text,modif)=>{
+        if(modif==true){
+          return(
+            <Stack space={4} w="50%" alignItems="center" mt="5%">
+            <Input 
+              w={{
+                base: "75%",
+                md: "25%"
+              }} 
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+              } 
+              placeholder={text}
+              onChangeText={item=>setNompdv(item)}
+            />
+           
+          </Stack>
+          )
+        }
         return(
             <Stack space={4} w="100%" alignItems="center" mt="2%">
             <Input 
@@ -81,6 +99,45 @@ const [oneRef,setOneRef]=React.useState("Reférence")
            
           </Stack>
         )
+      }
+      const renderPopup=()=>{
+        return(
+                  <View style={{marginTop:'20%'}}>
+                  <Center flex={1} px="3">
+                  <Center w="100%">
+        <VStack w="90%" maxW="400" borderWidth="1" space={8} overflow="hidden" rounded="md" _dark={{
+        borderColor: "coolGray.500"
+        }} _light={{
+        borderColor: "coolGray.200"
+        }}>
+          <Center flex={1} px="3" mt="2">
+          <Text style={styles.textprop}>Choisir la réfèrence :</Text>
+          </Center>
+
+          <Example text={'Référence'} />
+          <Stack mb="8" mt="1" direction={{
+          base: "row",
+          md: "row"
+        }} space={2} mx={{
+          base: "auto",
+          md: "0",
+        }}>
+            <Button size="sm" variant="outline" borderColor="#FDC100" _text={{ color: '#FDC100' }} 
+            onPress={()=> {setShowpop(false)}}
+            >
+              Valider
+            </Button>
+            <Button size="sm" variant="outline" borderColor="#D0D3D4" _text={{ color: '#D0D3D4' }}
+            onPress={()=> {setShowpop(false),setModifArt(false)}}
+            >
+              Annuler
+            </Button>
+          </Stack>
+        </VStack>
+        </Center>;
+        </Center>
+        </View>
+          )
       }
       const renderform=(text)=>{
         if(text=="Créer un nouveau article"){
@@ -103,42 +160,63 @@ const [oneRef,setOneRef]=React.useState("Reférence")
         }
         else if(showpop){
             return(
-                <View style={{marginTop:'20%'}}>
-                <Center flex={1} px="3">
-                <Center w="100%">
-      <VStack w="90%" maxW="400" borderWidth="1" space={8} overflow="hidden" rounded="md" _dark={{
-      borderColor: "coolGray.500"
-    }} _light={{
-      borderColor: "coolGray.200"
-    }}>
-        <Center flex={1} px="3" mt="2">
-        <Text style={styles.textprop}>Choisir la réfèrence :</Text>
-        </Center>
+              renderPopup()
+            )
+        }
+        else if (!showpop){
+          return(
+            <View>
+              <Stack mb="4" mt="8" direction={{
+                        base: "row",
+                        md: "row"
+                      }} space={2} mx={{
+                        base: "auto",
+                        md: "0",
+                      }}>              
+                {RenderInput('Reference',true)}
+                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+        <Text style={styles.btnText}>Modifier</Text>
+      </TouchableOpacity>
+              </Stack>
 
-        <Example text={'Référence'} />
-        <Stack mb="8" mt="1" direction={{
-        base: "row",
-        md: "row"
-      }} space={2} mx={{
-        base: "auto",
-        md: "0",
-      }}>
-          <Button size="sm" variant="outline" borderColor="#FDC100" _text={{ color: '#FDC100' }} 
-           
-          >
-            Valider
-          </Button>
-          <Button size="sm" variant="outline" borderColor="#D0D3D4" _text={{ color: '#D0D3D4' }}
-          onPress={()=> {setShowpop(false),setModifArt(false)}}
-          >
-            Annuler
-          </Button>
-        </Stack>
-      </VStack>
-    </Center>;
-    </Center>
-    </View>
-        )
+              <Stack mb="4" mt="1" direction={{
+                        base: "row",
+                        md: "row"
+                      }} space={2} mx={{
+                        base: "auto",
+                        md: "0",
+                      }}>              
+                {RenderInput('Marque',true)}
+                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+        <Text style={styles.btnText}>Modifier</Text>
+      </TouchableOpacity>
+              </Stack>
+              <Stack mb="4" mt="1" direction={{
+                        base: "row",
+                        md: "row"
+                      }} space={2} mx={{
+                        base: "auto",
+                        md: "0",
+                      }}>              
+                {RenderInput('Coleur',true)}
+                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+        <Text style={styles.btnText}>Modifier</Text>
+      </TouchableOpacity>
+              </Stack>
+              <Stack mb="4" mt="1" direction={{
+                        base: "row",
+                        md: "row"
+                      }} space={2} mx={{
+                        base: "auto",
+                        md: "0",
+                      }}>              
+                {RenderInput('Capaciter',true)}
+                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+        <Text style={styles.btnText}>Modifier</Text>
+      </TouchableOpacity>
+              </Stack>
+        </View>
+          )
         }
       }
 
