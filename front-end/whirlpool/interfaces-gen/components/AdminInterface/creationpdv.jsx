@@ -169,6 +169,7 @@ React.useEffect(()=>{
       </View>
     );
   }
+
   const Example = ({text}) => {
     if(text=='Point de Vente'){
       return (
@@ -240,7 +241,7 @@ React.useEffect(()=>{
             onValueChange={itemValue => setRegion(itemValue)}
           >
             {Regions.map(el=>(
-              <Select.Item label={el} value={el} />
+              <Select.Item  key={index} label={el} value={el} />
             ))}
           </Select>
         </Box>

@@ -36,7 +36,20 @@ async function getArticleById(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-
+// Get one by ref
+async function getArticleByrefId(req, res) {
+  try {
+    const { id } = req.params;
+    const article = await Article.findOne({where:{Reference_idReference:id} });
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    res.status(200).json(article);
+  } catch (error) {
+    console.error('Error getting article by id:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 // Update
 async function updateArticle(req, res) {
   try {
@@ -75,5 +88,6 @@ module.exports = {
   getAllArticles,
   getArticleById,
   updateArticle,
-  deleteArticle
+  deleteArticle,
+  getArticleByrefId
 };
