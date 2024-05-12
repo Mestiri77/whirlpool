@@ -581,7 +581,6 @@ React.useEffect(()=>{
           borderRadius: 5,
           width:150,
           marginTop:"5%",
-          
         },
         btnText: {
           color: 'white', // Text color

@@ -4,7 +4,7 @@ import { NativeBaseProvider, Center } from "native-base";
 import Header from './header'
 import Footer from './footer'
 
-function RapportExpo() {
+function RapportExpodet() {
  
 
   return (
@@ -14,46 +14,29 @@ function RapportExpo() {
         <ScrollView style={{marginTop:-350}}>
           <View>
             <View>
-              <Text style={styles.textexpo}>Date :</Text>
-              <Text style={styles.textexpo}>Zone :</Text>
-              <Text style={styles.textexpo}>Magasin :</Text>
-              <Text style={styles.textexpo}>Animatrice :</Text>
+              <Text style={styles.textexpo}>Famille de produit</Text>
             </View>
-            <View style={styles.container}>
+    <View style={styles.container}>
       {/* Première ligne */}
       <View style={styles.row}>
-        <View style={styles.cell}><Text>Famille de produit</Text></View>
-        <View style={styles.cell}><Text>Expo Globale</Text></View>
-        <View style={styles.cell}><Text>Expo Whirlpool</Text></View>
-        <View style={styles.cell}><Text>Taux D'exposition</Text></View>
+        <View style={styles.cell}><Text>Marques</Text></View>
+        <View style={styles.cell}><Text>Référence</Text></View>
+        <View style={styles.cell}><Text>Prix</Text></View>
+        <View style={styles.cell}><Text>:</Text></View>
       </View>
 
       {/* Deuxième ligne */}
       <View style={styles.row}>
         <View style={styles.cell1}><Text>Donnée 1</Text></View>
-          <TouchableOpacity>
-        <View style={styles.cell2}>
-          <Text style={styles.textcell2}>Donnée 2</Text>
-          </View>
-          </TouchableOpacity> 
+        <View style={styles.cell1}><Text>Donnée 2</Text></View>
         <View style={styles.cell1}><Text>Donnée 3</Text></View>
-        <View style={styles.cell1}><Text>Donnée 4</Text></View>
-      </View>
-
-      {/* Dernière ligne */}
-      <View style={[styles.row, styles.totalRow]}>
-        <View style={[styles.cell, styles.totalCell]}><Text>Total</Text></View>
-        <View style={styles.cell}><Text>Donnée totale 1</Text></View>
-        <View style={styles.cell}><Text>Donnée totale 2</Text></View>
-        <View style={styles.cell}><Text>Donnée totale 3</Text></View>
+        <TouchableOpacity>
+        <View style={styles.cell2}><Text style={styles.textcell2}>Modifer</Text></View>
+        </TouchableOpacity>
       </View>
     </View>
-    <Center>
-    <TouchableOpacity onPress={() =>{}} style={styles.btns}>
-        <Text style={styles.btnText}>Exporter</Text>
-      </TouchableOpacity>
-      </Center>
-          </View>
+   
+    </View>
         </ScrollView>
       </View>
         <Footer/>
@@ -76,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 0.5, 
-    borderColor: '#D0D3D4',
+    borderColor: 'D0D3D4',
     marginTop:5 
   },
   row: {
@@ -136,4 +119,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RapportExpo;
+export default RapportExpodet;
