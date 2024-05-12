@@ -241,7 +241,7 @@ React.useEffect(()=>{
             onValueChange={itemValue => setRegion(itemValue)}
           >
             {Regions.map(el=>(
-              <Select.Item  key={index} label={el} value={el} />
+              <Select.Item  label={el} value={el} />
             ))}
           </Select>
         </Box>
