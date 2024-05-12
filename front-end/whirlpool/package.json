@@ -15,10 +15,12 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.6.8",
     "expo": "~50.0.14",
+    "expo-location": "^17.0.1",
     "expo-status-bar": "~1.11.1",
     "native-base": "^3.4.28",
     "react": "18.2.0",
-    "react-native": "0.73.6"
+    "react-native": "0.73.6",
+    "react-native-geolocation-service": "^5.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
