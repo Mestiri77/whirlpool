@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     view1: {
         flex: 0,
         justifyContent: 'center',
-        padding: 15,
+        padding: 20,
       },
       container: {
         flexDirection: 'column',

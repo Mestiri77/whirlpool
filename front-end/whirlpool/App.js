@@ -8,11 +8,12 @@ import RapportExpo from './interfaces-gen/components/AdminInterface/RapportExpo'
 import RapportExpoDet from './interfaces-gen/components/AdminInterface/RapportdesxpoDet'
 import Modifpopup from './interfaces-gen/components/AdminInterface/ModifRapExpo'
 import RapportPriceMap from './interfaces-gen/components/AdminInterface/RapportPriceMap'
+import RapportPriceMapDet from './interfaces-gen/components/AdminInterface/RapportPriceMapDet'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <RapportPriceMap/>
+      <RapportPriceMapDet/>
       <StatusBar style="auto" />
     </View>
   );
