@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5,  // Bordure seulement en haut
         borderColor: 'black',
         maxWidth:95,
-        minWidth:95
+        minWidth:95,
 
     },
     cell2: {
