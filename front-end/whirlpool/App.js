@@ -11,11 +11,12 @@ import RapportPriceMap from './interfaces-gen/components/AdminInterface/RapportP
 import RapportPriceMapDet from './interfaces-gen/components/AdminInterface/RapportPriceMapDet'
 import RapportSellOut from './interfaces-gen/components/AdminInterface/RapportsSellOut';
 import RapportDePresence from './interfaces-gen/components/AdminInterface/RapportDePresence'
+import RapportLog from './interfaces-gen/components/AdminInterface/RapportLog'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <RapportDePresence/>
+      <RapportLog/>
       <StatusBar style="auto" />
     </View>
   );
