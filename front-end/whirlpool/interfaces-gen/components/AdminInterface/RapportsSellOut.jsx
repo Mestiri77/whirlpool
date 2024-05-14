@@ -60,7 +60,7 @@ function RapportSellOut() {
     const Tableaux = () => {
         return (
             <ScrollView horizontal style={{ marginTop: 2 }}>
-            <View style={styles.container}>
+            <View style={styles.container2}>
                 {/* Première ligne */}
                 <View style={styles.row}>
                     <View style={styles.cell}><Text>Reference</Text></View>
