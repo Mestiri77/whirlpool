@@ -11,8 +11,7 @@ function RapportPriceMapDet(){
 
     const Example = ({text}) => {
         if(text=="Couleur"){
-            
-        
+
         return (
           <Center>
           <Box maxW="400">

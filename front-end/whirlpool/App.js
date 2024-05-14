@@ -9,11 +9,17 @@ import RapportExpoDet from './interfaces-gen/components/AdminInterface/Rapportde
 import Modifpopup from './interfaces-gen/components/AdminInterface/ModifRapExpo'
 import RapportPriceMap from './interfaces-gen/components/AdminInterface/RapportPriceMap'
 import RapportPriceMapDet from './interfaces-gen/components/AdminInterface/RapportPriceMapDet'
+import RapportSellOut from './interfaces-gen/components/AdminInterface/RapportsSellOut';
+import RapportDePresence from './interfaces-gen/components/AdminInterface/RapportDePresence'
+import RapportLog from './interfaces-gen/components/AdminInterface/RapportLog'
+import CreationCompte from './interfaces-gen/components/AdminInterface/creationCompte'
+import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRapport'
+
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <RapportPriceMapDet/>
+      <PopupRapport/>
       <StatusBar style="auto" />
     </View>
   );
