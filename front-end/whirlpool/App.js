@@ -13,12 +13,13 @@ import RapportSellOut from './interfaces-gen/components/AdminInterface/RapportsS
 import RapportDePresence from './interfaces-gen/components/AdminInterface/RapportDePresence'
 import RapportLog from './interfaces-gen/components/AdminInterface/RapportLog'
 import CreationCompte from './interfaces-gen/components/AdminInterface/creationCompte'
+import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRapport'
 
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <CreationCompte/>
+      <PopupRapport/>
       <StatusBar style="auto" />
     </View>
   );

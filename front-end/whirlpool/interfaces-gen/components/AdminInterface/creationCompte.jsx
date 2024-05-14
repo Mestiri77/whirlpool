@@ -2,6 +2,7 @@ import * as React from "react";
 import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
 import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import Footer from './footer';
 
 function CreationCompte(){
   const [nom,setNom]=React.useState("")
@@ -69,6 +70,7 @@ function CreationCompte(){
                 <Text style={styles.btnText}>Exporter</Text>
                 </TouchableOpacity>
                 </Center>
+                <Footer />
     </NativeBaseProvider>
   )
 }
