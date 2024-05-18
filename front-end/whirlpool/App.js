@@ -15,12 +15,13 @@ import RapportDePresence from './interfaces-gen/components/AdminInterface/Rappor
 import RapportLog from './interfaces-gen/components/AdminInterface/RapportLog'
 import CreationCompte from './interfaces-gen/components/AdminInterface/creationCompte'
 import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRapport'
-
-
+import CreationRapportExpo from './interfaces-gen/components/animatriceInterface/CreationRapportExpo'
+import PopupCheckBox from './interfaces-gen/components/animatriceInterface/PopupCheckBox'
+import  CreationNRapport from './interfaces-gen/components/animatriceInterface/CreationNRapport'
 export default function App() {
   return (
     <View style={styles.container}>
-      <ConsultRapports/>
+      <  CreationNRapport/>
       <StatusBar style="auto" />
     </View>
   );

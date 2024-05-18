@@ -3,11 +3,47 @@ import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,T
 import { NativeBaseProvider, Center,Box,Select,CheckIcon} from "native-base";
 import Header from './header'
 import Footer from './footer'
+import axios from 'axios'
 
 function RapportPriceMap(){
 
-    const [pdv,setPdv]=React.useState('')
-    const [pdvsel,setPdvsel]=React.useState('')
+  const [load,setLoad]=React.useState(false)
+
+  const [pdvs,setPdvs]=React.useState([])
+  const [categ,setCateg]=React.useState([])
+
+  const [pdv,setPdv]=React.useState('')
+  const [pdvsel,setPdvsel]=React.useState('')
+
+  const port='192.168.1.26'
+
+///////////////////////////////Functions//////////////////////////////
+
+const getAllPdvs=async()=>{
+  try{
+    let response=await axios.get("http://"+port+":3000/api/pdvs/pdvs")
+    setPdvs(response.data)
+  }
+  catch (error) {
+    console.error('Error fetching PDVs:', error)
+  }
+}
+const Fetchallcateg=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/categories/categories")
+    console.log(response.data);
+    setCateg(response.data)
+  }
+  catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
+
+React.useEffect(()=>{
+  getAllPdvs()
+  Fetchallcateg()
+},[])
+/////////////////////////////////////////////////////////////////////
 
     const Example = ({text}) => {
 
@@ -26,11 +62,10 @@ function RapportPriceMap(){
                 mt={1}
                 onValueChange={(itemValue) => setPdvsel(itemValue)}
               >
-                <Select.Item label="UX Research" value="ux" />
-                <Select.Item label="Web Development" value="web" />
-                <Select.Item label="Cross Platform Development" value="cross" />
-                <Select.Item label="UI Designing" value="ui" />
-                <Select.Item label="Backend Development" value="backend" />
+                {pdvs.map(el=>(
+                <Select.Item label={el.pdvname} value={el.pdvname} />
+                ))}
+                
               </Select>
             </Box>
           </Center>
@@ -50,9 +85,11 @@ return(
         <View style={styles.categtext} ><Text style={{fontSize:18,fontWeight:300}}>Categories</Text></View>
         <ScrollView style={styles.viewbtns}>
             <View  >
-            <TouchableOpacity style={styles.btns}>
-                <Text style={styles.btnText}>Réfrigérateur 2 porte</Text>
-            </TouchableOpacity>
+              {categ.map(el=>(
+                <TouchableOpacity style={styles.btns}>
+                <Text style={styles.btnText}>{el.Categoryname}</Text>
+               </TouchableOpacity>
+              ))}
             </View>
         </ScrollView>
         </Center>

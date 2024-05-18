@@ -13,7 +13,7 @@ const pricatrouter=require('./Router/PriceCategR.js')
 const pricemrouter=require('./Router/PriceR')
 const referencerouter=require('./Router/RefR.js')
 const selloutrouter=require('./Router/SelloutR.js')
-
+const refsell=require('./Router/Ref-Sel.js')
 // const usersrouter=require('./Router/UsersR.js')
 const UserRoot = require ('./routerAuth/userRoot.js')
 const {authenticateUser} = require('./middelwhere/auth.js')
@@ -36,7 +36,7 @@ app.use('/api/pricem',pricemrouter)
 app.use('/api/reference',referencerouter)
 app.use('/api/sellout',selloutrouter)
 app.use('/api/users',UserRoot)
-
+app.use('/api/refsel',refsell)
 //auth route (public)
 app.use("/auth", authentication);
 

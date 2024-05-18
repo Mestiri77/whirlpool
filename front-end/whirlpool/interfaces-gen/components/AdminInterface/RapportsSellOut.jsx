@@ -4,6 +4,8 @@ import { NativeBaseProvider, Center } from "native-base";
 import Header from './header';
 import Footer from './footer';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios'
+
 
 function RapportSellOut() {
     const [startDate, setStartDate] = useState(new Date());
@@ -11,8 +13,53 @@ function RapportSellOut() {
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
+    const [references,setReferences]=React.useState([])
+    const [sellouts,setSellouts]=React.useState([])
+    const [sellRef,setSellRef]=React.useState([])
+    const [nbrDventes,setNbrDvents]=React.useState([])
+    const [daysBetweenDates, setDaysBetweenDates] = useState([]);
+
+
+    const port='192.168.1.26'
+
     console.log(startDate);
     console.log(new Date());
+
+/////////////////////////////////////Functions////////////////////////////////////////
+const Fetchallref=async()=>{
+    try{
+      const response=await axios.get("http://"+port+":3000/api/reference/references")
+      setReferences(response.data)
+    }catch (error) {
+        console.error('Error fetching :', error)
+      }
+    }
+const GetAllSellouts=async()=>{
+    try{
+        const response=await axios.get("http://"+port+":3000/api/sellout/sellouts")
+        setSellouts(response.data)
+    }catch (error) {
+        console.error('Error fetching :', error)
+      }
+}
+const GetRefSel=async()=>{
+    try{
+        const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
+        setSellRef(response.data)
+        console.log(response.data);
+    }catch (error) {
+        console.error('Error fetching :', error)
+      }
+}
+React.useEffect(()=>{
+    Fetchallref()
+    GetAllSellouts()
+    GetRefSel()
+    const daysArray = calculateDaysBetweenDates(startDate, endDate);
+    setDaysBetweenDates(daysArray);
+  },[startDate, endDate])
+/////////////////////////////////////////////////////////////////////////////////////
+
     const handleStartDateChange = (event, selectedDate) => {
         setShowStartDatePicker(false);
         setStartDate(selectedDate || startDate);
@@ -51,12 +98,81 @@ function RapportSellOut() {
             </View>
             )
     }
-    const data = [
-        { jourMois: "01/05", ventes: 100 },
-        { jourMois: "02/05", ventes: 120 },
-        { jourMois: "03/05", ventes: 90 },
-        // Ajoutez plus de données pour chaque jour au besoin
-    ];
+    const calculateDaysBetweenDates = (startDate, endDate) => {
+        const daysArray = [];
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
+            const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+            daysArray.push(formattedDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return daysArray;
+    };
+    const FetchNbrDV = (referenceId) => {
+        const nbrDVArray = daysBetweenDates.map(date => {
+            const sellout = sellouts.find(sellout => 
+                sellout.dateCr.substring(0, 5) === date && 
+                sellRef.some(elrefsel => 
+                    elrefsel.Reference_idReference === referenceId && 
+                    elrefsel.Sellout_idSellout === sellout.idSellout
+                )
+            );
+            return sellout ? sellout.nbrV : 0;
+        });
+        return nbrDVArray;
+    };
+    const FetchObjectif = (referenceId) => {
+        const sellout = sellRef.find(elrefsel => 
+            elrefsel.Reference_idReference === referenceId &&
+            sellouts.some(elsel => elrefsel.Sellout_idSellout === elsel.idSellout)
+        );
+    
+        if (sellout) {
+            const matchingSellout = sellouts.find(elsel => elsel.idSellout === sellout.Sellout_idSellout);
+            return matchingSellout ? matchingSellout.objectif : null;
+        }
+        return 0;
+    };
+    const fetchSalesByDate = (referenceId, date) => {
+        const selloutsByReference = sellRef.filter(elrefsel =>
+            elrefsel.Reference_idReference === referenceId
+        );
+        const selloutsIds = selloutsByReference.map(elrefsel => elrefsel.Sellout_idSellout);
+
+        const sales = sellouts.filter(elsel =>
+            selloutsIds.includes(elsel.idSellout) &&
+            elsel.dateCr.includes(date) // Vous devrez peut-être adapter cette condition en fonction du format de votre date
+        );
+
+        return sales.reduce((total, el) => total + el.nbrV, 0);
+    };
+    const fetchTotalSales = (referenceId) => {
+        let totalSales = 0;
+
+        daysBetweenDates.forEach(date => {
+            totalSales += fetchSalesByDate(referenceId, date);
+        });
+
+        return totalSales;
+    };
+    const calculatePercentage = (totalSales, objectif) => {
+        let percentage = 0;
+        if (objectif !== 0) {
+            percentage = ((totalSales / objectif) * 100).toFixed(2);
+        }
+        let color = '';
+        if (percentage >= 80) {
+            color = '#5cb85c'; // Vert si le pourcentage est supérieur ou égal à 80%
+        } else if (percentage >= 50 && percentage < 80) {
+            color = '#f0ad4e'; // Jaune si le pourcentage est entre 50% et 79.99%
+        } else {
+            color = '#d9534f'; // Rouge si le pourcentage est inférieur à 50%
+        }
+        return { percentage, color };
+    };
+   
     const Tableaux = () => {
         return (
             <ScrollView horizontal style={{ marginTop: 2 }}>
@@ -64,46 +180,50 @@ function RapportSellOut() {
                 {/* Première ligne */}
                 <View style={styles.row}>
                     <View style={styles.cell}><Text>Reference</Text></View>
-                    <View style={styles.cell3}><Text>Ventes</Text></View>
-                        {data.map((item, index) => (
+                    <View style={styles.cell5}><Text>Ventes</Text></View>
+                        {daysBetweenDates.map((item, index) => (
                         // Vérifie si l'élément actuel n'est pas le dernier
-                        index !== data.length - 1 && (
-                            <View key={index} style={styles.cell3}>
+                        index !== daysBetweenDates.length - 1 && (
+                            <View key={index} style={styles.cell5}>
                                 <Text></Text>
                             </View>
                             )
                          ))}
-                    <View style={styles.cell}><Text>Total</Text></View>
-                    <View style={styles.cell}><Text>Objectif</Text></View>
-                    <View style={styles.cell}><Text>%</Text></View>
+                    <View style={styles.cell3}><Text>Total</Text></View>
+                    <View style={styles.cell3}><Text>Objectif</Text></View>
+                    <View style={styles.cell3}><Text>%</Text></View>
                 </View>
 
                 {/* Deuxième ligne */}
                 <View style={styles.row}>
                     <View style={styles.cell}><Text>Jour\Mois</Text></View>
                     {/* Afficher les ventes pour chaque jour */}
-                    {data.map((item, index) => (
+                    {daysBetweenDates.map((item, index) => (
                         <View key={index} style={styles.cell}>
-                            <Text>{item.jourMois}</Text>
+                            <Text>{item}</Text>
                         </View>
                     ))}
-                      <View style={styles.cell}><Text>Total</Text></View>
-                    <View style={styles.cell}><Text>Objectif</Text></View>
-                    <View style={styles.cell}><Text>%</Text></View>
+                      <View style={styles.cell4}><Text></Text></View>
+                    <View style={styles.cell4}><Text></Text></View>
+                    <View style={styles.cell4}><Text></Text></View>
                 </View>
 
                 {/* Dernière ligne */}
+                {references.map(el=>(
                 <View style={styles.row}>
-                    <View style={styles.cell2}><Text style={styles.textcell2}>exmpReference</Text></View>
-                    {data.map((item, index) => (
-                        <View key={index} style={styles.cell1}>
-                            <Text>{item.ventes}</Text>
+                    <View style={styles.cell2}><Text style={styles.textcell2}>{el.Referencename}</Text></View>
+                    {FetchNbrDV(el.idReference).map((nbrDV, dateIndex) => (
+            <View key={dateIndex} style={styles.cell1}>
+                <Text>{nbrDV}</Text>
+            </View>
+        ))}
+                        <View style={styles.cell1}><Text>{fetchTotalSales(el.idReference)}</Text></View>
+                    <View style={styles.cell1}><Text>{FetchObjectif(el.idReference)}</Text></View>
+                    <View style={[styles.cell1, { backgroundColor: calculatePercentage(fetchTotalSales(el.idReference), FetchObjectif(el.idReference)).color }]}>
+                    <Text>{calculatePercentage(fetchTotalSales(el.idReference), FetchObjectif(el.idReference)).percentage}%</Text>
                         </View>
-                    ))}
-                        <View style={styles.cell1}><Text>Donnée 3</Text></View>
-                    <View style={styles.cell1}><Text>Donnée 3</Text></View>
-                    <View style={styles.cell1}><Text>Donnée 4</Text></View>
                 </View>
+                ))}
             </View>
         </ScrollView>
         );
@@ -191,11 +311,35 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FDC100', 
         borderWidth: 0.5,
-        borderColor: '#D0D3D4',
+        borderColor: 'black',
         maxWidth:90,
         minWidth:90
     },
     cell3: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderTopWidth: 0.5,  // Bordure seulement en haut
+        borderRightWidth:0.5,
+        borderLeftWidth:0.5,
+        borderColor: '#D0D3D4',
+        maxWidth:90,
+        minWidth:90
+    },
+    cell4: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: 0.5, 
+        borderLeftWidth:0.5,
+        borderRightWidth:0.5,
+        borderColor: '#D0D3D4',
+        maxWidth:90,
+        minWidth:90
+    },
+    cell5: {
         flex: 1,
         padding: 10,
         justifyContent: 'center',
