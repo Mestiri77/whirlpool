@@ -1,455 +1,307 @@
 import * as React from "react";
-import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
-import { Border, Color, FontSize, FontFamily } from "../GlobalStyles";
+import { View, StyleSheet, Image, Text } from "react-native";
 
-const InterfacesAdmin = () => {
+function MyComponent() {
   return (
-    <View style={styles.interfacesAdmin}>
-      <Image
-        style={[styles.path3948Icon, styles.groupIconLayout]}
-        contentFit="cover"
-        source={require("../assets/path3948.png")}
-      />
-      <View style={styles.parent}>
-        <Text style={styles.text}>Recent Activities</Text>
-        <View style={styles.ellipseParent}>
+    <View style={styles.view1}>
+      <View style={styles.view2}>
+        <Image
+          resizeMode="auto"
+          source={{
+            uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/d50063e53114387007d73e3669c39fb1faf929afb64a2f37326c26f3de8d835b?",
+          }}
+          style={styles.image1}
+        />
+        <Image
+          resizeMode="auto"
+          source={{
+            uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/b95533f3e535771d354c233f6acf7c047f00298593ed39be84ee4ff1e9c70c76?",
+          }}
+          style={styles.image2}
+        />
+      </View>
+      <View style={styles.view3}>
+        <View style={styles.view4}>
+          <View style={styles.view5}>
+            <Text>
+              Hi <Text style={styles.span}>👋</Text>,
+            </Text>
+          </View>
+          <View style={styles.view6}>
+            <Text>Admin</Text>
+          </View>
+        </View>
+        <View style={styles.view7}>
+          <View style={styles.view8}>
+            <View style={styles.view9}>
+              <Text>
+                Création de {"\n"}compte
+              </Text>
+            </View>
+            <Image
+              resizeMode="auto"
+              source={{
+                uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/9cfa723a438fddb86d9c2cb11a178689f17efba5ff98a1825a58a00fad7a9ca8?",
+              }}
+              style={styles.image3}
+            />
+          </View>
+          <View style={styles.view10}>
+            <View style={styles.view11}>
+              <Text>
+                Création de point de {"\n"}vente
+              </Text>
+            </View>
+            <Image
+              resizeMode="auto"
+              source={{
+                uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/e025b6fe43362b4f8f09159a51f121335f497eb2be23c3eb9814253ebe1ba3ad?",
+              }}
+              style={styles.image4}
+            />
+          </View>
+        </View>
+        <View style={styles.view12}>
+          <View style={styles.view13}>
+            <View style={styles.view14}>
+              <Text>
+                Création {"\n"}d’articles
+              </Text>
+            </View>
+            <Image
+              resizeMode="auto"
+              source={{
+                uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/ebb391935703f40d45cfbf35156a39dfcb77ec888c1261669c0d8803b4b820f4?",
+              }}
+              style={styles.image5}
+            />
+          </View>
+          <View style={styles.view15}>
+            <Text>
+              Consulteation
+              {"\n"}des {"\n"}rapports
+            </Text>
+          </View>
+        </View>
+        <View style={styles.view16}>
+          <Text>Recent Activities</Text>
+        </View>
+        <View style={styles.view17}>
+          <View style={styles.view18}>
+            <Image
+              resizeMode="auto"
+              source={{
+                uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/59707073450ee982d1215e75a42a5d6a566b3cc1ef741f3a332c9ba6f3a97de5?",
+              }}
+              style={styles.image6}
+            />
+            <View style={styles.view19}>
+              <Text>
+                Consulteation des {"\n"}rapports
+              </Text>
+            </View>
+          </View>
           <Image
-            style={styles.frameChild}
-            contentFit="cover"
-            source={require("../assets/ellipse-92.png")}
-          />
-          <Text style={styles.youHaveChecked}>{`Consulteation des 
-rapports`}</Text>
-          <Image
-            style={styles.frameItem}
-            contentFit="cover"
-            source={require("../assets/group-33537.png")}
+            resizeMode="auto"
+            source={{
+              uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/e238c05a9dd6fd93571f2252711baba5cab8cd221f8511dc90a4dea763b45216?",
+            }}
+            style={styles.image7}
           />
         </View>
-        <Image
-          style={[styles.groupIcon, styles.groupIconLayout]}
-          contentFit="cover"
-          source={require("../assets/group.png")}
-        />
       </View>
-      <View
-        style={[
-          styles.crationDarticlesWrapper,
-          styles.interfacesAdminItemShadowBox,
-        ]}
-      >
-        <Text style={[styles.crationDarticles, styles.crationClr]}>{`Création 
-d’articles`}</Text>
-      </View>
-      <Image
-        style={[styles.interfacesAdminChild, styles.groupIconLayout]}
-        contentFit="cover"
-        source={require("../assets/group-33587.png")}
-      />
-      <View
-        style={[styles.interfacesAdminInner, styles.mobinaSadatParentLayout]}
-      >
-        <View style={[styles.mobinaSadatParent, styles.text1Position]}>
-          <Text style={[styles.mobinaSadat, styles.text1Typo]}>Admin</Text>
-          <Text style={[styles.text1, styles.text1Typo]}>
-            <Text style={styles.hi}>{`Hi `}</Text>
-            <Text style={styles.text2}>{`👋 `}</Text>
-            <Text style={styles.hi}>,</Text>
-          </Text>
+      <View style={styles.view20}>
+        <View style={styles.view21}>
+          <Image
+            resizeMode="auto"
+            source={{
+              uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/625e5458a8e438a3af915c34f836967e91760f5fb90b860a4368a11ba74a28ec?",
+            }}
+            style={styles.image8}
+          />
+          <View style={styles.view22}>
+            <Text>Log out</Text>
+          </View>
         </View>
-      </View>
-      <View
-        style={[
-          styles.interfacesAdminItem,
-          styles.interfacesAdminItemShadowBox,
-        ]}
-      />
-      <Text
-        style={[styles.consulteationDesRapports, styles.crationClr]}
-      >{`Consulteation
-des 
-rapports`}</Text>
-      <Image
-        style={[styles.groupIcon1, styles.groupIconLayout]}
-        contentFit="cover"
-        source={require("../assets/group1.png")}
-      />
-      <View style={[styles.crationDeCompteWrapper, styles.frameViewShadowBox]}>
-        <Text
-          style={[styles.crationDarticles, styles.crationClr]}
-        >{`Création de 
-compte`}</Text>
-      </View>
-      <Image
-        style={styles.userProfileSignIconFrontS}
-        contentFit="cover"
-        source={require("../assets/userprofilesigniconfrontsidewithwhitebackgroundremovebgpreview-1.png")}
-      />
-      <View style={[styles.frameView, styles.frameViewShadowBox]} />
-      <Image
-        style={styles.dShopIllustrationFreePng1Icon}
-        contentFit="cover"
-        source={require("../assets/3dshopillustrationfreepng-1.png")}
-      />
-      <Text
-        style={[styles.crationDePoint, styles.text1Typo]}
-      >{`Création de point de 
-vente`}</Text>
-      <Image
-        style={styles.whirlpoolCorporation8986logoIcon}
-        contentFit="cover"
-        source={require("../assets/whirlpoolcorporation8986logowik-1.png")}
-      />
-      <Image
-        style={[styles.iconlycurvednotification, styles.groupIconLayout]}
-        contentFit="cover"
-        source={require("../assets/iconlycurvednotification.png")}
-      />
-      <Image
-        style={styles.ellipseIcon}
-        contentFit="cover"
-        source={require("../assets/ellipse-68.png")}
-      />
-      <View style={[styles.rectangleParent, styles.groupChildLayout]}>
-        <View style={[styles.groupChild, styles.groupChildLayout]} />
-        <View
-          style={[styles.iconsaxbrokenhome2, styles.icons8LogOut322Layout]}
-        />
-        <Text style={[styles.home, styles.homeTypo]}>Home</Text>
-        <Text style={[styles.logOut, styles.homeTypo]}>Log out</Text>
-        <Image
-          style={[styles.vectorIcon, styles.groupIconLayout]}
-          contentFit="cover"
-          source={require("../assets/vector.png")}
-        />
-        <Image
-          style={[styles.icons8LogOut322, styles.icons8LogOut322Layout]}
-          contentFit="cover"
-          source={require("../assets/icons8logout32-2.png")}
-        />
+        <View style={styles.view23}>
+          <Image
+            resizeMode="auto"
+            source={{
+              uri: "https://cdn.builder.io/api/v1/image/assets/TEMP/9ecad7895d4b8c4a6e516ba834105ed164cf7473de9b1b79a0e22d56e666271a?",
+            }}
+            style={styles.image9}
+          />
+          <View style={styles.view24}>
+            <Text>Home</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  groupIconLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    position: "absolute",
-    overflow: "hidden",
+  view1: {
+    borderRadius: 30,
+    backgroundColor: "#FFF",
+    maxWidth: 360,
+    paddingTop: 9,
+    flexDirection: "column",
+    alignItems: "stretch",
   },
-  interfacesAdminItemShadowBox: {
-    height: 133,
-    shadowOpacity: 1,
-    elevation: 16,
-    shadowRadius: 16,
-    shadowOffset: {
-      width: -0.5,
-      height: 2,
-    },
-    shadowColor: "rgba(79, 79, 79, 0.16)",
-    top: 279,
-    borderRadius: Border.br_3xs,
-    position: "absolute",
-    overflow: "hidden",
-    backgroundColor: Color.colorWhite,
+  view2: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  crationClr: {
-    color: Color.colorGray,
-    fontSize: FontSize.size_base,
+  image1: {
+    width: 130,
+    aspectRatio: 2.08,
   },
-  mobinaSadatParentLayout: {
-    height: 22,
-    width: 98,
-    position: "absolute",
-  },
-  text1Position: {
-    marginLeft: -49,
-    top: 0,
-    left: "50%",
-  },
-  text1Typo: {
-    fontFamily: FontFamily.nunitoBold,
-    textAlign: "left",
-    fontWeight: "700",
-    position: "absolute",
-  },
-  frameViewShadowBox: {
-    top: 123,
-    height: 133,
-    shadowOpacity: 1,
-    elevation: 16,
-    shadowRadius: 16,
-    shadowOffset: {
-      width: -0.5,
-      height: 2,
-    },
-    shadowColor: "rgba(79, 79, 79, 0.16)",
-    borderRadius: Border.br_3xs,
-    position: "absolute",
-    overflow: "hidden",
-    backgroundColor: Color.colorWhite,
-  },
-  groupChildLayout: {
-    height: 87,
-    width: 428,
-    position: "absolute",
-  },
-  icons8LogOut322Layout: {
-    height: 24,
+  image2: {
     width: 24,
-    position: "absolute",
+    aspectRatio: 1,
   },
-  homeTypo: {
-    textAlign: "center",
-    fontFamily: FontFamily.interRegular,
-    lineHeight: 17,
-    fontSize: FontSize.size_3xs,
-    top: 52,
-    color: Color.colorWhite,
-    position: "absolute",
+  view3: {
+    marginTop: 15,
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: 24,
   },
-  path3948Icon: {
-    height: "20.88%",
-    width: "50.61%",
-    top: "76.89%",
-    right: "136.89%",
-    bottom: "2.23%",
-    left: "-87.5%",
+  view4: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
   },
-  text: {
-    marginLeft: -156,
-    fontFamily: FontFamily.openSansBold,
-    textAlign: "left",
+  view5: {
+    color: "#FFCE38",
+    fontSize: 16,
+    fontFamily: "Nunito, sans-serif",
+  },
+  view6: {
+    color: "#263238",
+    fontSize: 14,
+    fontFamily: "Nunito, sans-serif",
+  },
+  view7: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 21,
+  },
+  view8: {
+    alignItems: "flex-start",
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    flexDirection: "column",
+    padding: 27,
+  },
+  view9: { fontFamily: "Nunito, sans-serif" },
+  image3: { width: 90, aspectRatio: 1.1 },
+  view10: {
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    flexDirection: "column",
+    padding: 28,
+  },
+  view11: {
+    fontFamily: "Nunito, sans-serif",
+    alignSelf: "flex-start",
+  },
+  image4: {
+    width: 78,
+    aspectRatio: 0.94,
+  },
+  view12: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 23,
+  },
+  view13: {
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    flexDirection: "column",
+    padding: 27,
+  },
+  view14: {
+    fontFamily: "Nunito, sans-serif",
+  },
+  image5: {
+    width: 49,
+    aspectRatio: 0.85,
+  },
+  view15: {
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    padding: "28px 16px 46px",
+  },
+  view16: {
+    color: "#263238",
+    alignSelf: "stretch",
+    marginTop: 36,
+    fontSize: 14,
+    fontFamily: "Open Sans, sans-serif",
     fontWeight: "700",
-    color: Color.colorDarkslategray,
-    fontSize: FontSize.size_sm,
-    top: 0,
-    left: "50%",
-    position: "absolute",
   },
-  frameChild: {
-    top: 20,
+  view17: {
+    borderRadius: 10,
+    backgroundColor: "#FFCC30",
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "20px 17px",
+    marginBottom: 20,
+  },
+  view18: { flexDirection: "row", alignItems: "center" },
+  image6: {
+    backgroundColor: "#FFF",
+    borderRadius: 32,
     width: 64,
     height: 64,
-    left: 16,
-    position: "absolute",
   },
-  youHaveChecked: {
-    marginLeft: -67,
-    width: 176,
-    height: 51,
-    color: Color.colorWhite,
-    fontFamily: FontFamily.nunitoExtraBold,
-    fontWeight: "800",
-    fontSize: FontSize.size_base,
-    top: 25,
-    textAlign: "left",
-    left: "50%",
-    position: "absolute",
+  view19: {
+    fontFamily: "Nunito, sans-serif",
+    marginLeft: 9,
   },
-  frameItem: {
-    top: 41,
-    left: 265,
+  image7: {
     width: 30,
-    height: 30,
-    position: "absolute",
+    aspectRatio: 1,
   },
-  ellipseParent: {
-    top: 35,
-    backgroundColor: "#ffcc30",
-    height: 104,
-    borderRadius: Border.br_3xs,
-    left: 0,
-    width: 312,
-    position: "absolute",
-    overflow: "hidden",
+  view20: {
+    backgroundColor: "#000",
+    alignItems: "flex-start",
+    padding: "24px 40px",
   },
-  groupIcon: {
-    height: "38.85%",
-    width: "14.1%",
-    top: "41.73%",
-    right: "78.85%",
-    bottom: "19.42%",
-    left: "7.05%",
+  view21: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  parent: {
-    marginLeft: -157,
-    top: 444,
-    height: 139,
-    width: 312,
-    left: "50%",
-    position: "absolute",
+  image8: {
+    width: 35,
+    aspectRatio: 1.45,
   },
-  crationDarticles: {
-    top: 24,
-    fontFamily: FontFamily.nunitoExtraBold,
-    fontWeight: "800",
-    color: Color.colorGray,
-    textAlign: "left",
-    position: "absolute",
-    left: 16,
+  view22: {
+    fontFamily: "Inter, sans-serif",
+    marginTop: 7,
   },
-  crationDarticlesWrapper: {
-    left: 25,
-    width: 143,
+  view23: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  interfacesAdminChild: {
-    height: "7.98%",
-    width: "13.53%",
-    top: "49.85%",
-    right: "80.86%",
-    bottom: "42.17%",
-    left: "5.61%",
+  image9: {
+    borderColor: "#FFF",
+    borderWidth: 2,
+    width: 26,
+    aspectRatio: 1.18,
   },
-  mobinaSadat: {
-    marginLeft: 6,
-    color: Color.colorDarkslategray,
-    top: 0,
-    fontFamily: FontFamily.nunitoBold,
-    fontSize: FontSize.size_sm,
-    left: "50%",
-  },
-  hi: {
-    fontSize: FontSize.size_base,
-  },
-  text2: {
-    fontSize: FontSize.size_sm,
-  },
-  text1: {
-    color: "#ffce38",
-    marginLeft: -49,
-    top: 0,
-    left: "50%",
-  },
-  mobinaSadatParent: {
-    height: 22,
-    width: 98,
-    position: "absolute",
-  },
-  interfacesAdminInner: {
-    marginLeft: -47,
-    top: 84,
-    left: "50%",
-  },
-  interfacesAdminItem: {
-    left: 184,
-    width: 138,
-  },
-  consulteationDesRapports: {
-    top: 303,
-    left: 200,
-    width: 107,
-    fontFamily: FontFamily.nunitoExtraBold,
-    fontWeight: "800",
-    color: Color.colorGray,
-    textAlign: "left",
-    position: "absolute",
-  },
-  groupIcon1: {
-    height: "14.44%",
-    width: "18.89%",
-    top: "44.53%",
-    right: "7.31%",
-    bottom: "41.03%",
-    left: "73.81%",
-  },
-  crationDeCompteWrapper: {
-    left: 20,
-    width: 143,
-  },
-  userProfileSignIconFrontS: {
-    marginLeft: -173,
-    top: 186,
-    width: 90,
-    height: 82,
-    left: "50%",
-    position: "absolute",
-  },
-  frameView: {
-    left: 179,
-    width: 138,
-  },
-  dShopIllustrationFreePng1Icon: {
-    top: 185,
-    left: 257,
-    width: 78,
-    height: 83,
-    position: "absolute",
-  },
-  crationDePoint: {
-    top: 147,
-    left: 195,
-    width: 84,
-    color: Color.colorGray,
-    fontSize: FontSize.size_base,
-  },
-  whirlpoolCorporation8986logoIcon: {
-    top: 9,
-    left: 5,
-    width: 130,
-    height: 63,
-    position: "absolute",
-  },
-  iconlycurvednotification: {
-    height: "3.3%",
-    width: "6.67%",
-    top: "3.44%",
-    right: "5.56%",
-    bottom: "93.26%",
-    left: "87.78%",
-  },
-  ellipseIcon: {
-    left: 330,
-    width: 6,
-    height: 6,
-    top: 26,
-    position: "absolute",
-  },
-  groupChild: {
-    backgroundColor: Color.colorBlack,
-    left: 0,
-    width: 428,
-    top: 0,
-  },
-  iconsaxbrokenhome2: {
-    left: 100,
-    top: 25,
-    width: 24,
-    overflow: "hidden",
-  },
-  home: {
-    left: 320,
-  },
-  logOut: {
-    left: 65,
-  },
-  vectorIcon: {
-    height: "22.99%",
-    width: "4.67%",
-    top: "32.18%",
-    right: "19.63%",
-    bottom: "44.83%",
-    left: "75.7%",
-  },
-  icons8LogOut322: {
-    left: 71,
-    top: 26,
-  },
-  rectangleParent: {
-    top: 640,
-    left: -30,
-  },
-  interfacesAdmin: {
-    borderRadius: Border.br_11xl,
-    flex: 1,
-    width: "100%",
-    height: 727,
-    overflow: "hidden",
-    backgroundColor: Color.colorWhite,
+  view24: {
+    fontFamily: "Inter, sans-serif",
+    marginTop: 8,
   },
 });
 
-export default InterfacesAdmin;
+export default MyComponent;

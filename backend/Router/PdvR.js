@@ -10,5 +10,9 @@ router.put('/pdvs/:id', pdvController.updatePDV);
 router.delete('/pdvs/:id', pdvController.deletePDV);
 router.get('/pdvs/name',pdvController.getnamepdv )
 router.get('/namepdv',pdvController.getOnePDV)
+router.get('/getId/:pdvname', pdvController.getPDVIdByName);
+
+
+
 
 module.exports = router;
