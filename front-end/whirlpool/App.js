@@ -19,7 +19,7 @@ import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRappor
 export default function App() {
   return (
     <View style={styles.container}>
-      <RapportSellOut/>
+      <RapportExpo/>
       <StatusBar style="auto" />
     </View>
   );
