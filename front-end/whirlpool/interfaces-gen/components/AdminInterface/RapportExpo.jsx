@@ -92,14 +92,14 @@ const CountTaux = (total, partie) => {
 }
  const TotalExpoGlob=()=>{
   let total=0
-  {categ && categ.map(el => (
+  {categ.map(el => (
     total+=CountSameCateg(el.idCategory)
     ))}
     return total
  }
  const TotalExpoWhirl=()=>{
   let total=0
-  {categ.map(el => (
+  { categ.map(el => (
     total+=Findwhirlpool(el.idCategory)
     ))}
     return total
