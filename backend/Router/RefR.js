@@ -9,7 +9,7 @@ router.get('/references/:id', referenceController.getReferenceById);
 router.put('/references/:id', referenceController.updateReference);
 router.delete('/references/:id', referenceController.deleteReference);
 //////////////////////////
-router.get('/references/cat',referenceController.getidcategory)
+router.get('/reference/cat',referenceController.getidcategory)
 router.get('/references/marque',referenceController.getidmarque)
 
 module.exports = router;
