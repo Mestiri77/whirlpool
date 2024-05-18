@@ -108,6 +108,30 @@ const getnamepdv = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+async function getPDVIdByName(req, res) {
+  const pdvname = req.params.pdvname || req.body.pdvname;
+
+  if (!pdvname) {
+    return res.status(400).send({ error: 'pdvname parameter is required' });
+  }
+
+  try {
+    console.log('pdvname:', pdvname); // Debugging statement
+
+    const pdv = await PDV.findOne({
+      where: { pdvname: pdvname }
+    });
+
+    if (!pdv) {
+      return res.status(404).send({ error: 'PDV not found' });
+    }
+
+    return res.status(200).send(pdv);
+  } catch (error) {
+    console.error('Database query failed:', error);
+    return res.status(500).send({ error: 'Internal server error' });
+  }
+}
 
 module.exports = {
   createPDV,
@@ -116,5 +140,6 @@ module.exports = {
   updatePDV,
   deletePDV,
   getnamepdv,
-  getOnePDV
+  getOnePDV,
+  getPDVIdByName
 };

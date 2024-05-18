@@ -2,6 +2,8 @@ import * as React from "react";
 import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
 import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Link } from "native-base";
+
 import axios from 'axios';
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
@@ -36,11 +38,13 @@ return(
               style={styles.image1}
             />
          <ScrollView>
-         <RowItem text="Rapport Exposition" settruc2={""} />
-         <RowItem text="Rapport Price Map" settruc2={""} />
-         <RowItem text="Rapport Sell-Out" settruc2={""} />
-         <RowItem text="Rapport De Présence" settruc2={""} />
-         <RowItem text="Rapport Log" settruc2={""} />
+         <Link to='/RapportExpo'> 
+         <RowItem text="Rapport Exposition" settruc2={""} /></Link>
+         <Link to='./RapportPriceMap'> <RowItem text="Rapport Price Map" settruc2={""} /></Link>
+<Link to='/RapportsSellOut'> <RowItem text="Rapport Sell-Out" settruc2={""} /></Link>
+        <Link to='/RapportDePresence'><RowItem text="Rapport De Présence" settruc2={""} /></Link>
+         <Link to='/RapportLog'><RowItem text="Rapport Log" settruc2={""} /></Link>
+         
           </ScrollView>
           </View>
     

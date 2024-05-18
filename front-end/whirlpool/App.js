@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Login from './interfaces-gen/components/login'
+
+// import Login from './interfaces-gen/components/login'
 import Creationpdv from '../whirlpool/interfaces-gen/components/AdminInterface/creationpdv'
 import CreationArt from '../whirlpool/interfaces-gen/components/AdminInterface/creationdArticle'
 import ConsultRapports from '../whirlpool/interfaces-gen/components/AdminInterface/ConsultationDesRapports'
