@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
+import { useNavigation } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios'
 
 
 function RapportExpo() {
+  const navigation = useNavigation();
+
+
   
   const [load,setLoad]=React.useState(false)
 
@@ -147,7 +151,7 @@ React.useEffect(()=>{
     <View style={styles.column}>
     <View style={styles.cell}><Text>Expo Globale</Text></View>
     {categ && categ.map(el => (
-      <TouchableOpacity>
+      <TouchableOpacity   onPress={() => navigation.navigate('RapportExpoDet', { propKey: 'propValue' })}>
       <View style={styles.cell2}>
       <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
       </View >
