@@ -97,7 +97,6 @@ const getidmarque = async (req, res) => {
 };
 const getidcategory = async (req, res) => {
     const name = req.body;
-
     try {
         const reference = await Reference.findOne({
             include: [{

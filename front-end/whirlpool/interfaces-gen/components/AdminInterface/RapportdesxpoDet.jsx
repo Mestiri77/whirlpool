@@ -1,45 +1,45 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Button, PermissionsAndroid, ScrollView, LogBox, TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
 import Header from './header'
 import Footer from './footer'
+import { useNavigation } from '@react-navigation/native';
 
 function RapportExpodet() {
- 
+  const navigation = useNavigation();
 
   return (
     <NativeBaseProvider>
       <View style={styles.view1}>
-          <Header />  
-        <ScrollView style={{marginTop:-350}}>
+        <Header />
+        <ScrollView style={{ marginTop: -350 }}>
           <View>
             <View>
               <Text style={styles.textexpo}>Famille de produit</Text>
             </View>
-    <View style={styles.container}>
-      {/* Première ligne */}
-      <View style={styles.row}>
-        <View style={styles.cell}><Text>Marques</Text></View>
-        <View style={styles.cell}><Text>Référence</Text></View>
-        <View style={styles.cell}><Text>Prix</Text></View>
-        <View style={styles.cell}><Text>:</Text></View>
-      </View>
+            <View style={styles.container}>
+              {/* Première ligne */}
+              <View style={styles.row}>
+                <View style={styles.cell}><Text>Marques</Text></View>
+                <View style={styles.cell}><Text>Référence</Text></View>
+                <View style={styles.cell}><Text>Prix</Text></View>
+                <View style={styles.cell}><Text>:</Text></View>
+              </View>
 
-      {/* Deuxième ligne */}
-      <View style={styles.row}>
-        <View style={styles.cell1}><Text>Donnée 1</Text></View>
-        <View style={styles.cell1}><Text>Donnée 2</Text></View>
-        <View style={styles.cell1}><Text>Donnée 3</Text></View>
-        <TouchableOpacity>
-        <View style={styles.cell2}><Text style={styles.textcell2}>Modifer</Text></View>
-        </TouchableOpacity>
-      </View>
-    </View>
-   
-    </View>
+              {/* Deuxième ligne */}
+              <View style={styles.row}>
+                <View style={styles.cell1}><Text>Donnée 1</Text></View>
+                <View style={styles.cell1}><Text>Donnée 2</Text></View>
+                <View style={styles.cell1}><Text>Donnée 3</Text></View>
+                <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { someProp: 'someValue' })}>
+                  <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         </ScrollView>
       </View>
-        <Footer/>
+      <Footer />
     </NativeBaseProvider>
   );
 }
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  textexpo:{
+  textexpo: {
     fontSize: 15,
     fontWeight: '500',
   },
@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 0.5, 
-    borderColor: 'D0D3D4',
-    marginTop:5 
+    borderWidth: 0.5,
+    borderColor: '#D0D3D4',
+    marginTop: 5,
   },
   row: {
     flexDirection: 'row',
@@ -72,25 +72,25 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 0.5, 
-    borderColor: '#D0D3D4', 
+    borderWidth: 0.5,
+    borderColor: '#D0D3D4',
   },
   cell1: {
     flex: 1,
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#D0D3D4', // Background color of the button
-    borderWidth: 0.5, 
-    borderColor: '#D0D3D4', 
+    backgroundColor: '#D0D3D4',
+    borderWidth: 0.5,
+    borderColor: '#D0D3D4',
   },
-  cell2:{
+  cell2: {
     flex: 1,
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FDC100', // Background color of the button
-    borderWidth: 0.5, 
+    backgroundColor: '#FDC100',
+    borderWidth: 0.5,
     borderColor: '#D0D3D4',
   },
   totalRow: {
@@ -101,21 +101,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  textcell2:{
-    color: 'white', // Text color
+  textcell2: {
+    color: 'white',
   },
   btns: {
-    backgroundColor: '#FDC100', // Background color of the button
+    backgroundColor: '#FDC100',
     padding: 10,
     borderRadius: 5,
-    width:150,
-    marginTop:"5%",
+    width: 150,
+    marginTop: "5%",
     alignItems: 'center',
   },
   btnText: {
-    color: 'white', // Text color
+    color: 'white',
     fontSize: 16,
-    textAlign:"center"
+    textAlign: "center"
   },
 });
 

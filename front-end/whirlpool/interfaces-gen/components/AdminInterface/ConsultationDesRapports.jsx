@@ -8,11 +8,11 @@ const leftimage = require('../../../assets/icons8-right-50.png');
 function ConsultationDesRapports() {
     const navigation = useNavigation();
 
-    function RowItem({ text, navigateTo }) {
+    function RowItem({ text, navigateTo, params }) {
         return (
             <View style={styles.row}>
                 <Text style={styles.text}>{text}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate(navigateTo)}>
+                <TouchableOpacity onPress={() => navigation.navigate(navigateTo, params)}>
                     <Image
                         resizeMode="contain"
                         source={leftimage}
@@ -38,8 +38,8 @@ function ConsultationDesRapports() {
                         <RowItem text="Rapport Exposition" navigateTo="RapportExpo" />
                         <RowItem text="Rapport Price Map" navigateTo="RapportPriceMap" />
                         <RowItem text="Rapport Sell-Out" navigateTo="RapportSellOut" />
-                        <RowItem text="Rapport De Présence" navigateTo="PopupRapport" />
-                        <RowItem text="Rapport Log" navigateTo="RapportLog" />
+                        <RowItem text="Rapport De Présence" navigateTo="PopupRapport" params={{ someProp: 'presence' }} />
+                        <RowItem text="Rapport Log" navigateTo="PopupRapport" params={{ someProp: 'log' }} />
                     </ScrollView>
                 </View>
             </View>
