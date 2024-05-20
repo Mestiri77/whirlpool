@@ -35,7 +35,7 @@ const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
 const [oneref,setOneref]=React.useState([])
 const [oneArticle,setOneArticle]=React.useState([])
 
-const port='192.168.1.28'
+const port='192.168.1.26'
 
 const dataArticle={
   coloeur:couleur,
