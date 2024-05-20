@@ -18,10 +18,14 @@ import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRappor
 import CreationRapportExpo from './interfaces-gen/components/animatriceInterface/CreationRapportExpo'
 import PopupCheckBox from './interfaces-gen/components/animatriceInterface/PopupCheckBox'
 import  CreationNRapport from './interfaces-gen/components/animatriceInterface/CreationNRapport'
+import ValidRExpo from './interfaces-gen/components/animatriceInterface/ValidRExpo'
+import CreationRapportSO from './interfaces-gen/components/animatriceInterface/CreationRapportSO'
+
+
 export default function App() {
   return (
     <View style={styles.container}>
-      <  CreationNRapport/>
+      <  CreationRapportSO/>
       <StatusBar style="auto" />
     </View>
   );
