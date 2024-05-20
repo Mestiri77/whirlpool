@@ -17,7 +17,7 @@ import CreationCompte from './interfaces-gen/components/AdminInterface/creationC
 import PopupRapport from './interfaces-gen/components/AdminInterface/PopupRapport'
 import CreationRapportExpo from './interfaces-gen/components/animatriceInterface/CreationRapportExpo'
 import PopupCheckBox from './interfaces-gen/components/animatriceInterface/PopupCheckBox'
-import  CreationNRapport from './interfaces-gen/components/animatriceInterface/CreationNRapport'
+import CreationNRapport from './interfaces-gen/components/animatriceInterface/CreationNRapport'
 import ValidRExpo from './interfaces-gen/components/animatriceInterface/ValidRExpo'
 import CreationRapportSO from './interfaces-gen/components/animatriceInterface/CreationRapportSO'
 
