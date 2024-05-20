@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
+import { useNavigation } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 
 function RapportExpo() {
- 
+  const navigation = useNavigation();
+
 
   return (
     <NativeBaseProvider>
@@ -31,11 +33,13 @@ function RapportExpo() {
       {/* Deuxième ligne */}
       <View style={styles.row}>
         <View style={styles.cell1}><Text>Donnée 1</Text></View>
-          <TouchableOpacity>
-        <View style={styles.cell2}>
-          <Text style={styles.textcell2}>Donnée 2</Text>
-          </View>
-          </TouchableOpacity> 
+        <TouchableOpacity
+      onPress={() => navigation.navigate('RapportExpoDet', { propKey: 'propValue' })}
+    >
+      <View style={styles.cell2}>
+        <Text style={styles.textcell2}>Donnée 2</Text>
+      </View>
+    </TouchableOpacity>
         <View style={styles.cell1}><Text>Donnée 3</Text></View>
         <View style={styles.cell1}><Text>Donnée 4</Text></View>
       </View>

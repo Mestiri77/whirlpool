@@ -3,11 +3,14 @@ import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,T
 import { NativeBaseProvider, Center,Box,Select,CheckIcon} from "native-base";
 import Header from './header'
 import Footer from './footer'
-
+import { useNavigation } from '@react-navigation/native';
 function RapportPriceMap(){
 
     const [pdv,setPdv]=React.useState('')
     const [pdvsel,setPdvsel]=React.useState('')
+
+
+    const navigation = useNavigation();
 
     const Example = ({text}) => {
 
@@ -42,7 +45,7 @@ return(
         <View style={styles.view1}>
         <Header />  
         <Center flex={8}>
-            <Text style={{fontSize:18,fontWeight:600,marginBottom:30}}> Rapports Price Map : </Text>
+            <Text style={{fontSize:18,fontWeight:600,marginBottom:30} }> Rapports Price Map : </Text>
             <View >
         <Example text={"Date :"}/>
         <Example text={"Point de Vente :"}/>

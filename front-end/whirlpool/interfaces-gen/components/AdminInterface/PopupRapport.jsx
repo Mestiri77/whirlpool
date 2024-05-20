@@ -2,10 +2,14 @@ import * as React from "react";
 import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
 import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
 
 function PopupRapport(){
     const [date,setDate]=React.useState(new Date())
     const [pdv,setPdv]=React.useState("")
+
+
+    const navigation = useNavigation();
 
     const Example = ({text ,setoption,option}) => {
 
@@ -50,9 +54,13 @@ function PopupRapport(){
             <ExampleInput text={'Date :'}/>
                 <Example text={'Point De Vente'} setoption={setPdv} option={pdv} />
             <Center ml={"18%"} mt={10}>
-                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
-                <Text style={styles.btnText}>Verifier</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+  onPress={() => navigation.navigate("RapportDePresence", { someProp: 'someValue' })}
+  style={styles.btns}
+>
+  <Text style={styles.btnText}>Verifier</Text>
+</TouchableOpacity>
+
                 </Center>
             </View>
         </NativeBaseProvider>
