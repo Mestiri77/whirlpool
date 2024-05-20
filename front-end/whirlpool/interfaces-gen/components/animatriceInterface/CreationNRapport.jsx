@@ -38,9 +38,9 @@ function CreationNRapport() {
   const RenderInput = (placeholder) => {
     if(placeholder=="Capacité"){
         return(
-            <Center mt={3} ml={'29%'}>
+            <Center mt={3} ml={'26%'}>
         <Input
-          w="265%"
+          w="290%"
           InputLeftElement={
             <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
           }
@@ -53,7 +53,7 @@ function CreationNRapport() {
     return (
       <Center mt={3}>
         <Input
-          w="65%"
+          w="75%"
           InputLeftElement={
             <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
           }
@@ -67,7 +67,7 @@ function CreationNRapport() {
   const Example = ({ text }) => {
     if(text=="unités"){
       return  <Center>
-        <Box maxW="150" mt={3}mr={16}>
+        <Box maxW="150" mt={3}mr={12}>
           <Select
             selectedValue={Ref}
             minWidth="100"
@@ -89,7 +89,7 @@ function CreationNRapport() {
             <Box maxW="400" mt={3}>
               <Select
                 selectedValue={Ref}
-                minWidth="240"
+                minWidth="280"
                 accessibilityLabel={text}
                 placeholder={text}
                 onValueChange={(itemValue) => setRef(itemValue)}
@@ -109,7 +109,7 @@ function CreationNRapport() {
       <Header />
       <View style={styles.container}>
         <RowItem text="Créer un nouveau rapport" settruc2={""} />
-        <ScrollView style={{marginTop:50}}>
+        <ScrollView style={{marginTop:40}}>
         {RenderInput("Marque")}
         <Example text={'Categories'} />
         <Example text={'Références'} />
@@ -121,7 +121,7 @@ function CreationNRapport() {
         <Example text={'Couleur'} />
         </ScrollView>
         <TouchableOpacity onPress={() => {}} style={styles.btns}>
-          <Text style={styles.btnText}>Exporter</Text>
+          <Text style={styles.btnText}>Valider</Text>
         </TouchableOpacity>
       </View>
       <Footer />
