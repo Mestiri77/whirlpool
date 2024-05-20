@@ -62,7 +62,7 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { name,lastname, email, password, role } = req.body;
+    const { name,lastname, email, password, role,PDV_idPDV } = req.body;
 
     console.log('Received registration request:', { name, email, role });
 
@@ -73,6 +73,7 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      PDV_idPDV
     });
 
     console.log('User created:', newUser);

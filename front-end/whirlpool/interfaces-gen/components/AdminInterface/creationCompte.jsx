@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Alert, View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { CheckIcon, Input, Center, Box, NativeBaseProvider, Select } from "native-base";
+import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import Footer from './footer';
 
@@ -11,12 +12,48 @@ function CreationCompte() {
   const [mdp, setMdp] = React.useState("");
   const [role, setRole] = React.useState("");
   const [pdv, setPdv] = React.useState("");
-  const [pdvId, setPdvId] = React.useState("");
+  const [pdvs, setPdvs] = React.useState("");
+  const [idpdvs, setIdpdvs] = React.useState(null);
   const [nomspdv, setNomspdv] = React.useState([]);
   const [load, setLoad] = React.useState(false);
-  const port = '192.168.1.6';
 
-  const roles = ["manager", "animatrice"];
+  const port = '192.168.1.26';
+
+  const roles = ["manager", "animatrice","admin"];
+  const datauser={ 
+    name:nom,
+    lastname:prenom,
+    email:email,
+    password:mdp,
+    role:role,
+    PDV_idPDV:idpdvs,
+     }
+/////////////////////////////Functions///////////////////////////
+const CreatUser=async(data)=>{
+  try{
+      axios.post("http://"+port+":3000/api/users/creatuser",data)
+      console.log("adedd");
+  }catch (error) {
+    console.error('Error Update :', error)
+  }
+}
+const fetchPdvsname = async () => {
+  try {
+    const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
+    const pdvNames = response.data.map(pdv => pdv.pdvname);
+    setPdvs(response.data)
+    setNomspdv(pdvNames);
+  } catch (error) {
+    console.error('Error fetching PDVs:', error)
+  }
+}
+
+React.useEffect(() => {
+  fetchPdvsname()
+}, []);
+////////////////////////////////////////////////////////////////
+
+
 
   const Example = ({ text, setoption, option, options }) => {
     return (
@@ -46,89 +83,66 @@ function CreationCompte() {
     );
   };
 
-  const ExampleInput = ({ text, state, setState }) => {
+  const RenderInput = (text,setState) => {
+
     return (
-      <Box alignItems="center" mt={5}>
-        <Input
-          mx="0"
-          placeholder={text}
-          w="100%"
-          value={state}
-          onChangeText={(e) => setState(e)}
-        />
-      </Box>
+      <Stack space={4} w="100%" alignItems="center" mt="5%">
+            <Input 
+              w={{
+                base: "100%",
+                md: "25%"
+              }} 
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+              } 
+              placeholder={text}
+              onChangeText={item=>setState(item)}
+            />
+           
+          </Stack>
     );
   };
 
-  const fetchPdvsname = async () => {
-    try {
-      const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
-      if (response.data && Array.isArray(response.data)) {
-        const pdvNames = response.data.map((pdv) => pdv.pdvname);
-        setNomspdv(pdvNames);
+  const findId = (data, name, dataname, idname) => {
+    return new Promise((resolve, reject) => {
+      const element = data.find(el => el[dataname] === name);
+      if (element) {
+        resolve(element[idname]);
       } else {
-        console.error('Invalid response format:', response.data);
+        reject(`No element found with ${dataname} = ${name}`);
       }
-    } catch (error) {
-      console.error('Error fetching PDVs:', error);
-      Alert.alert("Error", "Failed to fetch PDVs. Please check your network connection.");
-    }
+    });
   };
 
-  const fetchId = async (pdvName) => {
+  const handleCreation = async () => {
     try {
-      const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdvName}`);
-      setPdvId(response.data.idPDV); 
+      if (role === "animatrice") {
+        const pdvId = await findId(pdvs, pdv, 'pdvname', 'idPDV');
+        setIdpdvs(pdvId);
+        datauser.PDV_idPDV = pdvId;
+      }
+      await CreatUser(datauser);
     } catch (error) {
-      console.error('Error fetching PDV ID:', error);
-      Alert.alert("Error", "Failed to fetch PDV ID. Please try again.");
+      console.error('Error in handleCreation:', error);
     }
   };
 
-  const handleCreateAccount = async () => {
-    if (!nom || !prenom || !email || !mdp || !role || !pdv) {
-      Alert.alert("Error", "All fields are required!");
-      return;
-    }
-
-    const user = {
-      nom,
-      prenom,
-      email,
-      mdp,
-      role,
-      PDV_idPDV: pdvId
-    };
-
-    try {
-      await axios.post(`http://${port}:3000/auth/registerAnim`, user);
-      setLoad(!load);
-      Alert.alert("Success", "Account created successfully!");
-    } catch (error) {
-      console.error("Error creating account:", error);
-      Alert.alert("Error", "Failed to create account. Please check your input and try again.");
-    }
-  };
-
-  React.useEffect(() => {
-    fetchPdvsname();
-  }, [load]);
 
   return (
     <NativeBaseProvider>
       <View style={styles.view1}>
         <Center flex={1} px="0">
           <Text style={styles.text1}>Creation De Compte</Text>
-          <ExampleInput text={"Nom :"} state={nom} setState={setNom} />
-          <ExampleInput text={"Prenom :"} state={prenom} setState={setPrenom} />
-          <ExampleInput text={"Email :"} state={email} setState={setEmail} />
-          <ExampleInput text={"Mot De Passe :"} state={mdp} setState={setMdp} />
+          {RenderInput("Nom :",setNom)}
+          {RenderInput("Prenom :",setPrenom)}
+          {RenderInput("Email :",setEmail)}
+          {RenderInput("Mot De Passe :",setMdp)}
           <Example text={'Role :'} setoption={setRole} option={role} options={roles} />
-          <Example text={'Point de vente :'} setoption={setPdv} option={pdv} options={nomspdv} />
+          {role=="animatrice"&&<Example text={'Point de Vente'} setoption={setPdv} option={pdv} options={nomspdv} />}
         </Center>
       </View>
       <Center>
-        <TouchableOpacity onPress={handleCreateAccount} style={styles.btns}>
+        <TouchableOpacity onPress={()=>handleCreation()} style={styles.btns}>
           <Text style={styles.btnText}>créé</Text>
         </TouchableOpacity>
       </Center>
