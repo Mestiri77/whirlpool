@@ -30,11 +30,11 @@ export default function App() {
     <View style={styles.container}>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <Stack.Navigator /*initialRouteName="Login"*/>
-          {/* <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Creationpdv" component={Creationpdv} /> */}
-          {/* <Stack.Screen name="CreationArt" component={CreationArt} /> */}
-          {/* <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Creationpdv" component={Creationpdv} />
+          <Stack.Screen name="CreationArt" component={CreationArt} />
+          <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" component={RapportExpo} />
           <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
           <Stack.Screen name="Modifpopup" component={Modifpopup} />
@@ -42,7 +42,7 @@ export default function App() {
           <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
-          <Stack.Screen name="RapportLog" component={RapportLog} /> */}
+          <Stack.Screen name="RapportLog" component={RapportLog} />
           <Stack.Screen name="CreationCompte" component={CreationCompte} />
           <Stack.Screen name="PopupRapport" component={PopupRapport} />
           <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
