@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity,ScrollView  } from "react-native";
+import Header from './header';
 import Footer from './footer'
 const image01=require('../../../assets/image1+.png')
 const image02=require('../../../assets/image2.png')
@@ -9,7 +10,7 @@ const image05=require('../../../assets/fleche.png')
 
 
 
-function WelcomeAdmin() {
+function WelcomeAnime() {
 
   const [load,setLoad]=React.useState(true)
 
@@ -24,52 +25,26 @@ function WelcomeAdmin() {
   }, [load]);
 
     return (
-      <>
+        <>
         <ScrollView >
       <View style={styles.view1}>
       <View style={styles.view2}>
         <View style={styles.view3}>
-          <Text style={styles.textEmoji}>Hi 👋,</Text>
+          <Text style={styles.textEmoji}> Bonjour 👋,</Text>
         </View>
         <View style={styles.view4}>
-          <Text style={styles.textAdmin}>Admin</Text>
+          <Text style={styles.textAdmin}>Animatrice</Text>
         </View>
-      </View>
-      <View style={styles.view5}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de compte', link: 'link_to_creation_compte',image:image01  })}>
-        <View style={styles.view6}>
-          <View style={styles.view7}>
-            <Text style={styles.textCreation}>Création de compte</Text>
-          </View>
-          <Image
-            resizeMode="contain"
-            source={image01}
-            style={styles.image1}
-          />
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de point de vente', link: 'link_to_creation_point_vente',image:image02 })}>
-        <View style={styles.view8}>
-          <View style={styles.view9}>
-            <Text style={styles.textCreation}>Création de point de vente</Text>
-          </View>
-          <Image
-            resizeMode="contain"
-            source={image02}
-            style={styles.image2}
-          />
-        </View>
-        </TouchableOpacity>
       </View>
       <View style={styles.view10}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image04 })}>
+        <TouchableOpacity onPress={() => hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image03 })}>
         <View style={styles.view11}>
           <View style={styles.view12}>
-            <Text style={styles.textCreation}>Création d'articles</Text>
+            <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
           </View>
           <Image
             resizeMode="contain"
-            source={image04}
+            source={image03}
             style={styles.image3}
           />
         </View>
@@ -78,7 +53,7 @@ function WelcomeAdmin() {
         <View style={styles.view13}>
         <View style={styles.view12}>
             <Text style={styles.textCreation}>
-            Consultation des rapports
+            Mes Rapports Exposition
             </Text>
         </View>
         <Image
@@ -105,8 +80,8 @@ function WelcomeAdmin() {
       ))}
     </View>
       </ScrollView>
-      <Footer/>
-      </>
+        <Footer/>
+        </>
   );
 }
 
@@ -217,11 +192,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   image3: {
-    width: 68,
-    height: 68,
+    width: 88,
+    height: 88,
     position:"absolute",
-    top:90,
-    left:-5
+    top:80,
+    left:-30
   },
   image03:{
     width: 88,
@@ -285,4 +260,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WelcomeAdmin;
+export default WelcomeAnime;

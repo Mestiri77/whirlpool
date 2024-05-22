@@ -23,6 +23,7 @@ import CreationNRapport from './interfaces-gen/components/animatriceInterface/Cr
 import ValidRExpo from './interfaces-gen/components/animatriceInterface/ValidRExpo';
 import CreationRapportSO from './interfaces-gen/components/animatriceInterface/CreationRapportSO';
 import WelcomeAdmin from './interfaces-gen/components/AdminInterface/WelcomeAdmin'
+import WelcomeAnime from './interfaces-gen/components/animatriceInterface/WelcomeAnime'
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -51,7 +52,9 @@ export default function App() {
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> */}
-          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
+          {/* <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
+          <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
+
 
         </Stack.Navigator>
       </NavigationContainer>
