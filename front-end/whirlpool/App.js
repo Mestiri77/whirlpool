@@ -22,6 +22,9 @@ import PopupCheckBox from './interfaces-gen/components/animatriceInterface/Popup
 import CreationNRapport from './interfaces-gen/components/animatriceInterface/CreationNRapport';
 import ValidRExpo from './interfaces-gen/components/animatriceInterface/ValidRExpo';
 import CreationRapportSO from './interfaces-gen/components/animatriceInterface/CreationRapportSO';
+import WelcomeAdmin from './interfaces-gen/components/AdminInterface/WelcomeAdmin'
+import WelcomeAnime from './interfaces-gen/components/animatriceInterface/WelcomeAnime'
+import WelcomeManager from './interfaces-gen/components/managerInterface/WelcomeManger'
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -43,13 +46,18 @@ export default function App() {
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
           <Stack.Screen name="RapportLog" component={RapportLog} /> */}
-          <Stack.Screen name="CreationCompte" component={CreationCompte} />
+          {/* <Stack.Screen name="CreationCompte" component={CreationCompte} />
           <Stack.Screen name="PopupRapport" component={PopupRapport} />
           <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
           <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
-          <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} />
+          <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> */}
+          {/* <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
+          {/* <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} /> */}
+          <Stack.Screen name="WelcomeAnime" component={WelcomeManager} />
+
+
         </Stack.Navigator>
       </NavigationContainer>
     </View>
