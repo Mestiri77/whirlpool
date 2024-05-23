@@ -54,8 +54,8 @@ export default function App() {
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> */}
           {/* <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
-          {/* <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} /> */}
-          <Stack.Screen name="WelcomeAnime" component={WelcomeManager} />
+          <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
+          {/* <Stack.Screen name="WelcomeAnime" component={WelcomeManager} /> */}
 
 
         </Stack.Navigator>

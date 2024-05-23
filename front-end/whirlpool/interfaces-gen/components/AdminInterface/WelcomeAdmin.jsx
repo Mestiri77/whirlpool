@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   view2: {
     alignItems: "stretch",
     marginBottom: 15,
+    flexDirection:"row"
   },
   view3: {
     marginBottom: 5,
