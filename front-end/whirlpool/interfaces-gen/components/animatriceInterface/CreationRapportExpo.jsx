@@ -2,21 +2,22 @@ import * as React from "react";
 import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
 import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Link } from "native-base";
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 
 function CreationRapportExpo(){
+  const navigation = useNavigation();
 
     function RowItem({ text,settruc2}) {
         if(settruc2==""){
             return (
                 <View style={styles.row}>
                   <Text style={styles.text}>{text}</Text>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity onPress={() => navigation.navigate('CreationNRapport')} >
                     <Image
                       resizeMode="contain"
                       source={leftimage}
@@ -26,6 +27,20 @@ function CreationRapportExpo(){
                 </View>
               );
         }
+        if(settruc2=="1"){
+          return (
+              <View style={styles.row}>
+                <Text style={styles.text}>{text}</Text>
+                <TouchableOpacity onPress={() => {}}>
+                  <Image
+                    resizeMode="contain"
+                    source={leftimage}
+                    style={styles.leftimage}
+                  />
+                </TouchableOpacity>
+              </View>
+            );
+      }
         }
 return(
     <NativeBaseProvider>
@@ -39,8 +54,8 @@ return(
               style={styles.image1}
             />
          <ScrollView>
-         <Link to=''> <RowItem text="Créer un nouveau rapport" settruc2={""} /></Link>
-         <Link to=''> <RowItem text="Travailler sur la base d'un anncien rapport" settruc2={""} /></Link>
+         <RowItem text="Créer un nouveau rapport" settruc2="" />
+         <RowItem text="Travailler sur la base d'un anncien rapport" settruc2={"1"} />
 
          
           </ScrollView>

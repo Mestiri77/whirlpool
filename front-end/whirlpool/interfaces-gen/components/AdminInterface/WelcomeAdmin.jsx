@@ -1,112 +1,115 @@
 import React from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity,ScrollView  } from "react-native";
-import Footer from './footer'
-const image01=require('../../../assets/image1+.png')
-const image02=require('../../../assets/image2.png')
-const image03=require('../../../assets/image3.png')
-const image04=require('../../../assets/image4.png')
-const image05=require('../../../assets/fleche.png')
+import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView } from "react-native";
+import Footer from './footer';
+import { useNavigation } from '@react-navigation/native';
 
-
+const image01 = require('../../../assets/image1+.png');
+const image02 = require('../../../assets/image2.png');
+const image03 = require('../../../assets/image3.png');
+const image04 = require('../../../assets/image4.png');
+const image05 = require('../../../assets/fleche.png');
 
 function WelcomeAdmin() {
+  const navigation = useNavigation();
 
-  const [load,setLoad]=React.useState(true)
-
-  const [historique,setHistorique]=React.useState([])
+  const [load, setLoad] = React.useState(true);
+  const [historique, setHistorique] = React.useState([]);
 
   const hundlehistorique = (zone) => {
-    setLoad(!load)
+    setLoad(!load);
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
   };
 
-  React.useEffect(() => {
-  }, [load]);
+  React.useEffect(() => {}, [load]);
 
-    return (
-      <>
-        <ScrollView >
-      <View style={styles.view1}>
-      <View style={styles.view2}>
-        <View style={styles.view3}>
-          <Text style={styles.textEmoji}>Hi 👋,</Text>
-        </View>
-        <View style={styles.view4}>
-          <Text style={styles.textAdmin}>Admin</Text>
-        </View>
-      </View>
-      <View style={styles.view5}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de compte', link: 'link_to_creation_compte',image:image01  })}>
-        <View style={styles.view6}>
-          <View style={styles.view7}>
-            <Text style={styles.textCreation}>Création de compte</Text>
-          </View>
-          <Image
-            resizeMode="contain"
-            source={image01}
-            style={styles.image1}
-          />
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de point de vente', link: 'link_to_creation_point_vente',image:image02 })}>
-        <View style={styles.view8}>
-          <View style={styles.view9}>
-            <Text style={styles.textCreation}>Création de point de vente</Text>
-          </View>
-          <Image
-            resizeMode="contain"
-            source={image02}
-            style={styles.image2}
-          />
-        </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.view10}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image04 })}>
-        <View style={styles.view11}>
-          <View style={styles.view12}>
-            <Text style={styles.textCreation}>Création d'articles</Text>
-          </View>
-          <Image
-            resizeMode="contain"
-            source={image04}
-            style={styles.image3}
-          />
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports',image:image03  })}>
-        <View style={styles.view13}>
-        <View style={styles.view12}>
-            <Text style={styles.textCreation}>
-            Consultation des rapports
-            </Text>
-        </View>
-        <Image
-            resizeMode="contain"
-            source={image03}  // Replace with the appropriate image source
-            style={styles.image03}  // Ensure this style matches your other image styles
-        />
-        </View>
-        </TouchableOpacity >
-      </View>
-      <View style={styles.view14}>
-        <Text style={styles.textRecentActivities}>Recent Activities</Text>
-      </View>
-      {historique.map((item, index) => (
-        <View key={index} style={styles.view15}>
-          <View style={styles.view16}>
-            <Image resizeMode="contain" source={item.image} style={styles.image4} />
-            <View style={styles.view17}>
-              <Text style={styles.textCreation1}>{item.name}</Text>
+  return (
+    <>
+      <ScrollView>
+        <View style={styles.view1}>
+          <View style={styles.view2}>
+            <View style={styles.view3}>
+              <Text style={styles.textEmoji}>Hi 👋,</Text>
+            </View>
+            <View style={styles.view4}>
+              <Text style={styles.textAdmin}>Admin</Text>
             </View>
           </View>
-          <Image resizeMode="contain" source={image05} style={styles.image5} />
+          <View style={styles.view5}>
+            <TouchableOpacity
+              onPress={() => {
+                hundlehistorique({ name: 'Création de compte', link: 'CreationCompte', image: image01 });
+                navigation.navigate("CreationCompte");
+              }}
+            >
+              <View style={styles.view6}>
+                <View style={styles.view7}>
+                  <Text style={styles.textCreation}>Création de compte</Text>
+                </View>
+                <Image resizeMode="contain" source={image01} style={styles.image1} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                hundlehistorique({ name: 'Création de point de vente', link: 'Creationpdv', image: image02 });
+                navigation.navigate("Creationpdv");
+              }}
+            >
+              <View style={styles.view8}>
+                <View style={styles.view9}>
+                  <Text style={styles.textCreation}>Création de point de vente</Text>
+                </View>
+                <Image resizeMode="contain" source={image02} style={styles.image2} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.view10}>
+            <TouchableOpacity
+              onPress={() => {
+                hundlehistorique({ name: "Création d'articles", link: 'CreationArt', image: image04 });
+                navigation.navigate("CreationArt");
+              }}
+            >
+              <View style={styles.view11}>
+                <View style={styles.view12}>
+                  <Text style={styles.textCreation}>Création d'articles</Text>
+                </View>
+                <Image resizeMode="contain" source={image04} style={styles.image3} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                hundlehistorique({ name: 'Consultation des rapports', link: 'ConsultRapports', image: image03 });
+                navigation.navigate("ConsultRapports");
+              }}
+            >
+              <View style={styles.view13}>
+                <View style={styles.view12}>
+                  <Text style={styles.textCreation}>Consultation des rapports</Text>
+                </View>
+                <Image resizeMode="contain" source={image03} style={styles.image03} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.view14}>
+            <Text style={styles.textRecentActivities}>Recent Activities</Text>
+          </View>
+          {historique.map((item, index) => (
+            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link)}>
+              <View style={styles.view15}>
+                <View style={styles.view16}>
+                  <Image resizeMode="contain" source={item.image} style={styles.image4} />
+                  <View style={styles.view17}>
+                    <Text style={styles.textCreation1}>{item.name}</Text>
+                  </View>
+                </View>
+                <Image resizeMode="contain" source={image05} style={styles.image5} />
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
-      ))}
-    </View>
       </ScrollView>
-      <Footer/>
-      </>
+      <Footer />
+    </>
   );
 }
 
@@ -140,8 +143,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 16,
-    height:150,
-    margin:5
+    height: 150,
+    margin: 5,
   },
   view6: {
     borderRadius: 10,
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 1,
     marginRight: 8,
-    width:170
+    width: 170,
   },
   view7: {
     marginBottom: 8,
@@ -161,17 +164,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "black",
   },
-  textCreation1:{
+  textCreation1: {
     fontSize: 16,
     color: "white",
-
   },
   image1: {
     width: 95,
     height: 95,
-    position:"absolute",
-    top:75,
-    left:-15
+    position: "absolute",
+    top: 75,
+    left: -15,
   },
   view8: {
     borderRadius: 10,
@@ -182,8 +184,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 1,
     marginLeft: 8,
-    width:170,
-
+    width: 170,
   },
   view9: {
     marginBottom: 8,
@@ -191,17 +192,16 @@ const styles = StyleSheet.create({
   image2: {
     width: 78,
     height: 78,
-    position:"absolute",
-    top:82,
-    right:-15
-
+    position: "absolute",
+    top: 82,
+    right: -15,
   },
   view10: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 16,
-    height:150,
-    margin:2
+    height: 150,
+    margin: 2,
   },
   view11: {
     borderRadius: 10,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 1,
     marginRight: 8,
-    width:170
+    width: 170,
   },
   view12: {
     marginBottom: 8,
@@ -220,16 +220,16 @@ const styles = StyleSheet.create({
   image3: {
     width: 68,
     height: 68,
-    position:"absolute",
-    top:90,
-    left:-5
+    position: "absolute",
+    top: 90,
+    left: -5,
   },
-  image03:{
+  image03: {
     width: 88,
     height: 88,
-    position:"absolute",
-    top:80,
-    right:-20
+    position: "absolute",
+    top: 80,
+    right: -20,
   },
   view13: {
     borderRadius: 10,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     justifyContent: "center",
     alignItems: "center",
-    width:170
+    width: 170,
   },
   view14: {
     marginTop: 36,
@@ -263,9 +263,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width:360,
-    marginTop:5,
-    marginBottom:20
+    width: 360,
+    marginTop: 5,
+    marginBottom: 20,
   },
   view16: {
     flexDirection: "row",

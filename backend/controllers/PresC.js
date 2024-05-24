@@ -75,12 +75,12 @@ async function getPresenceById(req, res) {
 async function updatePresence(req, res) {
   try {
     const { id } = req.params;
-    const { datePr, checkin, checkout, position } = req.body;
+    const { datePr, checkin, checkout, position,status } = req.body;
     const presence = await Presence.findByPk(id);
     if (!presence) {
       return res.status(404).json({ message: 'Presence not found' });
     }
-    await presence.update({ datePr, checkin, checkout, position });
+    await presence.update({ datePr, checkin, checkout, position,status });
     res.status(200).json(presence);
   } catch (error) {
     console.error('Error updating Presence:', error);

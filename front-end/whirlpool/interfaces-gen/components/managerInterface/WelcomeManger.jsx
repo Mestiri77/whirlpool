@@ -1,6 +1,8 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity,ScrollView  } from "react-native";
 import Footer from './footer'
+import { useNavigation } from '@react-navigation/native';
+
 const image01=require('../../../assets/image1+.png')
 const image02=require('../../../assets/image2.png')
 const image03=require('../../../assets/image3.png')
@@ -10,6 +12,7 @@ const image05=require('../../../assets/fleche.png')
 
 
 function WelcomeManager() {
+  const navigation = useNavigation();
 
   const [load,setLoad]=React.useState(true)
 
@@ -36,7 +39,9 @@ function WelcomeManager() {
         </View>
       </View>
       <View style={styles.view5}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de compte', link: 'link_to_creation_compte',image:image03  })}>
+        <TouchableOpacity onPress={() =>{ hundlehistorique({ name: 'Création de compte', link: 'link_to_creation_compte',image:image03  });
+    navigation.navigate('ManagerSelOut')
+    }}>
         <View style={styles.view6}>
           <View style={styles.view7}>
             <Text style={styles.textCreation}> Rapports Sell-out</Text>
@@ -48,7 +53,9 @@ function WelcomeManager() {
           />
         </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Création de point de vente', link: 'link_to_creation_point_vente',image:image03 })}>
+        <TouchableOpacity onPress={() => {hundlehistorique({ name: 'Création de point de vente', link: 'link_to_creation_point_vente',image:image03 });
+       navigation.navigate('ManagerExpo')
+       }}>
         <View style={styles.view8}>
           <View style={styles.view9}>
             <Text style={styles.textCreation}>Rapports Exposition</Text>
@@ -62,7 +69,9 @@ function WelcomeManager() {
         </TouchableOpacity>
       </View>
       <View style={styles.view10}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image03 })}>
+        <TouchableOpacity onPress={() => {hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image03 });
+      navigation.navigate('ManagerPriceMap')
+      }}>
         <View style={styles.view11}>
           <View style={styles.view12}>
             <Text style={styles.textCreation}> Rapports Price Map</Text>
@@ -74,7 +83,9 @@ function WelcomeManager() {
           />
         </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports',image:image03  })}>
+        <TouchableOpacity onPress={() => {hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports',image:image03  });
+       navigation.navigate('ManagerPresence')
+       }}>
         <View style={styles.view13}>
         <View style={styles.view12}>
             <Text style={styles.textCreation}>

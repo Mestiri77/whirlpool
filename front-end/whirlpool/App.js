@@ -25,6 +25,12 @@ import CreationRapportSO from './interfaces-gen/components/animatriceInterface/C
 import WelcomeAdmin from './interfaces-gen/components/AdminInterface/WelcomeAdmin'
 import WelcomeAnime from './interfaces-gen/components/animatriceInterface/WelcomeAnime'
 import WelcomeManager from './interfaces-gen/components/managerInterface/WelcomeManger'
+import ManagerExpo from './interfaces-gen/components/managerInterface/RapportExpo'
+import ManagerSelOut from './interfaces-gen/components/managerInterface/RapportSelOut'
+import ManagerExpoDet from './interfaces-gen/components/managerInterface/RapportExpoDet'
+import ManagerPresence from './interfaces-gen/components/managerInterface/RapportPresence'
+import ManagerPriceMap from './interfaces-gen/components/managerInterface/RapportPriceMap'
+import ManagerPriceMapDet from './interfaces-gen/components/managerInterface/RapportPriceMapDet'
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -33,11 +39,11 @@ export default function App() {
     <View style={styles.container}>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <Stack.Navigator /*initialRouteName="Login"*/>
+        <Stack.Navigator initialRouteName="Login">
           {/* <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Creationpdv" component={Creationpdv} /> */}
-          {/* <Stack.Screen name="CreationArt" component={CreationArt} /> */}
-          {/* <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
+          <Stack.Screen name="Creationpdv" component={Creationpdv} />
+          <Stack.Screen name="CreationArt" component={CreationArt} />
+          <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" component={RapportExpo} />
           <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
           <Stack.Screen name="Modifpopup" component={Modifpopup} />
@@ -52,12 +58,16 @@ export default function App() {
           <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
-          <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> */}
-          {/* <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
+          <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
+          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
           <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
-          {/* <Stack.Screen name="WelcomeAnime" component={WelcomeManager} /> */}
-
-
+          <Stack.Screen name="WelcomeManager" component={WelcomeManager} />
+          <Stack.Screen name="ManagerExpo" component={ManagerExpo} />
+          <Stack.Screen name="ManagerSelOut" component={ManagerSelOut} />
+          <Stack.Screen name="ManagerExpoDet" component={ManagerExpoDet} />
+          <Stack.Screen name="ManagerPresence" component={ManagerPresence} />
+          <Stack.Screen name="ManagerPriceMap" component={ManagerPriceMap} />
+          <Stack.Screen name="ManagerPriceMapDet" component={ManagerPriceMapDet} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

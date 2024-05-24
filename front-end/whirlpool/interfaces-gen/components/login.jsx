@@ -1,11 +1,13 @@
-import React ,{ useState } from "react";
-import { StyleSheet, View,Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { Picker } from '@react-native-picker/picker';
+
 const Divider = () => (
   <View style={styles.divider} />
-);
 
-const InputField = ({ label, placeholder, isPassword, onchagetext }) => (
+);
+const port = '192.168.248.6';
+const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
   <>
     <Text style={styles.label}>{label}</Text>
     <TextInput
@@ -13,16 +15,50 @@ const InputField = ({ label, placeholder, isPassword, onchagetext }) => (
       placeholder={placeholder}
       secureTextEntry={isPassword}
       autoCapitalize="none"
-      onChangeText={onchagetext}
+      onChangeText={onChangeText}
     />
   </>
 );
 
-const LoginScreen = () => {
-  const [email , setEmail]=React.useState("")
-  const [password ,setPassword]=React.useState("")
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
 
+  const handleLogin = async () => {
+    if (!email || !password || !selectedValue) {
+      Alert.alert("Error", "Please fill in all fields and select a role");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://"+port+":3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Navigate to appropriate screen based on role
+        if (selectedValue === "Admin") {
+          navigation.navigate("WelcomeAdmin");
+        } else if (selectedValue === "Manager") {
+          navigation.navigate("WelcomeManager");
+        } else if (selectedValue === "Animateur") {
+          navigation.navigate("WelcomeAnime");
+        }
+      } else {
+        Alert.alert("Error", data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "An error occurred. Please try again.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -30,34 +66,33 @@ const LoginScreen = () => {
         <Text style={styles.headerText}>Login</Text>
       </View>
       <View style={styles.formContainer}>
-        <InputField style={styles.inputs} label="Email" placeholder="Enter your email" isPassword={false} onchangeText={setEmail} />
+        <InputField label="Email" placeholder="Enter your email" isPassword={false} onChangeText={setEmail} />
         <Divider />
-        <InputField label="Password" placeholder="Enter your password" isPassword={true} onchangeText={setPassword} />
+        <InputField label="Password" placeholder="Enter your password" isPassword={true} onChangeText={setPassword} />
         <Divider />
-      <View style={styles.roles}>
-      <Text>Veuillez choisir votre role :</Text>
-      <Picker
-        selectedValue={selectedValue}
-        style={{ height: 50, width: 170 }}
-        onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-      >
-        
-        <Picker.Item label="Animateur" value="Animateur" />
-        <Picker.Item label="Admin" value="Admin " />
-        <Picker.Item label="Manager" value="Manager" />
-      </Picker>
-      </View>
-        <TouchableOpacity style={styles.loginButton}>
+        <View style={styles.roles}>
+          <Text>Veuillez choisir votre role :</Text>
+          <Picker
+            selectedValue={selectedValue}
+            style={{ height: 50, width: 170 }}
+            onValueChange={(itemValue) => setSelectedValue(itemValue)}
+          >
+            <Picker.Item label="Animateur" value="Animateur" />
+            <Picker.Item label="Admin" value="Admin" />
+            <Picker.Item label="Manager" value="Manager" />
+          </Picker>
+        </View>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
-      </View>  
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  roles:{
-    marginTop:10,
+  roles: {
+    marginTop: 10,
   },
   container: {
     borderRadius: 20,
@@ -70,7 +105,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "#FDC100",
     width: "100%",
-    height:'40%', 
+    height: '40%',
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 32,
@@ -78,7 +113,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: "#FFF",
     fontSize: 48,
-    width: '95%'
+    width: '95%',
   },
   formContainer: {
     borderRadius: 15,
@@ -88,7 +123,6 @@ const styles = StyleSheet.create({
   label: {
     color: "#000",
     marginTop: 20,
-
   },
   input: {
     marginTop: 4,
@@ -97,20 +131,6 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "#ADADAD",
-  },
-  rememberForgotContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 18,
-  },
-  rememberMeText: {
-    fontSize: 12,
-    color: "#707070",
-    
-  },
-  forgotPasswordText: {
-    fontSize: 12,
-    color: "#707070",
   },
   loginButton: {
     backgroundColor: "#FDC100",

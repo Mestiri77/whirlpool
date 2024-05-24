@@ -3,6 +3,8 @@ import { View, StyleSheet, Image, Text, TouchableOpacity,ScrollView  } from "rea
 import { Switch, HStack,  Center, NativeBaseProvider } from "native-base";
 import Header from './header';
 import Footer from './footer'
+import { useNavigation } from '@react-navigation/native';
+
 const image01=require('../../../assets/image1+.png')
 const image02=require('../../../assets/image2.png')
 const image03=require('../../../assets/image3.png')
@@ -12,6 +14,7 @@ const image05=require('../../../assets/fleche.png')
 
 
 function WelcomeAnime() {
+  const navigation = useNavigation();
 
   const [load,setLoad]=React.useState(true)
 
@@ -58,7 +61,8 @@ function WelcomeAnime() {
         </View>
       </View>
       <View style={styles.view10}>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image03 })}>
+        <TouchableOpacity onPress={() => {hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles',image:image03 });
+    navigation.navigate('CreationRapportSO')}}>
         <View style={styles.view11}>
           <View style={styles.view12}>
             <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -70,7 +74,8 @@ function WelcomeAnime() {
           />
         </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports',image:image03  })}>
+        <TouchableOpacity onPress={() =>{ hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports',image:image03  });
+      navigation.navigate('CreationRapportExpo')}}>
         <View style={styles.view13}>
         <View style={styles.view12}>
             <Text style={styles.textCreation}>
