@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity,ScrollView  } from "react-native";
+import { Switch, HStack,  Center, NativeBaseProvider } from "native-base";
 import Header from './header';
 import Footer from './footer'
 import { useNavigation } from '@react-navigation/native';
@@ -19,17 +20,37 @@ function WelcomeAnime() {
 
   const [historique,setHistorique]=React.useState([])
 
+  const [status,setStatus]=React.useState(false)
+
   const hundlehistorique = (zone) => {
     setLoad(!load)
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
+  };
+  const Example = () => {
+    return (
+        <HStack alignItems="center" space={4} ml={9}>
+          <Text style={{ color: status ? "#FDC100" : "#D0D3D4" , fontSize:18}}>
+            {status ? "On ligne" : "Off ligne"}
+          </Text>
+          <Switch 
+            size="sm" 
+            isChecked={status} 
+            onTrackColor="#FDC100"
+            offTrackColor="#D0D3D4"
+            onToggle={() => setStatus(!status)} 
+          />
+        </HStack>
+    );
+
   };
 
   React.useEffect(() => {
   }, [load]);
 
     return (
-        <>
+      <NativeBaseProvider>
         <ScrollView >
+        <Example />
       <View style={styles.view1}>
       <View style={styles.view2}>
         <View style={styles.view3}>
@@ -73,6 +94,7 @@ function WelcomeAnime() {
         <Text style={styles.textRecentActivities}>Recent Activities</Text>
       </View>
       {historique.map((item, index) => (
+        <TouchableOpacity>
         <View key={index} style={styles.view15}>
           <View style={styles.view16}>
             <Image resizeMode="contain" source={item.image} style={styles.image4} />
@@ -82,11 +104,13 @@ function WelcomeAnime() {
           </View>
           <Image resizeMode="contain" source={image05} style={styles.image5} />
         </View>
+        </TouchableOpacity>
       ))}
     </View>
       </ScrollView>
         <Footer/>
-        </>
+        </NativeBaseProvider>
+
   );
 }
 
@@ -101,6 +125,7 @@ const styles = StyleSheet.create({
   view2: {
     alignItems: "stretch",
     marginBottom: 15,
+    flexDirection:"row"
   },
   view3: {
     marginBottom: 5,

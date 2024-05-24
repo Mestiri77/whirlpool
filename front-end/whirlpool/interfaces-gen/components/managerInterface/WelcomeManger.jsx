@@ -32,7 +32,7 @@ function WelcomeManager() {
       <View style={styles.view1}>
       <View style={styles.view2}>
         <View style={styles.view3}>
-          <Text style={styles.textEmoji}>Hi 👋,</Text>
+          <Text style={styles.textEmoji}>Salut 👋,</Text>
         </View>
         <View style={styles.view4}>
           <Text style={styles.textAdmin}>Manager</Text>
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
   view2: {
     alignItems: "stretch",
     marginBottom: 15,
+    flexDirection:"row"
   },
   view3: {
     marginBottom: 5,

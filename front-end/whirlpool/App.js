@@ -40,7 +40,7 @@ export default function App() {
       <NavigationContainer>
         <StatusBar style="auto" />
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={Login} />
+          {/* <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Creationpdv" component={Creationpdv} />
           <Stack.Screen name="CreationArt" component={CreationArt} />
           <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
@@ -51,15 +51,15 @@ export default function App() {
           <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
-          <Stack.Screen name="RapportLog" component={RapportLog} />
-          <Stack.Screen name="CreationCompte" component={CreationCompte} />
+          <Stack.Screen name="RapportLog" component={RapportLog} /> */}
+          {/* <Stack.Screen name="CreationCompte" component={CreationCompte} />
           <Stack.Screen name="PopupRapport" component={PopupRapport} />
           <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
           <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
-          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
+          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
           <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
           <Stack.Screen name="WelcomeManager" component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo" component={ManagerExpo} />
