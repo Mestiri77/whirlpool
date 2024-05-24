@@ -10,7 +10,8 @@ const Presence = sequelize.define('Presence', {
     datePr: DataTypes.DATE,
     checkin: DataTypes.STRING,
     checkout: DataTypes.STRING,
-    position: DataTypes.STRING
+    position: DataTypes.STRING,
+    status : DataTypes.BOOLEAN
   });
   
 module.exports = Presence;

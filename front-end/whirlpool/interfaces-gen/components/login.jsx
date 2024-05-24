@@ -45,11 +45,11 @@ const LoginScreen = ({ navigation }) => {
       if (response.ok) {
         // Navigate to appropriate screen based on role
         if (selectedValue === "Admin") {
-          navigation.navigate("Creationpdv");
+          navigation.navigate("WelcomeAdmin");
         } else if (selectedValue === "Manager") {
-          navigation.navigate("MangerRaport");
+          navigation.navigate("WelcomeManager");
         } else if (selectedValue === "Animateur") {
-          navigation.navigate("CreationRapportExpo");
+          navigation.navigate("WelcomeAnime");
         }
       } else {
         Alert.alert("Error", data.message || "Invalid credentials");

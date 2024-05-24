@@ -12,13 +12,13 @@ function Footer() {
       <FontAwesome name="sign-out" size={24} color="#FFF" />
       <Text style={styles.text}>Log out</Text>
     </View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeAnime')}>
+      </TouchableOpacity >
+      <TouchableOpacity>
         <View style={styles.item1}>
         <FontAwesome name="plus" size={24} color="black" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeManager')}>
     <View style={styles.item}>
       <FontAwesome name="home" size={24} color="#FFF" />
       <Text style={styles.text}>Home</Text>
