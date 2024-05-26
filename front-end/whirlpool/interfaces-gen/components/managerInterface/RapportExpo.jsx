@@ -5,8 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios'
-
-
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 function RapportExpo() {
   const navigation = useNavigation();
 
@@ -20,7 +21,7 @@ function RapportExpo() {
   const [pdv,setPdv]=React.useState([])
   
   const [idWhirlpool,setIdwhirlpool]=React.useState(null)
-  const port='192.168.1.26'
+  const port='192.168.218.26'
 
 /////////////////Functions///////////////////////////
 const Fetchallcateg=async()=>{
@@ -115,6 +116,30 @@ const CountTaux = (total, partie) => {
     ))}
     return total
  }
+ 
+ const exportToExcel = async () => {
+  const data = [
+    ["Famille de produit", "Expo Globale", "Expo Whirlpool", "Taux D'exposition"],
+    ...categ.map(el => [
+      el.Categoryname,
+      CountSameCateg(el.idCategory),
+      Findwhirlpool(el.idCategory),
+      CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)) + "%"
+    ]),
+    ["Total", TotalExpoGlob(), TotalExpoWhirl(), TotalTaux() + "%"]
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rapport Expo",true);
+
+  const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+  const uri = FileSystem.cacheDirectory + 'rapport_expo.xlsx';
+  console.log("good");
+  await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+  await Sharing.shareAsync(uri);
+};
+
 
 React.useEffect(()=>{
   Fetchallcateg()
@@ -186,7 +211,7 @@ React.useEffect(()=>{
     </View>
   </View>
     <Center>
-    <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+    <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
         <Text style={styles.btnText}>Exporter</Text>
       </TouchableOpacity>
       </Center>
