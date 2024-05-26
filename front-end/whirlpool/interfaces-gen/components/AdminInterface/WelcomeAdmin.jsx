@@ -115,7 +115,7 @@ function WelcomeAdmin() {
 
 const styles = StyleSheet.create({
   view1: {
-    marginTop: 15,
+    marginTop: 85,
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
