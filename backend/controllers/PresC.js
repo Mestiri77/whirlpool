@@ -10,38 +10,52 @@ async function createPresence(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-async function addcheckin(res,req){
-  try{
-      const id =req.params.id;
-      const timecheckin=req.body.timecheckin;
-      const checkin= await Presence.create({checkin:timecheckin});
-      res.json(checkin)
-  }
-  catch (error){
-      res.send(error)
+
+async function addCheckin(req, res) {
+  try {
+    const { id } = req.params;
+    const { timecheckin } = req.body;
+    const presence = await Presence.findByPk(id);
+    if (!presence) {
+      return res.status(404).json({ message: 'Presence not found' });
+    }
+    await presence.update({ checkin: timecheckin });
+    res.status(200).json(presence);
+  } catch (error) {
+    console.error('Error updating checkin:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
-async function addposition(req,res){
-  try{
-  const id=req.prams.id;
-  const position=req.body.position;
-  const pos=await Presence.create ({position:position})
-  res.json(pos)
-}
-catch(err){
-  res.status(500).send("Server Error",err)
-}
-}
-async function addcheckout(req,res){
-  try{
-      const id=req.prams.id
-      const timecheckout=req.body.timecheckout;
-      const checkout=await Presence.create({checkout:timecheckout})
-      res.json(checkout)
+async function addPosition(req, res) {
+  try {
+    const { id } = req.params;
+    const { position } = req.body;
+    const presence = await Presence.findByPk(id);
+    if (!presence) {
+      return res.status(404).json({ message: 'Presence not found' });
+    }
+    await presence.update({ position: position });
+    res.status(200).json(presence);
+  } catch (error) {
+    console.error('Error updating position:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-  catch(err){
-      res.status(500).send("Server Error",err)
+}
+
+async function addCheckout(req, res) {
+  try {
+    const { id } = req.params;
+    const { timecheckout } = req.body;
+    const presence = await Presence.findByPk(id);
+    if (!presence) {
+      return res.status(404).json({ message: 'Presence not found' });
+    }
+    await presence.update({ checkout: timecheckout });
+    res.status(200).json(presence);
+  } catch (error) {
+    console.error('Error updating checkout:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -75,12 +89,12 @@ async function getPresenceById(req, res) {
 async function updatePresence(req, res) {
   try {
     const { id } = req.params;
-    const { datePr, checkin, checkout, position,status } = req.body;
+    const { datePr, checkin, checkout, position, status } = req.body;
     const presence = await Presence.findByPk(id);
     if (!presence) {
       return res.status(404).json({ message: 'Presence not found' });
     }
-    await presence.update({ datePr, checkin, checkout, position,status });
+    await presence.update({ datePr, checkin, checkout, position, status });
     res.status(200).json(presence);
   } catch (error) {
     console.error('Error updating Presence:', error);
@@ -104,20 +118,13 @@ async function deletePresence(req, res) {
   }
 }
 
-
-
-
-
 module.exports = {
   createPresence,
   getAllPresences,
   getPresenceById,
   updatePresence,
   deletePresence,
-  addcheckin,
-  addcheckout,
-  addposition
-
+  addCheckin,
+  addCheckout,
+  addPosition
 };
-
-

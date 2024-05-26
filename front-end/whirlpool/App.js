@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import Login from './interfaces-gen/components/login';
 import Creationpdv from '../whirlpool/interfaces-gen/components/AdminInterface/creationpdv';
 import CreationArt from '../whirlpool/interfaces-gen/components/AdminInterface/creationdArticle';
@@ -34,7 +33,6 @@ import ManagerPriceMapDet from './interfaces-gen/components/managerInterface/Rap
 
 export default function App() {
   const Stack = createNativeStackNavigator();
-
   return (
     <View style={styles.container}>
       <NavigationContainer>
@@ -43,23 +41,23 @@ export default function App() {
           {/* <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Creationpdv" component={Creationpdv} />
           <Stack.Screen name="CreationArt" component={CreationArt} />
-          <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
-          <Stack.Screen name="RapportExpo" component={RapportExpo} />
+          <Stack.Screen name="ConsultRapports" component={ConsultRapports} />*/}
+          <Stack.Screen name="RapportExpo" component={RapportExpo} /> 
           <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
           <Stack.Screen name="Modifpopup" component={Modifpopup} />
           <Stack.Screen name="RapportPriceMap" component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
-          <Stack.Screen name="RapportLog" component={RapportLog} /> */}
-          {/* <Stack.Screen name="CreationCompte" component={CreationCompte} />
+          <Stack.Screen name="RapportLog" component={RapportLog} />
+          <Stack.Screen name="CreationCompte" component={CreationCompte} />
           <Stack.Screen name="PopupRapport" component={PopupRapport} />
           <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
           <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
-          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
+          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
           <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
           <Stack.Screen name="WelcomeManager" component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo" component={ManagerExpo} />

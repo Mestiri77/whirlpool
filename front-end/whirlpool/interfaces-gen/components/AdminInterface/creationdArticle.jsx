@@ -26,6 +26,7 @@ const [capacite,setCapacite]=React.useState("")
 const [idref,setIdref]=React.useState("")
 const [idmarque,setIdmarque]=React.useState('')
 const [idcateg,setIdcateg]=React.useState('')
+const [prix,setPrix]=React.useState('')
 
 
 const [references,setReferences]=React.useState([])
@@ -376,7 +377,25 @@ React.useEffect(()=>{
            
           </Stack>
           )
+        }  else if(text=='prix'&& modif==false){
+          return(
+            <Stack space={4} w="100%" alignItems="center" mt="2%">
+            <Input 
+              w={{
+                base: "75%",
+                md: "25%"
+              }} 
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+              } 
+              placeholder={text}
+              onChangeText={item=>setPrix(item)}
+            />
+           
+          </Stack>
+          )
         }
+      
       }
       function Alerta() {
         Alert.alert(
@@ -522,6 +541,7 @@ React.useEffect(()=>{
                 <Example text={"categorie"}/>
                 <Example text={"Type de Capacité"}/>
                 {RenderInput('Capacite',false)}
+                {RenderInput('prix',false)}
                 <TouchableOpacity onPress={() =>{validAdd()}} style={styles.btns}>
         <Text style={styles.btnText}>Valideé</Text>
       </TouchableOpacity>

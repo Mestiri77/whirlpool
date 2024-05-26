@@ -15,7 +15,7 @@ const getAllUsers = async (req, res) => {
 
 const getAllAnimateur = async (req, res) => {
 try {
-  const users = await User.findAll({where:{role:"animateur"}});
+  const users = await User.findAll({where:{role:"animatrice"}});
   res.status(200).json(users);
 } catch (error) {
   console.error(error);

@@ -9,6 +9,7 @@ router.get('/articles/:id', articleController.getArticleById);
 router.put('/articles/:id', articleController.updateArticle);
 router.delete('/articles/:id', articleController.deleteArticle);
 router.get('/articlesbyref/:id', articleController.getArticleByrefId);
+router.get('/artCat/:categoryName',articleController.getArticlesByCategory)
 
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { Picker } from '@react-native-picker/picker';
+import axios from "axios";
 
 const Divider = () => (
   <View style={styles.divider} />
@@ -24,6 +25,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
+ const [anim,setAnim]=useState({})
 
   const handleLogin = async () => {
     if (!email || !password || !selectedValue) {
@@ -47,9 +49,13 @@ const LoginScreen = ({ navigation }) => {
         if (selectedValue === "Admin") {
           navigation.navigate("WelcomeAdmin");
         } else if (selectedValue === "Manager") {
+
+          
           navigation.navigate("WelcomeManager");
         } else if (selectedValue === "Animateur") {
-          navigation.navigate("WelcomeAnime");
+          const animResponse = await axios.get(`http://${port}:3000/api/users/animateur`);
+          let ani = animResponse.data.filter((e) => e.email === email);
+              navigation.navigate("WelcomeAnime", { ani: ani[0] });
         }
       } else {
         Alert.alert("Error", data.message || "Invalid credentials");

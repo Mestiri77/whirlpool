@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 function RapportExpo() {
@@ -18,9 +19,17 @@ function RapportExpo() {
   const [references,setReferences]=React.useState([])
   const [marques,setMarques]=React.useState([])
   const [pdv,setPdv]=React.useState([])
+ 
   
   const [idWhirlpool,setIdwhirlpool]=React.useState(null)
   const port='192.168.1.26'
+  const storeData = async (key, category) => {
+    try {
+      await AsyncStorage.setItem(key, category);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
 /////////////////Functions///////////////////////////
 const Fetchallcateg=async()=>{
@@ -151,7 +160,9 @@ React.useEffect(()=>{
     <View style={styles.column}>
     <View style={styles.cell}><Text>Expo Globale</Text></View>
     {categ && categ.map(el => (
-      <TouchableOpacity   onPress={() => navigation.navigate('RapportExpoDet', { propKey: 'propValue' })}>
+      <TouchableOpacity   onPress={() => {navigation.navigate('RapportExpoDet');
+      storeData('category', el.Categoryname);
+      }}>
       <View style={styles.cell2}>
       <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
       </View >

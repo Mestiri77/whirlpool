@@ -1,4 +1,6 @@
 const Article = require('../models/Article.js');
+const Category=require('../models/Category.js')
+const Reference=require('../models/Reference.js')
 
 // Create
 async function createArticle(req, res) {
@@ -82,6 +84,34 @@ async function deleteArticle(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+const getArticlesByCategory = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    const { categoryName } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Reference,
+        include: {
+          model: Category,
+          where: {
+            Categoryname: categoryName,
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
+
 
 module.exports = {
   createArticle,
@@ -89,5 +119,6 @@ module.exports = {
   getArticleById,
   updateArticle,
   deleteArticle,
-  getArticleByrefId
+  getArticleByrefId,
+  getArticlesByCategory
 };
