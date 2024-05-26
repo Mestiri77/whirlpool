@@ -1,14 +1,16 @@
 import * as React from "react";
 import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,Button} from "react-native";
-import { CheckIcon,Input,  Select, Box, Center, NativeBaseProvider,Stack, Icon} from "native-base";
+import { Alert,CheckIcon,Input, HStack,Select, IconButton,CloseIcon,VStack,Box, Center, NativeBaseProvider,Stack, Icon} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
-
+import port from '../port'
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 const downicon = require('../../../assets/icons8-down-50.png')
 
 function Creationpdv() {
+  const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
+
 const [load,setload]=React.useState(false)  
 const [pdv,setPdv]=React.useState(false);
 const [affanim, setAffanim] = React.useState(false);
@@ -26,7 +28,7 @@ const [region,setRegion]=React.useState('Region')
 const [iduser,setIdUser]=React.useState([])
 const [idpdv,setIdpdv]=React.useState([])
 const [pdvs, setPdvs] = React.useState([]);
-const port='192.168.1.26'
+// const port='192.168.218.26'
 
 const Regions=["Ariana","Béja","Ben Arous","Bizerte","Gabès","Gafsa","Jendouba","Kairouan","Kasserine","Kébili","Kef","Mahdia","Manouba","Médenine","Monastir","Nabeul","Sfax","Sidi Bouzid","Siliana","Sousse","Tataouine","Tozeur","Tunis","Zaghouan"]
 
@@ -83,41 +85,54 @@ const getIdbyname=async(name,lastname)=>{
 }
 
 
-const Addpdvs=async (info)=>{
+const Addpdvs=async (info,showAlert)=>{
   try{
     axios.post('http://'+port+':3000/api/pdvs/pdvs',info)
     console.log('pdv aded');
     setload(!load)
+    showAlert('success', "Un Nouveau Point de vente a été créé");
   }
    catch (error) {
     console.error('Error adding point de vente:', error)
+    showAlert('error', "Erreur lors de la création de la point de vente. Veuillez réessayer plus tard.");
+
   }
 }
-const AddCateg=async (info)=>{
+const AddCateg=async (info,showAlert)=>{
   try{
       axios.post('http://'+port+':3000/api/categories/categories',{Categoryname:info})
       setload(!load)
+    showAlert('success', "Un Nouveau Categorie a été créé");
+
   }
    catch (error) {
     console.error('Error adding Category', error)
+    showAlert('error', "Erreur lors de la création de la point de vente. Veuillez réessayer plus tard.");
+
   }
 }
-const AddMarque=async (info)=>{
+const AddMarque=async (info,showAlert)=>{
   try{
     axios.post('http://'+port+':3000/api/marques/marques',{marquename:info})
     setload(!load)
+    showAlert('success', "Un Nouveau Marque a été créé");
   }
   catch (error) {
     console.error('Error adding Marque', error)
+    showAlert('error', "Erreur lors de la création de la point de vente. Veuillez réessayer plus tard.");
+
   }
 }
-const AddRef=async(info)=>{
+const AddRef=async(info,showAlert)=>{
   try{
     axios.post('http://'+port+':3000/api/reference/references',{Referencename:info})
     setload(!load)
+    showAlert('success', "Un Nouveau Refernce a été créé");
   }
   catch (error) {
     console.error('Error adding Marque', error)
+    showAlert('error', "Erreur lors de la création de la point de vente. Veuillez réessayer plus tard.");
+
   }
 }
 const updateAnimByPdv=async(id,data)=> {
@@ -134,6 +149,39 @@ React.useEffect(()=>{
   fetchAnimname()
 },[load])
 ////////////////////////FUNCTIONS///////////////////////////
+
+const ExampleAlert = ({ status, message, onClose }) => {
+  return (
+      <Stack space={3} w="100%" maxW="400">
+        <Alert w="100%" status={status}>
+          <VStack space={2} flexShrink={1} w="100%">
+            <HStack flexShrink={1} space={2} justifyContent="space-between">
+              <HStack space={2} flexShrink={1}>
+                <Alert.Icon mt="1" />
+                <Text fontSize="md" color="coolGray.800">
+                  {message}
+                </Text>
+              </HStack>
+              <IconButton
+                variant="unstyled"
+                _focus={{ borderWidth: 0 }}
+                icon={<CloseIcon size="3" />}
+                _icon={{ color: "coolGray.600" }}
+                onPress={onClose}
+              />
+            </HStack>
+          </VStack>
+        </Alert>
+      </Stack>
+  );
+};
+const showAlert = (status, message) => {
+  setAlertData({ visible: true, status, message });
+};
+
+const hideAlert = () => {
+  setAlertData({ visible: false, status: '', message: '' });
+};
 
   const affectanim=(nameanim,namepdv)=>{
     let name=''
@@ -268,7 +316,7 @@ React.useEffect(()=>{
            
           </Stack>
         <Example text="Region" />
-        <TouchableOpacity onPress={() =>{ Addpdvs(Pdv),console.log('add',Pdv);}} style={styles.btns}>
+        <TouchableOpacity onPress={() =>{ Addpdvs(Pdv,showAlert),console.log('add',Pdv);}} style={styles.btns}>
         <Text style={styles.btnText}>Valideé</Text>
       </TouchableOpacity>
         </Center>
@@ -301,7 +349,7 @@ React.useEffect(()=>{
         </Box>
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => AddCateg(nomcateg)} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddCateg(nomcateg,showAlert)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -317,7 +365,7 @@ React.useEffect(()=>{
         </Box>
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => AddMarque(nommarq)} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddMarque(nommarq,showAlert)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -331,9 +379,11 @@ React.useEffect(()=>{
         <Box alignItems="center">
           <Input mx="3" placeholder="Reference" onChangeText={item=>setNomref(item)} w="100%" />
         </Box>
+        <Example text="Region" />
+        <Example text="Region" />
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => AddRef(nomref)} style={styles.btns}>
+      <TouchableOpacity onPress={() => AddRef(nomref,showAlert)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -344,6 +394,13 @@ React.useEffect(()=>{
   return (
     <NativeBaseProvider>
     <View style={styles.view1}>
+    {alertData.visible && (
+          <ExampleAlert
+            status={alertData.status}
+            message={alertData.message}
+            onClose={hideAlert}
+          />
+        )}
       <View style={styles.view2}>
         <Image
           resizeMode="contain"

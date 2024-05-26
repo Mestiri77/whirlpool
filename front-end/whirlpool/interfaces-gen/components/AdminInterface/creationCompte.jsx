@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Alert, View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
+import {  View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Alert,CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import Footer from './footer';
@@ -15,9 +15,12 @@ function CreationCompte() {
   const [pdvs, setPdvs] = React.useState("");
   const [idpdvs, setIdpdvs] = React.useState(null);
   const [nomspdv, setNomspdv] = React.useState([]);
+
+  const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
+
   const [load, setLoad] = React.useState(false);
 
-  const port = '192.168.248.6';
+  const port = '192.168.218.26';
 
   const roles = ["manager", "animatrice","admin"];
   const datauser={ 
@@ -29,12 +32,15 @@ function CreationCompte() {
     PDV_idPDV:idpdvs,
      }
 /////////////////////////////Functions///////////////////////////
-const CreatUser=async(data)=>{
+const CreatUser=async(data,showAlert)=>{
   try{
       axios.post("http://"+port+":3000/api/users/creatuser",data)
       console.log("adedd");
-  }catch (error) {
+      showAlert('success', "Un Nouveau Utilisateur a été créé");
+      }catch (error) {
     console.error('Error Update :', error)
+    showAlert('error', "Erreur lors de la création de l'utilisateur. Veuillez réessayer plus tard.");
+
   }
 }
 const fetchPdvsname = async () => {
@@ -45,6 +51,7 @@ const fetchPdvsname = async () => {
     setNomspdv(pdvNames);
   } catch (error) {
     console.error('Error fetching PDVs:', error)
+
   }
 }
 
@@ -53,6 +60,41 @@ React.useEffect(() => {
 }, []);
 ////////////////////////////////////////////////////////////////
 
+const showAlert = (status, message) => {
+  setAlertData({ visible: true, status, message });
+};
+
+const hideAlert = () => {
+  setAlertData({ visible: false, status: '', message: '' });
+};
+
+const ExampleAlert = ({ status, message, onClose }) => {
+  return (
+    <Center flex={1} px="3">
+      <Stack space={3} w="100%" maxW="400">
+        <Alert w="100%" status={status}>
+          <VStack space={2} flexShrink={1} w="100%">
+            <HStack flexShrink={1} space={2} justifyContent="space-between">
+              <HStack space={2} flexShrink={1}>
+                <Alert.Icon mt="1" />
+                <Text fontSize="md" color="coolGray.800">
+                  {message}
+                </Text>
+              </HStack>
+              <IconButton
+                variant="unstyled"
+                _focus={{ borderWidth: 0 }}
+                icon={<CloseIcon size="3" />}
+                _icon={{ color: "coolGray.600" }}
+                onPress={onClose}
+              />
+            </HStack>
+          </VStack>
+        </Alert>
+      </Stack>
+    </Center>
+  );
+};
 
 
   const Example = ({ text, setoption, option, options }) => {
@@ -84,7 +126,27 @@ React.useEffect(() => {
   };
 
   const RenderInput = (text,setState) => {
-
+if(text=="Mot De Passe :"){
+  return(
+    <Stack space={4} w="100%" alignItems="center" mt="5%">
+    <Input 
+      w={{
+        base: "100%",
+        md: "25%"
+      }} 
+      InputLeftElement={
+        <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+      } 
+      placeholder={text}
+      onChangeText={item=>setState(item)}
+      secureTextEntry
+      isRequired
+      isEmpty={item => item.trim().length === 0} 
+    />
+   
+  </Stack>
+  )
+}
     return (
       <Stack space={4} w="100%" alignItems="center" mt="5%">
             <Input 
@@ -97,6 +159,8 @@ React.useEffect(() => {
               } 
               placeholder={text}
               onChangeText={item=>setState(item)}
+              isRequired
+              isEmpty={item => item.trim().length === 0} 
             />
            
           </Stack>
@@ -121,7 +185,8 @@ React.useEffect(() => {
         setIdpdvs(pdvId);
         datauser.PDV_idPDV = pdvId;
       }
-      await CreatUser(datauser);
+      await CreatUser(datauser,showAlert);
+
     } catch (error) {
       console.error('Error in handleCreation:', error);
     }
@@ -132,6 +197,13 @@ React.useEffect(() => {
     <NativeBaseProvider>
       <View style={styles.view1}>
         <Center flex={1} px="0">
+       {alertData.visible && (
+          <ExampleAlert
+            status={alertData.status}
+            message={alertData.message}
+            onClose={hideAlert}
+          />
+        )}
           <Text style={styles.text1}>Creation De Compte</Text>
           {RenderInput("Nom :",setNom)}
           {RenderInput("Prenom :",setPrenom)}
@@ -146,6 +218,7 @@ React.useEffect(() => {
           <Text style={styles.btnText}>créé</Text>
         </TouchableOpacity>
       </Center>
+     
       <Footer />
     </NativeBaseProvider>
   );
