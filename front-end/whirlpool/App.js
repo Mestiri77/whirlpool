@@ -60,14 +60,14 @@ export default function App() {
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
           <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
-          <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
-          <Stack.Screen name="WelcomeManager" component={WelcomeManager} />
-          <Stack.Screen name="ManagerExpo" component={ManagerExpo} />
-          <Stack.Screen name="ManagerSelOut" component={ManagerSelOut} />
-          <Stack.Screen name="ManagerExpoDet" component={ManagerExpoDet} />
-          <Stack.Screen name="ManagerPresence" component={ManagerPresence} />
-          <Stack.Screen name="ManagerPriceMap" component={ManagerPriceMap} />
-          <Stack.Screen name="ManagerPriceMapDet" component={ManagerPriceMapDet} />
+          {/* <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} /> */}
+          <Stack.Screen name="WelcomeManager" options={{ headerShown: false }}  component={WelcomeManager} />
+          <Stack.Screen name="ManagerExpo"   options={{ headerShown: false }} component={ManagerExpo} />
+          <Stack.Screen name="ManagerSelOut" options={{ headerShown: false }} component={ManagerSelOut} />
+          <Stack.Screen name="ManagerExpoDet" options={{ headerShown: false }} component={ManagerExpoDet} />
+          <Stack.Screen name="ManagerPresence" options={{ headerShown: false }} component={ManagerPresence} />
+          <Stack.Screen name="ManagerPriceMap" options={{ headerShown: false }} component={ManagerPriceMap} />
+          <Stack.Screen name="ManagerPriceMapDet" options={{ headerShown: false }} component={ManagerPriceMapDet} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
