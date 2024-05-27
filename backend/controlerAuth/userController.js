@@ -106,31 +106,45 @@ const createAnimateur = async (req, res) => {
       res.status(500).json({ error: 'Error creating user' });
     }
   };
-const getuserbyname=async(req,res)=>{
-  let nom=req.body.name
-  let prenom=req.body.lastname
-  try{
-    const userbyName=await User.findOne({where:{name:nom,lastname:prenom}})
-    res.json(userbyName)
-  } catch (error) {
-      console.error('Error creating user:', error);
-      res.status(500).json({ error: 'Error creating user' });
+  const getuserbyname = async (req, res) => {
+    const { name, lastname } = req.query;  // Utilisation de req.query pour récupérer les paramètres de l'URL
+    
+    try {
+      const userbyName = await User.findOne({ where: { name, lastname,role:"animatrice" } });
+      
+      if (userbyName) {
+        res.json(userbyName);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } catch (error) {
+      console.error('Error fetching user by name:', error);
+      res.status(500).json({ error: 'Error fetching user by name' });
     }
-}
-const updateAnimByPdv=async (req,res)=>{
-  let iduser=req.params.id
-  let  pdvid=req.body.PDV_idPDV
+  };
+
+const updateAnimByPdv = async (req, res) => {
+  let iduser = req.params.id;
+  let pdvid = req.body.PDV_idPDV;
+
   try {
     const user = await User.findByPk(iduser);
-    if(user.role=="animateur"){
-      await user.update({PDV_idPDV:pdvid})
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
-  }
-  catch (error) {
+
+    if (user.role === "animatrice") {
+      await user.update({ PDV_idPDV: pdvid });
+      return res.status(200).json({ message: 'User updated successfully' });
+    } else {
+      return res.status(400).json({ error: 'User is not an animatrice' });
+    }
+  } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error' });
+    return res.status(500).json({ error: 'Error updating user' });
   }
-}
+};
 
 const updateUserById = async (req, res) => {
     const userId = req.params.id;
