@@ -4,6 +4,7 @@ import { Alert,CheckIcon,Input, HStack,Select, IconButton,CloseIcon,VStack,Box, 
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import port from '../port'
+import Footer from './footer'
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 const downicon = require('../../../assets/icons8-down-50.png')
@@ -17,26 +18,58 @@ const [affanim, setAffanim] = React.useState(false);
 const [categ,setCateg] =React.useState(false);
 const [marque, setMarque] = React.useState(false);
 const [ref,setRef]=React.useState(false)
+const [categs,setCategs]=React.useState([]);
+const [marques,setMarques]=React.useState([])
 const [nomspdv,setNomspdv]=React.useState([]);
 const [nomsanims,setNomanims]=React.useState([]);
+
+
 const [nomsanim,setNomanim]=React.useState('Animatrices');
 const [nompdv,setNompdv]=React.useState("Point de Vente");
 const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
 const [region,setRegion]=React.useState('Region')
+
+const [idcateg,setIdcateg]=React.useState(null)
+const [idmarque,setIdmarque]=React.useState(null)
 const [iduser,setIdUser]=React.useState([])
 const [idpdv,setIdpdv]=React.useState([])
 const [pdvs, setPdvs] = React.useState([]);
 // const port='192.168.218.26'
 
 const Regions=["Ariana","Béja","Ben Arous","Bizerte","Gabès","Gafsa","Jendouba","Kairouan","Kasserine","Kébili","Kef","Mahdia","Manouba","Médenine","Monastir","Nabeul","Sfax","Sidi Bouzid","Siliana","Sousse","Tataouine","Tozeur","Tunis","Zaghouan"]
+ 
+const Ref={
+  Referencename:nomref,
+  Marque_idMarque:idmarque,
+  Category_idCategory:idcateg
+}
 
 const Pdv={
   pdvname:nompdv,
   location:region
 }
 ////////////////////////FUNCTIONS///////////////////////////
+const Fetchallmarq=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/marques/marques")
+    setMarques(response.data)
+    console.log(response.data);
+  }catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
+const Fetchallcateg=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/categories/categories")
+    setCategs(response.data)
+    console.log(response.data);
+  }
+  catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
 const fetchPdvsname = async () => {
   try {
     const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
@@ -48,41 +81,55 @@ const fetchPdvsname = async () => {
 }
 const getpdvByname=async(info)=>{
   try{
-router.get('/namepdv',pdvController.getOnePDV)
-    let response=await axios.get("http://"+port+":3000/api/pdvs/namepdv",{info})
+    let response=await axios.get("http://"+port+":3000/api/pdvs/getId/"+info)
     setIdpdv(response.data.idPDV)
+    return response.data.idPDV
     setload(!load)
   }
   catch (error) {
-    console.error('Error fetching PDVs:', error)
+    console.error('Error fetching PDV:', error)
   }
 }
-const fetchAnimname=async ()=>{
-  try{
-    const response=await axios.get('http://'+port+':3000/api/users/')
-    const nameAnims= response.data.map(el=>{
-      console.log(el.role);
-      if(el.role=='animateur'){
-        return el.name+' '+el.lastname
+const fetchAnimname = async () => {
+  try {
+    const response = await axios.get(`http://${port}:3000/api/users/`);
+    const nameAnims = response.data.reduce((acc, el) => {
+      if (el.role === 'animatrice' && el.name && el.lastname) {
+        const fullName = `${el.name} ${el.lastname}`;
+        if (!acc.includes(fullName.trim())) {
+          acc.push(fullName.trim());
+        }
       }
-    })
+      return acc;
+    }, []);
+
     console.log(nameAnims);
-    setNomanims(nameAnims)
+    setNomanims(nameAnims);
+  } catch (error) {
+    console.error('Error fetching Anims:', error);
   }
-  catch (error) {
-    console.error('Error fetching Anims:', error)
+};
+const getIdbyname = async (name, lastname) => {
+  try {
+    const response = await axios.get(`http://${port}:3000/api/users/getonenameuser`, {
+      params: {
+        name: name,
+        lastname: lastname
+      }
+    });
+
+    if (response.data && response.data.idusers) {
+      console.log(response.data.idusers, "id de l'utilisateur"); // Vérifiez que vous recevez l'ID de l'utilisateur
+      setIdUser(response.data.idusers);
+      return response.data.idusers; // Retourne l'ID de l'utilisateur
+    } else {
+      throw new Error('User ID not found');
+    }
+  } catch (error) {
+    console.error('Error fetching user by name:', error);
+    throw error; // Laisser l'erreur être capturée par le bloc catch de la fonction appelante
   }
-}
-const getIdbyname=async(name,lastname)=>{
-  try{
-    const response=await axios.get('http://'+port+':3000/api/users/nameuser',{name:name,lastname:lastname})
-    setIdUser(response.data)
-    setload(!load)
-  }
-  catch (error) {
-    console.error('Error fetching Anims:', error)
-  }
-}
+};
 
 
 const Addpdvs=async (info,showAlert)=>{
@@ -125,7 +172,7 @@ const AddMarque=async (info,showAlert)=>{
 }
 const AddRef=async(info,showAlert)=>{
   try{
-    axios.post('http://'+port+':3000/api/reference/references',{Referencename:info})
+    axios.post('http://'+port+':3000/api/reference/references',info)
     setload(!load)
     showAlert('success', "Un Nouveau Refernce a été créé");
   }
@@ -135,18 +182,33 @@ const AddRef=async(info,showAlert)=>{
 
   }
 }
-const updateAnimByPdv=async(id,data)=> {
-  try{
-    axios.put('http://'+port+':3000/api/users/animbypdv/'+id, data);
-    setload(!load)
+const updateAnimByPdv = async (userId, pdvId, showAlert) => {
+  try {
+    if (!userId || !pdvId) {
+      throw new Error('User ID or PDV ID is missing');
+    }
+
+    const response = await axios.put(`http://${port}:3000/api/users/animbypdv/${userId}`, { PDV_idPDV: pdvId });
+
+    if (response.status === 200) {
+      console.log('Animateur bien affecté');
+      showAlert('success', "Animateur bien affecté");
+    } else {
+      console.error('Error updating user1:', response);
+      showAlert('error', "Erreur lors de la mise à jour de l'animateur. Veuillez réessayer plus tard.");
+    }
+  } catch (error) {
+    console.error('Error updating user2:', error);
+    showAlert('error', "Erreur lors de la mise à jour de l'animateur. Veuillez réessayer plus tard.");
   }
-  catch (error) {
-    console.error('Error adding Marque', error)
-  }
-}
+};
+
+
 React.useEffect(()=>{
   fetchPdvsname();
   fetchAnimname()
+  Fetchallmarq()
+  Fetchallcateg()
 },[load])
 ////////////////////////FUNCTIONS///////////////////////////
 
@@ -183,25 +245,27 @@ const hideAlert = () => {
   setAlertData({ visible: false, status: '', message: '' });
 };
 
-  const affectanim=(nameanim,namepdv)=>{
-    let name=''
-    let lastname=''
-    if(nameanim!==""){
-      const parts = nameanim.split(' ');
-      name=parts[0]
-      lastname=parts[1]
-    }
-    Promise.all([
-      getIdbyname(name, lastname), // Fetch user ID by name and last name
-      getpdvByname(namepdv)        // Fetch PDV by name
-    ]).then(results => {
-      const [userId, pdvId] = results;
-      updateAnimByPdv(userId, pdvId); // Update assuming this function requires userId and pdvId
-    })
-    .catch(error => {
-      console.error('Error in operation:', error);
-    });
+const affectanim = async (nameanim, namepdv) => {
+  let name = '';
+  let lastname = '';
+
+  if (nameanim !== "") {
+    const parts = nameanim.split(' ');
+    name = parts[0];
+    lastname = parts[1];
   }
+
+  try {
+    const userId = await getIdbyname(name, lastname); // Fetch user ID by name and last name
+    const pdvId = await getpdvByname(namepdv); // Fetch PDV ID by name
+    console.log(pdvId,userId,'gooo');
+    await updateAnimByPdv(userId, pdvId, showAlert); // Update assuming this function requires userId and pdvId
+
+    console.log('Animateur bien affecté');
+  } catch (error) {
+    console.error('Error in operation:', error);
+  }
+};
 
   function RowItem({ text, truc,settruc}) {
     return (
@@ -217,7 +281,7 @@ const hideAlert = () => {
       </View>
     );
   }
-
+    /////////////////////////Exemple//////////////////////////////
   const Example = ({text}) => {
     if(text=='Point de Vente'){
       return (
@@ -273,6 +337,65 @@ const hideAlert = () => {
       </Center>
       )
     }
+    else if(text=="Categories"){
+      return(
+        <Center>
+        <Box maxW="400">
+          <Select
+            selectedValue={nomcateg}
+            minWidth="318"
+            accessibilityLabel={nomcateg}
+            placeholder= {text}
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            mt={1}
+            onValueChange={(itemValue) => {
+              setNomcateg(itemValue);
+              const selectedCategory = categs.find(el => el.Categoryname === itemValue);
+              setIdcateg(selectedCategory ? selectedCategory.idCategory : null);
+            }}          >
+          {categs.map(el=>{
+            return(
+            <Select.Item label={el.Categoryname} value={el.Categoryname} />
+          )
+          })}
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    else if(text=="Marques"){
+      return(
+        <Center>
+        <Box maxW="400">
+          <Select
+            selectedValue={nommarq}
+            minWidth="318"
+            accessibilityLabel={nommarq}
+            placeholder= "Marque"
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            mt={1}
+            onValueChange={(itemValue) => {
+              setNommar(itemValue);
+              const selectedMarque = marques.find(el => el.marquename === itemValue);
+              setIdmarque(selectedMarque ? selectedMarque.idMarque : null);
+            }}          >
+          {marques.map(el=>{
+            return(
+            <Select.Item label={el.marquename} value={el.marquename} />
+          )
+          })}
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    /////////////////////////Exemple//////////////////////////////
     return (
       <Center>
         <Box maxW="400">
@@ -333,7 +456,7 @@ const hideAlert = () => {
       <Example text="Animatrices" />
       </Center>
       <Center flex={1} px="3">
-          <TouchableOpacity onPress={() => {updateAnimByPdv()}} style={styles.btns}>
+          <TouchableOpacity onPress={() => {affectanim(nomsanim, nompdv) }} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -379,11 +502,11 @@ const hideAlert = () => {
         <Box alignItems="center">
           <Input mx="3" placeholder="Reference" onChangeText={item=>setNomref(item)} w="100%" />
         </Box>
-        <Example text="Region" />
-        <Example text="Region" />
       </Center>
       <Center flex={1} px="3">
-      <TouchableOpacity onPress={() => AddRef(nomref,showAlert)} style={styles.btns}>
+         <Example text={"Categories" }/>
+        <Example text={"Marques"} />
+      <TouchableOpacity onPress={() => AddRef(Ref,showAlert)} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -393,7 +516,9 @@ const hideAlert = () => {
   }
   return (
     <NativeBaseProvider>
+
     <View style={styles.view1}>
+      <Text style={{fontSize:18, fontWeight:700 , marginTop:20}}>Creation de Point de Vente :</Text>
     {alertData.visible && (
           <ExampleAlert
             status={alertData.status}
@@ -422,8 +547,8 @@ const hideAlert = () => {
         {ref&&renderform('ref')}
       </ScrollView>
       </View>
-
     </View>
+    <Footer/>
     </NativeBaseProvider>
   );
 }
