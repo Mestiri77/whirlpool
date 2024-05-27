@@ -38,13 +38,13 @@ export default function App() {
       <NavigationContainer>
         <StatusBar style="auto" />
         <Stack.Navigator initialRouteName="Login">
-           <Stack.Screen name="Login" component={Login} />
+           {/* <Stack.Screen name="Login" component={Login} /> */}
           <Stack.Screen name="Creationpdv" component={Creationpdv} />
           <Stack.Screen name="CreationArt" component={CreationArt} />
           <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" component={RapportExpo} /> 
           <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
-          <Stack.Screen name="Modifpopup" component={Modifpopup} />
+          <Stack.Screen name="Modifpopup" component={Modifpopup} /> 
           <Stack.Screen name="RapportPriceMap" component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
@@ -58,6 +58,7 @@ export default function App() {
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
           <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
+          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
           <Stack.Screen name="WelcomeManager" options={{ headerShown: false }}  component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo"   options={{ headerShown: false }} component={ManagerExpo} />
           <Stack.Screen name="ManagerSelOut" options={{ headerShown: false }} component={ManagerSelOut} />

@@ -83,7 +83,7 @@ function RapportExpodet() {
                   <View style={styles.cell1}><Text>{marque.marquename}</Text></View>
                   <View style={styles.cell1}><Text>{ref.Referencename}</Text></View>
                   <View style={styles.cell1}><Text>{articles.prix}</Text></View>
-                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { article })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref:articles.Reference_idReference, idmarque : marque.Marque_idMarque, idarticle:articles.id})}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>

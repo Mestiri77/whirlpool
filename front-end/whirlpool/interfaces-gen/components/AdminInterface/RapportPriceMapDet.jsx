@@ -12,6 +12,24 @@ function RapportPriceMapDet(){
     const Example = ({text}) => {
         if(text=="Couleur"){
 
+
+          const Fetchallref=async()=>{
+            try{
+              const response=await axios.get("http://"+port+":3000/api/reference/references")
+              setReferences(response.data)
+            }catch (error) {
+                console.error('Error fetching :', error)
+              }
+            }
+            const GetRefSel=async()=>{
+              try{
+                  const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
+                  setSellRef(response.data)
+                  console.log(response.data);
+              }catch (error) {
+                  console.error('Error fetching :', error)
+                }
+          }
         return (
           <Center>
           <Box maxW="400">

@@ -7,7 +7,7 @@ import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 
 function RapportPriceMap(){
-
+  
   const [load,setLoad]=React.useState(false)
 
   const [pdvs,setPdvs]=React.useState([])
@@ -93,7 +93,7 @@ return(
         <ScrollView style={styles.viewbtns}>
             <View  >
               {categ.map(el=>(
-                <TouchableOpacity style={styles.btns}>
+                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{keysprops:el.Categoryname})}}>
                 <Text style={styles.btnText}>{el.Categoryname}</Text>
                </TouchableOpacity>
               ))}
