@@ -1,14 +1,17 @@
 import * as React from "react";
-import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
-import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
+import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
+import { CheckIcon,Alert,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
+import port from '../port'
+import Footer from './footer'
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 const downicon = require('../../../assets/icons8-down-50.png')
 
 function CreationArticle(){
 const [load,setLoad]=React.useState(false)
+const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
 const [creatArt,setCreatArt]=React.useState(false)
 const [modifArt,setModifArt]=React.useState(false)
@@ -23,9 +26,11 @@ const [couleur,setCouleur]=React.useState("")
 const [categ,setCateg]=React.useState("")
 const [typeC,setTypeC]=React.useState("")
 const [capacite,setCapacite]=React.useState("")
-const [idref,setIdref]=React.useState("")
-const [idmarque,setIdmarque]=React.useState('')
-const [idcateg,setIdcateg]=React.useState('')
+const [prix,setPrix]=React.useState(null)
+
+const [idref,setIdref]=React.useState(null)
+const [idmarque,setIdmarque]=React.useState(null)
+const [idcateg,setIdcateg]=React.useState(null)
 
 
 const [references,setReferences]=React.useState([])
@@ -35,13 +40,13 @@ const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
 const [oneref,setOneref]=React.useState([])
 const [oneArticle,setOneArticle]=React.useState([])
 
-const port='192.168.1.26'
 
 const dataArticle={
   coloeur:couleur,
   typeC:typeC,
   capacite:capacite,
   Reference_idReference:idref,
+  prix:prix
 }
 const updateRef={
   Marque_idMarque:idmarque,
@@ -81,15 +86,21 @@ const Fetchallcateg=async()=>{
   }
 }
 
-const PostArticle=async(data1,id,data2)=>{
+const PostArticle=async(data1,id,data2,showAlert )=>{
   try{
+    data1.Reference_idReference=id
+    console.log(data1.Reference_idReference,'idddd');
     await axios.post("http://"+port+":3000/api/articles/articles",data1)
     await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
+    showAlert('success', "Un Nouveau Article a été créé");
+
     setLoad(!load)
     console.log('article added');
   }
   catch (error) {
     console.error('Error Ading :', error)
+    showAlert('error', "Erreur lors de la création de l'Article. Veuillez réessayer plus tard.");
+
   }
 }
 const getOneArticlebyref=async(id)=>{
@@ -112,32 +123,44 @@ const getOneRef=async(id)=>{
   }
 }
 
-const Editref=async(data,id)=>{
+const Editref=async(data,id,showAlert )=>{
   try{
     await axios.put("http://"+port+":3000/api/reference/references/"+id,{Referencename:data})
+    showAlert('success', "Une Nouvelle Reference a été Modifier");
+
     setLoad(!load)
     console.log('updated');
   }
   catch (error) {
     console.error('Error Update :', error)
+    showAlert('error', "Erreur lors de la Modification de la Reference. Veuillez réessayer plus tard.");
+
   }
 }
 
-const EditMarque=async(data,id)=>{
+const EditMarque=async(data,id,showAlert )=>{
   try{
     await axios.put("http://"+port+":3000/api/marques/marques/"+id,{marquename:data})
+    showAlert('success', "Une Nouvelle Marque a été Modifier");
+
   }
   catch (error) {
     console.error('Error Update :', error)
+    showAlert('error', "Erreur lors de la Modification de la Marque. Veuillez réessayer plus tard.");
+
   }
 }
 
-const EditArticle=async(data,id)=>{
+const EditArticle=async(data,id,showAlert )=>{
   try{
     await axios.put("http://"+port+":3000/api/articles/articles/"+id,data)
+    showAlert('success', "Un Nouveau Article a été Modifier");
+
   }
   catch (error) {
     console.error('Error Update :', error)
+    showAlert('error', "Erreur lors de la Modification de l'Article. Veuillez réessayer plus tard.");
+
   }
   
 }
@@ -158,14 +181,14 @@ const Modifbtn = (truc) => {
     console.log('Marque_idMarque:', oneref.Marque_idMarque);
     let idMarq = oneref.Marque_idMarque;
     console.log(modif);
-    EditMarque(modif, idMarq);}
+    EditMarque(modif, idMarq,showAlert);}
 
   } else if (truc === 'couleur') {
         // Assuming `oneArticle` is an array of objects returned from your query
         if (oneArticle) {
           let idArticle = oneArticle.idArticle; // Assuming the first element has the ID you need
           console.log(idArticle);
-          EditArticle(coleurdata, idArticle); // Assuming `modif` is a predefined object with modification details
+          EditArticle(coleurdata, idArticle,showAlert); // Assuming `modif` is a predefined object with modification details
         } else {
           console.log('No matching records found');
         }
@@ -176,7 +199,7 @@ const Modifbtn = (truc) => {
     if (oneArticle) {
       let idArticle = oneArticle.idArticle; // Assuming the first element has the ID you need
       console.log(idArticle);
-      EditArticle(capacitedata, idArticle); // Assuming `modif` is a predefined object with modification details
+      EditArticle(capacitedata, idArticle,showAlert); // Assuming `modif` is a predefined object with modification details
     } else {
       console.log('No matching records found');
     }}
@@ -207,7 +230,7 @@ const validAdd=()=>{
     findId(Categories,categ,'Categoryname','idCategory',setIdcateg),
     findId(references,Ref,'Referencename','idReference',setIdref)
   ]).then(()=>{
-    PostArticle(dataArticle,idref,updateRef)
+    PostArticle(dataArticle,idref,updateRef,showAlert)
   })
   .catch(error => {
     console.error('Error in operation:', error);
@@ -220,7 +243,38 @@ React.useEffect(()=>{
   Fetchallcateg()
 },[load])
 //////////////////////////////////////////////////////////////////////////////////
+const ExampleAlert = ({ status, message, onClose }) => {
+  return (
+      <Stack space={3} w="100%" maxW="400">
+        <Alert w="100%" status={status}>
+          <VStack space={2} flexShrink={1} w="100%">
+            <HStack flexShrink={1} space={2} justifyContent="space-between">
+              <HStack space={2} flexShrink={1}>
+                <Alert.Icon mt="1" />
+                <Text fontSize="md" color="coolGray.800">
+                  {message}
+                </Text>
+              </HStack>
+              <IconButton
+                variant="unstyled"
+                _focus={{ borderWidth: 0 }}
+                icon={<CloseIcon size="3" />}
+                _icon={{ color: "coolGray.600" }}
+                onPress={onClose}
+              />
+            </HStack>
+          </VStack>
+        </Alert>
+      </Stack>
+  );
+};
+const showAlert = (status, message) => {
+  setAlertData({ visible: true, status, message });
+};
 
+const hideAlert = () => {
+  setAlertData({ visible: false, status: '', message: '' });
+};
 
     function RowItem({ text, truc,settruc,settruc2}) {
         if(settruc2==""){
@@ -376,23 +430,40 @@ React.useEffect(()=>{
            
           </Stack>
           )
+        } else if(text=='Prix'&& modif==false){
+          return(
+            <Stack space={4} w="100%" alignItems="center" mt="2%">
+            <Input 
+              w={{
+                base: "75%",
+                md: "25%"
+              }} 
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+              } 
+              placeholder={text}
+              onChangeText={item=>setPrix(item)}
+            />
+           
+          </Stack>
+          )
         }
       }
-      function Alerta() {
-        Alert.alert(
-          "Alerte",  // Titre de l'alerte
-          "Choisir une Reference",  // Message de l'alerte
-          [
-            {
-              text: "Annuler",
-              onPress: () => console.log("Annuler Pressé"),
-              style: "cancel"
-            },
-            { text: "OK", onPress: () => console.log("OK Pressé") }
-          ],
-          { cancelable: false }  // Si false, l'alerte ne se fermera pas en cliquant à l'extérieur
-        );
-      }
+      // function Alerta() {
+      //   Alert.alert(
+      //     "Alerte",  // Titre de l'alerte
+      //     "Choisir une Reference",  // Message de l'alerte
+      //     [
+      //       {
+      //         text: "Annuler",
+      //         onPress: () => console.log("Annuler Pressé"),
+      //         style: "cancel"
+      //       },
+      //       { text: "OK", onPress: () => console.log("OK Pressé") }
+      //     ],
+      //     { cancelable: false }  // Si false, l'alerte ne se fermera pas en cliquant à l'extérieur
+      //   );
+      // }
       const closepop = () => {
         if (Ref !== '') {
           console.log(Ref);
@@ -410,7 +481,7 @@ React.useEffect(()=>{
         else{
           <Center flex={1} px="3">
             <View style={styles.alert}>
-          {Alerta()}
+          {/* {Alerta()} */}
           </View>
       </Center>
     }
@@ -466,7 +537,7 @@ React.useEffect(()=>{
                     md: "0",
                   }}>              
             {RenderInput('Reference',true)}
-            <TouchableOpacity onPress={() =>{Editref(modif,idref)}} style={styles.btns}>
+            <TouchableOpacity onPress={() =>{Editref(modif,idref,showAlert)}} style={styles.btns}>
     <Text style={styles.btnText}>Modifier</Text>
   </TouchableOpacity>
           </Stack>
@@ -522,6 +593,7 @@ React.useEffect(()=>{
                 <Example text={"categorie"}/>
                 <Example text={"Type de Capacité"}/>
                 {RenderInput('Capacite',false)}
+                {RenderInput('Prix',false)}
                 <TouchableOpacity onPress={() =>{validAdd()}} style={styles.btns}>
         <Text style={styles.btnText}>Valideé</Text>
       </TouchableOpacity>
@@ -544,6 +616,14 @@ React.useEffect(()=>{
     return (
         <NativeBaseProvider>
         <View style={styles.view1}>
+        <Text style={{fontSize:18, fontWeight:700 , marginTop:20}}>Creation d'Article :</Text>
+        {alertData.visible && (
+          <ExampleAlert
+            status={alertData.status}
+            message={alertData.message}
+            onClose={hideAlert}
+          />
+        )}
           <View style={styles.view2}>
             <Image
               resizeMode="contain"
@@ -561,6 +641,7 @@ React.useEffect(()=>{
           </View>
     
         </View>
+        <Footer/>
         </NativeBaseProvider>
       );
     }

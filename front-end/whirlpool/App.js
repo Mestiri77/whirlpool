@@ -43,7 +43,7 @@ export default function App() {
           {/* <Stack.Screen name="Login" component={Login} /> */}
           <Stack.Screen name="WelcomeAdmin" options={{ headerShown: false }} component={WelcomeAdmin} /> 
           <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
-          <Stack.Screen name="CreationArt" component={CreationArt} />
+          <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
           <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" component={RapportExpo} />
           <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
