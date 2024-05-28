@@ -1,31 +1,37 @@
 import * as React from "react";
-import { ScrollView, View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, StyleSheet, Image, Text, TouchableOpacity, Modal } from "react-native";
 import { NativeBaseProvider } from "native-base";
-import { useNavigation } from '@react-navigation/native';
+import Footer from './footer';
+import PopupRapport from './PopupRapport';
 
-const leftimage = require('../../../assets/icons8-right-50.png'); 
+const leftimage = require('../../../assets/icons8-right-50.png');
+
 
 function ConsultationDesRapports() {
-    const navigation = useNavigation();
+    const [showPopup, setShowPopup] = React.useState(false);
+    const [popupType, setPopupType] = React.useState("");
+    const [rapportName, setRapportName] = React.useState("hello");
+    const [pdv, setPdv] = React.useState("");
+    const [link, setLink] = React.useState("");
 
-    function RowItem({ text, navigateTo, params }) {
-        return (
-            <View style={styles.row}>
-                <Text style={styles.text}>{text}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate(navigateTo, params)}>
-                    <Image
-                        resizeMode="contain"
-                        source={leftimage}
-                        style={styles.leftimage}
-                    />
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
+    const handleRowItemPress = (report) => {
+        setPopupType(report.popupType);
+        setRapportName(report.text);
+        setLink(report.link);
+        setShowPopup(true);
+    };
+    
+    const reports = [
+        { text: "Rapport Exposition", popupType: "expo" ,link:"RapportExpo"},
+        { text: "Rapport Price Map", popupType: "priceMap",link:"RapportPriceMap"},
+        { text: "Rapport Sell-Out", popupType: "sellOut" ,link:"RapportSellOut"},
+        { text: "Rapport De Présence", popupType: "presence",link:"RapportDePresence"},
+        { text: "Rapport Log", popupType: "log" ,link:"RapportLog"},
+    ];
     return (
         <NativeBaseProvider>
             <View style={styles.view1}>
+                <Text style={{ fontSize: 18, fontWeight: 700, marginTop: 20 }}>Consultation Des Rapports :</Text>
                 <View style={styles.view2}>
                     <Image
                         resizeMode="contain"
@@ -35,14 +41,37 @@ function ConsultationDesRapports() {
                         style={styles.image1}
                     />
                     <ScrollView>
-                        <RowItem text="Rapport Exposition" navigateTo="RapportExpo" />
-                        <RowItem text="Rapport Price Map" navigateTo="RapportPriceMap" />
-                        <RowItem text="Rapport Sell-Out" navigateTo="RapportSellOut" />
-                        <RowItem text="Rapport De Présence" navigateTo="PopupRapport" params={{ someProp: 'presence' }} />
-                        <RowItem text="Rapport Log" navigateTo="PopupRapport" params={{ someProp: 'log' }} />
+                        {reports.map((report) => (
+                            <View key={report.popupType} style={styles.row}>
+                                <Text style={styles.text}>{report.text}</Text>
+                                <TouchableOpacity onPress={() => handleRowItemPress(report)}>
+                                    <Image
+                                        resizeMode="contain"
+                                        source={leftimage}
+                                        style={styles.leftimage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        ))}
                     </ScrollView>
                 </View>
             </View>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showPopup}
+                onRequestClose={() => setShowPopup(false)}
+            >
+                <PopupRapport
+                    popupType={popupType}
+                    onClose={() => setShowPopup(false)}
+                    setPdv={setPdv}
+                    pdv={pdv}
+                    rapportName={rapportName}
+                    link={link}
+                />
+            </Modal>
+            <Footer />
         </NativeBaseProvider>
     );
 }
