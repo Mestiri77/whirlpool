@@ -4,8 +4,8 @@ import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, S
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 
-const leftimage = require('../../../assets/icons8-right-50.png'); 
-const downicon = require('../../../assets/icons8-down-50.png')
+const leftimage = require('../../../assets/left-icon.png'); 
+const downicon = require('../../../assets/down-icon.png')
 
 function CreationArticle(){
 const [load,setLoad]=React.useState(false)
@@ -263,7 +263,10 @@ React.useEffect(()=>{
               <Select selectedValue={Ref} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setRef(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setRef(itemValue)}>
               {references.map(el=>(
                 <Select.Item label={el.Referencename} value={el.Referencename}/>
               ))}
@@ -279,7 +282,10 @@ React.useEffect(()=>{
               <Select selectedValue={Marq} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setMarq(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setMarq(itemValue)}>
               {marques.map(el=>(
                 <Select.Item label={el.marquename} value={el.marquename}/>
               ))}
@@ -295,7 +301,10 @@ React.useEffect(()=>{
               <Select selectedValue={categ} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setCateg(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setCateg(itemValue)}>
               {Categories.map(el=>(
                 <Select.Item label={el.Categoryname} value={el.Categoryname}/>
               ))}
@@ -311,7 +320,11 @@ React.useEffect(()=>{
               <Select selectedValue={typeC} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setTypeC(itemValue)}>
+            }} 
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sync" />} size={5} ml="2" color="muted.400" />
+            } 
+            mt={1} onValueChange={itemValue => setTypeC(itemValue)}>
               {tdc.map(el=>(
                 <Select.Item label={el} value={el}/>
               ))}
@@ -351,7 +364,7 @@ React.useEffect(()=>{
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="palette" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setCouleur(item)}
@@ -369,7 +382,7 @@ React.useEffect(()=>{
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="sync" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setCapacite(item)}
@@ -386,7 +399,7 @@ React.useEffect(()=>{
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="paid" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setPrix(item)}

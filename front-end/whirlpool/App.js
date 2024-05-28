@@ -39,7 +39,7 @@ export default function App() {
         <StatusBar style="auto" />
         <Stack.Navigator initialRouteName="Login">
            {/* <Stack.Screen name="Login" component={Login} /> */}
-          <Stack.Screen name="Creationpdv" component={Creationpdv} />
+          {/* <Stack.Screen name="Creationpdv" component={Creationpdv} /> */}
           <Stack.Screen name="CreationArt" component={CreationArt} />
           <Stack.Screen name="ConsultRapports" component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" component={RapportExpo} /> 
