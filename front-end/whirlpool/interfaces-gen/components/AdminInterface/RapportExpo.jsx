@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import port from '../port'
 
 
 function RapportExpo() {
@@ -136,9 +136,9 @@ React.useEffect(()=>{
     <NativeBaseProvider>
       <View style={styles.view1}>
           <Header />  
-        <ScrollView style={{marginTop:-250}}>
+        <ScrollView style={{marginTop:-50}}>
         <View>
-        <View>
+        <View >
     <Text style={styles.textexpo}>Date :</Text>
     <Text style={styles.textexpo}>Zone :</Text>
     <Text style={styles.textexpo}>Magasin :</Text>
