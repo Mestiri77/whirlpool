@@ -545,6 +545,8 @@ const affectanim = async (nameanim, namepdv) => {
         {marque&&renderform('marque')}
         <RowItem text="References" truc={ref} settruc={setRef}/>
         {ref&&renderform('ref')}
+        <RowItem text="Objectif" truc={ref} settruc={setRef}/>
+
       </ScrollView>
       </View>
     </View>

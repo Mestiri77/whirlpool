@@ -5,6 +5,7 @@ import Header from './header';
 import Footer from './footer';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios'
+import port from '../port'
 
 
 function RapportSellOut() {
@@ -18,9 +19,6 @@ function RapportSellOut() {
     const [sellRef,setSellRef]=React.useState([])
     const [nbrDventes,setNbrDvents]=React.useState([])
     const [daysBetweenDates, setDaysBetweenDates] = useState([]);
-
-
-    const port='192.168.1.26'
 
     console.log(startDate);
     console.log(new Date());
