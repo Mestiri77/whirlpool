@@ -6,8 +6,8 @@ import axios from 'axios';
 import port from '../port'
 import Footer from './footer'
 
-const leftimage = require('../../../assets/icons8-right-50.png'); 
-const downicon = require('../../../assets/icons8-down-50.png')
+const leftimage = require('../../../assets/left-icon.png'); 
+const downicon = require('../../../assets/down-icon.png')
 
 function CreationArticle(){
 const [load,setLoad]=React.useState(false)
@@ -316,7 +316,10 @@ const hideAlert = () => {
               <Select selectedValue={Ref} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setRef(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setRef(itemValue)}>
               {references.map(el=>(
                 <Select.Item label={el.Referencename} value={el.Referencename}/>
               ))}
@@ -332,7 +335,10 @@ const hideAlert = () => {
               <Select selectedValue={Marq} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setMarq(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setMarq(itemValue)}>
               {marques.map(el=>(
                 <Select.Item label={el.marquename} value={el.marquename}/>
               ))}
@@ -348,7 +354,10 @@ const hideAlert = () => {
               <Select selectedValue={categ} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setCateg(itemValue)}>
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+            }  mt={1} onValueChange={itemValue => setCateg(itemValue)}>
               {Categories.map(el=>(
                 <Select.Item label={el.Categoryname} value={el.Categoryname}/>
               ))}
@@ -364,7 +373,11 @@ const hideAlert = () => {
               <Select selectedValue={typeC} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
-            }} mt={1} onValueChange={itemValue => setTypeC(itemValue)}>
+            }} 
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sync" />} size={5} ml="2" color="muted.400" />
+            } 
+            mt={1} onValueChange={itemValue => setTypeC(itemValue)}>
               {tdc.map(el=>(
                 <Select.Item label={el} value={el}/>
               ))}
@@ -404,7 +417,7 @@ const hideAlert = () => {
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="palette" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setCouleur(item)}
@@ -422,7 +435,7 @@ const hideAlert = () => {
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="sync" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setCapacite(item)}

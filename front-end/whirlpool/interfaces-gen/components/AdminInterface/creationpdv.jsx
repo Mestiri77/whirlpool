@@ -6,9 +6,14 @@ import axios from 'axios';
 import port from '../port'
 import Footer from './footer'
 
-const leftimage = require('../../../assets/icons8-right-50.png'); 
-const downicon = require('../../../assets/icons8-down-50.png')
 
+const leftimage = require('../../../assets/left-icon.png'); 
+const downicon = require('../../../assets/down-icon.png')
+const IconRregion=require ('../../../assets/region-icon.png')
+const ptDv = require ('../../../assets/point-de-vente-icon.png')
+const refference = require('../../../assets/reference-icon.png')
+const categorie = require ('../../../assets/category-icon.png')
+const marque =require ('../../../assets/marque-icon.png')
 function Creationpdv() {
   const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
@@ -269,6 +274,7 @@ const affectanim = async (nameanim, namepdv) => {
 
   function RowItem({ text, truc,settruc}) {
     return (
+      
       <View style={styles.row}>
         <Text style={styles.text}>{text}</Text>
         <TouchableOpacity onPress={() => {settruc(!truc),console.log(truc,text)}}>
@@ -286,28 +292,29 @@ const affectanim = async (nameanim, namepdv) => {
     if(text=='Point de Vente'){
       return (
         <Center>
-          <Box maxW="400">
-            <Select
-              selectedValue={nompdv}
-              minWidth="240"
-              accessibilityLabel={nompdv}
-              placeholder= {nompdv}
-              _selectedItem={{
-                bg: "teal.600",
-                endIcon: <CheckIcon size="5" />
-              }}
-              mt={1}
-              onValueChange={itemValue => setNompdv(itemValue)}
-            >
-            {nomspdv.map(el=>{
-              return(
-              <Select.Item label={el} value={el} />
-            )
-            })}
-  
-            </Select>
-          </Box>
-        </Center>
+        <Box maxW="400">
+         
+          <Select
+            selectedValue={nompdv}
+            minWidth="240"
+            accessibilityLabel={nompdv}
+            placeholder={nompdv}
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="store" />} size={5} ml="2" color="muted.400" />
+            } 
+            mt={1}
+            onValueChange={itemValue => setNompdv(itemValue)}
+          >
+            {nomspdv.map((el, index) => (
+              <Select.Item key={index} label={el} value={el} />
+            ))}
+          </Select>
+        </Box>
+      </Center>
       );
     }
     else if(text=='Animatrices'){
@@ -323,6 +330,9 @@ const affectanim = async (nameanim, namepdv) => {
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
             }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+            } 
             mt={1}
             onValueChange={itemValue => setNomanim(itemValue)}
           >
@@ -350,6 +360,9 @@ const affectanim = async (nameanim, namepdv) => {
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
             }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+            } 
             mt={1}
             onValueChange={(itemValue) => {
               setNomcateg(itemValue);
@@ -379,6 +392,9 @@ const affectanim = async (nameanim, namepdv) => {
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
             }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
+            } 
             mt={1}
             onValueChange={(itemValue) => {
               setNommar(itemValue);
@@ -404,6 +420,9 @@ const affectanim = async (nameanim, namepdv) => {
             minWidth="240"
             accessibilityLabel={region}
             placeholder= {region}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="location-on" />} size={5} ml="2" color="muted.400" />
+            } 
             _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
@@ -431,7 +450,7 @@ const affectanim = async (nameanim, namepdv) => {
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="store" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder="Point de vente" 
               onChangeText={item=>setNompdv(item)}
@@ -468,7 +487,10 @@ const affectanim = async (nameanim, namepdv) => {
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Category" onChangeText={item=>setNomcateg(item)}  w="100%" />
+          <Input mx="3" placeholder="Category" 
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+            } onChangeText={item=>setNomcateg(item)}  w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
@@ -484,7 +506,10 @@ const affectanim = async (nameanim, namepdv) => {
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Marque" onChangeText={item=>setNommar(item)} w="100%" />
+          <Input mx="3" placeholder="Marque"
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
+            } onChangeText={item=>setNommar(item)} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
@@ -500,7 +525,10 @@ const affectanim = async (nameanim, namepdv) => {
       <View style={styles.inputs}>
       <Center flex={1} px="3">
         <Box alignItems="center">
-          <Input mx="3" placeholder="Reference" onChangeText={item=>setNomref(item)} w="100%" />
+          <Input mx="3" placeholder="Reference" 
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+            } onChangeText={item=>setNomref(item)} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">

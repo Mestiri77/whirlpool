@@ -10,29 +10,24 @@ const generateToken = (userId, userName) => {
   return jwt.sign({ userId, userName }, 'secretKey', { expiresIn: expiresIn });
 };
 
-const loginUser = async (req, res) => {
+async function loginUser(req, res) {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await Users.findOne({ where: { email } });
 
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user || user.password !== password) { // You should ideally hash the password
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (passwordMatch) {
-      const token = generateToken(user.id, user.fullName);
-      res.json({ token, userId: user.id });
-    } else {
-      res.status(401).json({ message: 'Invalid Password' });
-    }
+    const token = jwt.sign({ userId: user.id, role: user.role }, 'secretKey', { expiresIn: '1d' });
+    res.status(200).json({ token, role: user.role });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server Error' });
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-};
+}
+
 
 
 const checkPass = async(req, res) => {

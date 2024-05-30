@@ -3,6 +3,9 @@ import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,T
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Slider, Stack} from "native-base";
 import Header from './header'
 import Footer from './footer'
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 function RapportPriceMapDet(){
     const [color,setColor]=React.useState('')
@@ -12,6 +15,24 @@ function RapportPriceMapDet(){
     const Example = ({text}) => {
         if(text=="Couleur"){
 
+
+          const Fetchallref=async()=>{
+            try{
+              const response=await axios.get("http://"+port+":3000/api/reference/references")
+              setReferences(response.data)
+            }catch (error) {
+                console.error('Error fetching :', error)
+              }
+            }
+            const GetRefSel=async()=>{
+              try{
+                  const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
+                  setSellRef(response.data)
+                  console.log(response.data);
+              }catch (error) {
+                  console.error('Error fetching :', error)
+                }
+          }
         return (
           <Center>
           <Box maxW="400">
@@ -81,6 +102,27 @@ function RapportPriceMapDet(){
     </Box>
         );
     };
+     const exportToExcel = async () => {
+  const data = [
+    ["marque", "References", "Capacité", "prix"],
+    ...categ.map(el => [
+      el.Categoryname,
+      CountSameCateg(el.idCategory),
+      Findwhirlpool(el.idCategory),
+      CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)) + "%"
+    ])
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rapport Expo",true);
+
+  const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+  const uri = FileSystem.cacheDirectory + 'rapport_expo.xlsx';
+  console.log("good");
+  await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+  await Sharing.shareAsync(uri);
+};
 
     const Tableaux = () => {
         return (
