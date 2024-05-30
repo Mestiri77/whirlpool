@@ -5,6 +5,7 @@ const presenceController = require('../controllers/PresC');
 // Routes pour les présences
 router.post('/presences', presenceController.createPresence);
 router.get('/presences', presenceController.getAllPresences);
+router.get ('/pdvName/:pdvname',presenceController.getPresencesByPDVName)
 router.get('/presences/:id', presenceController.getPresenceById);
 router.put('/presences/:id', presenceController.updatePresence);
 router.delete('/presences/:id', presenceController.deletePresence);

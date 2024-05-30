@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios'
 import port from '../port'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
+  const route = useRoute()
+const { month, pdv }=route.params
   const navigation = useNavigation();
 
 
@@ -18,11 +23,12 @@ function RapportExpo() {
   const [categ,setCateg]=React.useState([])
   const [references,setReferences]=React.useState([])
   const [marques,setMarques]=React.useState([])
-  const [pdv,setPdv]=React.useState([])
+  const [pdvs,setPdvs]=React.useState([])
+const [ anim ,setAnim]=React.useState({})
  
   
   const [idWhirlpool,setIdwhirlpool]=React.useState(null)
-  const port='192.168.1.26'
+
   const storeData = async (key, category) => {
     try {
       await AsyncStorage.setItem(key, category);
@@ -32,6 +38,16 @@ function RapportExpo() {
   };
 
 /////////////////Functions///////////////////////////
+const FetchAnim=async(pdvs)=>{
+  try{
+    const response=await axios.get(`http://`+port+`:3000/api/users/user/${pdvs}`)
+    console.log(response.data);
+    setAnim(response.data)
+  }
+  catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
 const Fetchallcateg=async()=>{
   try{
     const response=await axios.get("http://"+port+":3000/api/categories/categories")
@@ -63,7 +79,7 @@ const Fetchallref=async(categname)=>{
     try{
   router.get('/namepdv',pdvController.getOnePDV)
       let response=await axios.get("http://"+port+":3000/api/pdvs/pdvs/"+id)
-      setPdv(response.data)
+      setPdvs(response.data)
       setLoad(!load)
     }
     catch (error) {
@@ -124,12 +140,36 @@ const CountTaux = (total, partie) => {
     ))}
     return total
  }
+ const exportToExcel = async () => {
+  const data = [
+    ["Famille de produit", "Expo Globale", "Expo Whirlpool", "Taux D'exposition"],
+    ...categ.map(el => [
+      el.Categoryname,
+      CountSameCateg(el.idCategory),
+      Findwhirlpool(el.idCategory),
+      CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)) + "%"
+    ]),
+    ["Total", TotalExpoGlob(), TotalExpoWhirl(), TotalTaux() + "%"]
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rapport Expo",true);
+
+  const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+  const uri = FileSystem.cacheDirectory + 'rapport_expo.xlsx';
+  console.log("good");
+  await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+  await Sharing.shareAsync(uri);
+};
 
 React.useEffect(()=>{
   Fetchallcateg()
   Fetchallref()
   Fetchallmarq()
   findIdWhirlpool()
+  FetchAnim(pdvs)
+  getpdvByID(anim.PDV_idPDV)
 },[load])
 ////////////////////////////////////////////////////
   return (
@@ -140,9 +180,9 @@ React.useEffect(()=>{
         <View>
         <View >
     <Text style={styles.textexpo}>Date :</Text>
-    <Text style={styles.textexpo}>Zone :</Text>
-    <Text style={styles.textexpo}>Magasin :</Text>
-    <Text style={styles.textexpo}>Animatrice :</Text>
+    <Text style={styles.textexpo}>Zone :{pdvs.location}</Text>
+    <Text style={styles.textexpo}>Magasin :{pdv}</Text>
+    <Text style={styles.textexpo}>Animatrice {anim.name}:</Text>
   </View>
   <View style={styles.container2}>
     {/* Première colonne */}
@@ -197,7 +237,7 @@ React.useEffect(()=>{
     </View>
   </View>
     <Center>
-    <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+    <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
         <Text style={styles.btnText}>Exporter</Text>
       </TouchableOpacity>
       </Center>

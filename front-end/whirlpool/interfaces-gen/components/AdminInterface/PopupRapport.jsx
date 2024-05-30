@@ -1,9 +1,10 @@
-import * as React from "react";
+import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { CheckIcon, Center, NativeBaseProvider, Box, Select, View } from "native-base";
+import { CheckIcon, Center, NativeBaseProvider, Box, Select, View, Icon } from "native-base";
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import port from '../port'
+import { MaterialIcons } from "@expo/vector-icons";  // Importing the icons from @expo/vector-icons
+import port from '../port';
 
 function PopupRapport({ popupType, onClose, setPdv, pdv, rapportName, link }) {
     const navigation = useNavigation();
@@ -11,80 +12,80 @@ function PopupRapport({ popupType, onClose, setPdv, pdv, rapportName, link }) {
     const [month, setMonth] = React.useState("");
     const [nomspdv, setNomspdv] = React.useState([]);
 
-    /////////////////////////////fonction/////////////////////
     const fetchPdvsname = async () => {
         try {
-          const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
-          const pdvNames = response.data.map(pdv => pdv.pdvname);
-          setNomspdv(pdvNames);
+            const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
+            const pdvNames = response.data.map(pdv => pdv.pdvname);
+            setNomspdv(pdvNames);
         } catch (error) {
-          console.error('Error fetching PDVs:', error)
-      
+            console.error('Error fetching PDVs:', error);
         }
-      }
-      React.useEffect(() => {
-        fetchPdvsname()
-      }, []);
-      //////////////////////////////////////////////////////
-    const Example = ({ text, setOption, option }) => {
-        return (
-            <Center>
-                <Box maxW="400" mt={5}>
-                    <Select
-                        selectedValue={option}
-                        minWidth="100%"
-                        accessibilityLabel="Choisir le point de vente"
-                        placeholder={text}
-                        _selectedItem={{
-                            bg: "teal.600",
-                            endIcon: <CheckIcon size="5" />,
-                        }}
-                        mt={1}
-                        onValueChange={(itemValue) => setOption(itemValue)}
-                    >
-                        {nomspdv.map(el=>(
-
-                        <Select.Item label={el} value={el} />
-                        ))}
-                    </Select>
-                </Box>
-            </Center>
-        );
     };
 
-    const ExampleMonth = ({ text, setOption, option }) => {
-        return (
-            <Center>
-                <Box maxW="400" mt={5}>
-                    <Select
-                        selectedValue={option}
-                        minWidth="100%"
-                        accessibilityLabel="Choisir le mois"
-                        placeholder={text}
-                        _selectedItem={{
-                            bg: "teal.600",
-                            endIcon: <CheckIcon size="5" />,
-                        }}
-                        mt={1}
-                        onValueChange={(itemValue) => setOption(itemValue)}
-                    >
-                        <Select.Item label="Janvier" value="1" />
-                        <Select.Item label="Février" value="2" />
-                        <Select.Item label="Mars" value="3" />
-                        <Select.Item label="Avril" value="4" />
-                        <Select.Item label="Mai" value="5" />
-                        <Select.Item label="Juin" value="6" />
-                        <Select.Item label="Juillet" value="7" />
-                        <Select.Item label="Août" value="8" />
-                        <Select.Item label="Septembre" value="9" />
-                        <Select.Item label="Octobre" value="10r" />
-                        <Select.Item label="Novembre" value="11" />
-                        <Select.Item label="Décembre" value="12" />
-                    </Select>
-                </Box>
-            </Center>
-        );
-    };
+    React.useEffect(() => {
+        fetchPdvsname();
+    }, []);
+
+    const Example = ({ text, setOption, option }) => (
+        <Center>
+            <Box maxW="400" mt={5}>
+                <Select
+                    selectedValue={option}
+                    minWidth="100%"
+                    accessibilityLabel="Choisir le point de vente"
+                    placeholder={text}
+                    _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                    }}
+                    InputLeftElement={
+                        <Icon as={<MaterialIcons name="store" />} size={5} ml="2" color="muted.400" />
+                    } 
+                    mt={1}
+                    onValueChange={(itemValue) => setOption(itemValue)}
+                >
+                    {nomspdv.map((el, index) => (
+                        <Select.Item key={index} label={el} value={el} />
+                    ))}
+                </Select>
+            </Box>
+        </Center>
+    );
+
+    const ExampleMonth = ({ text, setOption, option }) => (
+        <Center>
+            <Box maxW="400" mt={5}>
+                <Select
+                    selectedValue={option}
+                    minWidth="100%"
+                    accessibilityLabel="Choisir le mois"
+                    placeholder={text}
+                    _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                    }}
+                    InputLeftElement={
+                        <Icon as={<MaterialIcons name="event" />} size={5} ml="2" color="muted.400" />
+                    } 
+                    mt={1}
+                    onValueChange={(itemValue) => setOption(itemValue)}
+                >
+                    <Select.Item label="Janvier" value="1" />
+                    <Select.Item label="Février" value="2" />
+                    <Select.Item label="Mars" value="3" />
+                    <Select.Item label="Avril" value="4" />
+                    <Select.Item label="Mai" value="5" />
+                    <Select.Item label="Juin" value="6" />
+                    <Select.Item label="Juillet" value="7" />
+                    <Select.Item label="Août" value="8" />
+                    <Select.Item label="Septembre" value="9" />
+                    <Select.Item label="Octobre" value="10" />
+                    <Select.Item label="Novembre" value="11" />
+                    <Select.Item label="Décembre" value="12" />
+                </Select>
+            </Box>
+        </Center>
+    );
 
     return (
         <NativeBaseProvider>
@@ -102,7 +103,7 @@ function PopupRapport({ popupType, onClose, setPdv, pdv, rapportName, link }) {
                         <Center mt={10}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate(link, { someProp: 'someValue' })}
+                                    onPress={() => navigation.navigate(link, { month, pdv })}
                                     style={styles.btns}
                                 >
                                     <Text style={styles.btnText}>Vérifier</Text>

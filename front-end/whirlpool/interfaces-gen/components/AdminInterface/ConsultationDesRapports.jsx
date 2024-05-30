@@ -4,7 +4,7 @@ import { NativeBaseProvider } from "native-base";
 import Footer from './footer';
 import PopupRapport from './PopupRapport';
 
-const leftimage = require('../../../assets/icons8-right-50.png');
+const leftimage = require('../../../assets/left-icon.png');
 
 
 function ConsultationDesRapports() {

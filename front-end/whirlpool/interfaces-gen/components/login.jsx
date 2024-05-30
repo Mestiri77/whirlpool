@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import axios from "axios";
 
-const Divider = () => (
-  <View style={styles.divider} />
+const Divider = () => <View style={styles.divider} />;
 
-);
 const port = '192.168.248.6';
+
 const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
   <>
     <Text style={styles.label}>{label}</Text>
@@ -24,17 +22,15 @@ const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
- const [anim,setAnim]=useState({})
 
   const handleLogin = async () => {
-    if (!email || !password || !selectedValue) {
-      Alert.alert("Error", "Please fill in all fields and select a role");
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     try {
-      const response = await fetch("http://"+port+":3000/auth/login", {
+      const response = await fetch(`http://${port}:3000/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -45,17 +41,17 @@ const LoginScreen = ({ navigation }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // Navigate to appropriate screen based on role
-        if (selectedValue === "Admin") {
-          navigation.navigate("WelcomeAdmin");
-        } else if (selectedValue === "Manager") {
+        const { role } = data;
 
-          
+        // Navigate to appropriate screen based on role
+        if (role === "Admin") {
+          navigation.navigate("WelcomeAdmin");
+        } else if (role === "Manager") {
           navigation.navigate("WelcomeManager");
-        } else if (selectedValue === "Animateur") {
+        } else if (role === "Animateur") {
           const animResponse = await axios.get(`http://${port}:3000/api/users/animateur`);
           let ani = animResponse.data.filter((e) => e.email === email);
-              navigation.navigate("WelcomeAnime", { ani: ani[0] });
+          navigation.navigate("WelcomeAnime", { ani: ani[0] });
         }
       } else {
         Alert.alert("Error", data.message || "Invalid credentials");
@@ -76,18 +72,6 @@ const LoginScreen = ({ navigation }) => {
         <Divider />
         <InputField label="Password" placeholder="Enter your password" isPassword={true} onChangeText={setPassword} />
         <Divider />
-        <View style={styles.roles}>
-          <Text>Veuillez choisir votre role :</Text>
-          <Picker
-            selectedValue={selectedValue}
-            style={{ height: 50, width: 170 }}
-            onValueChange={(itemValue) => setSelectedValue(itemValue)}
-          >
-            <Picker.Item label="Animateur" value="Animateur" />
-            <Picker.Item label="Admin" value="Admin" />
-            <Picker.Item label="Manager" value="Manager" />
-          </Picker>
-        </View>
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
@@ -97,9 +81,6 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  roles: {
-    marginTop: 10,
-  },
   container: {
     borderRadius: 20,
     backgroundColor: "#FFF",

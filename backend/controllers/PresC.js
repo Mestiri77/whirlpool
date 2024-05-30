@@ -1,4 +1,5 @@
 const Presence = require('../models/Presence.js');
+const PDV = require ('../models/Pdv.js')
 
 // Create
 async function createPresence(req, res) {
@@ -117,6 +118,36 @@ async function deletePresence(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function getPresencesByPDVName(req, res) {
+  const pdvName = req.params.pdvName;
+
+  try {
+    // Rechercher le point de vente par nom
+    const pdv = await PDV.findOne({
+      where: { name: pdvName },  // Ajustez le nom du champ selon votre schéma
+      include: [{
+        model: Presence,
+        as: 'Presences'  // Assurez-vous que l'alias correspond à votre configuration d'association
+      }]
+    });
+
+    if (!pdv) {
+      return res.status(404).json({ message: `Aucun point de vente trouvé avec le nom ${pdvName}` });
+    }
+
+    // Afficher les informations des présences
+    const presences = pdv.Presences;
+    if (presences && presences.length > 0) {
+      return res.status(200).json(presences);
+    } else {
+      return res.status(404).json({ message: `Aucune présence trouvée pour le point de vente ${pdvName}` });
+    }
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des présences pour ${pdvName}:`, error);
+    return res.status(500).json({ message: 'Erreur interne du serveur' });
+  }
+}
+
 
 module.exports = {
   createPresence,
@@ -126,5 +157,6 @@ module.exports = {
   deletePresence,
   addCheckin,
   addCheckout,
-  addPosition
+  addPosition, 
+  getPresencesByPDVName
 };

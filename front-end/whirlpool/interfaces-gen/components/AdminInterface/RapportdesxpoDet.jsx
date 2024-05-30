@@ -6,14 +6,17 @@ import Footer from './footer';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 function RapportExpodet() {
   const port = '192.168.248.6';
   const navigation = useNavigation();
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
-  const [marque,setMarque]=useState({})
-  const [ref,setRef]=useState({})
+  const [marques, setMarques] = useState({});
+  const [refs, setRefs] = useState({});
 
   const fetchArticleByCategory = async (categ) => {
     try {
@@ -23,22 +26,25 @@ function RapportExpodet() {
       console.error('Error fetching articles:', error);
     }
   };
+
   const fetchMarque = async (id) => {
     try {
-      const response = await axios.get(`http://${port}:3000/api/marques//marques/${id}`);
-      setMarque(response.data);
+      const response = await axios.get(`http://${port}:3000/api/marques/marques/${id}`);
+      setMarques(prevState => ({ ...prevState, [id]: response.data }));
     } catch (error) {
-      console.error('Error fetching articles:', error);
+      console.error('Error fetching marque:', error);
     }
   };
+
   const fetchRef = async (id) => {
     try {
-      const response = await axios.get(`http://${port}::3000/api/reference/references/${id}`);
-      setRef(response.data);
+      const response = await axios.get(`http://${port}:3000/api/reference/references/${id}`);
+      setRefs(prevState => ({ ...prevState, [id]: response.data }));
     } catch (error) {
-      console.error('Error fetching articles:', error);
+      console.error('Error fetching reference:', error);
     }
   };
+
   const getData = async (key) => {
     try {
       const value = await AsyncStorage.getItem(key);
@@ -50,10 +56,28 @@ function RapportExpodet() {
     }
   };
 
+  const exportToExcel = async () => {
+    const data = [
+      ["Marques", "Référence", "Prix"],
+      ...articles.map(article => [
+        marques[article.Marque_idMarque]?.marquename || '',
+        refs[article.Reference_idReference]?.Referencename || '',
+        article.prix
+      ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rapport Expo");
+
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+    const uri = FileSystem.cacheDirectory + 'rapport_expo.xlsx';
+    await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+    await Sharing.shareAsync(uri);
+  };
+
   useEffect(() => {
     getData('category');
-    fetchRef(articles.Reference_idReference)
-    fetchMarque(ref.Marque_idMarque)
   }, []);
 
   useEffect(() => {
@@ -61,6 +85,17 @@ function RapportExpodet() {
       fetchArticleByCategory(categ);
     }
   }, [categ]);
+
+  useEffect(() => {
+    articles.forEach(article => {
+      if (!marques[article.Marque_idMarque]) {
+        fetchMarque(article.Marque_idMarque);
+      }
+      if (!refs[article.Reference_idReference]) {
+        fetchRef(article.Reference_idReference);
+      }
+    });
+  }, [articles]);
 
   return (
     <NativeBaseProvider>
@@ -80,10 +115,10 @@ function RapportExpodet() {
               </View>
               {articles.map((article, index) => (
                 <View style={styles.row} key={index}>
-                  <View style={styles.cell1}><Text>{marque.marquename}</Text></View>
-                  <View style={styles.cell1}><Text>{ref.Referencename}</Text></View>
-                  <View style={styles.cell1}><Text>{articles.prix}</Text></View>
-                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref:articles.Reference_idReference, idmarque : marque.Marque_idMarque, idarticle:articles.id})}>
+                  <View style={styles.cell1}><Text>{marques[article.Marque_idMarque]?.marquename}</Text></View>
+                  <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename}</Text></View>
+                  <View style={styles.cell1}><Text>{article.prix}</Text></View>
+                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref: article.Reference_idReference, idmarque: article.Marque_idMarque, idarticle: article.id })}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>
@@ -91,6 +126,9 @@ function RapportExpodet() {
             </View>
           </View>
         </ScrollView>
+        <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
+          <Text style={styles.btnText}>Exporter</Text>
+        </TouchableOpacity>
       </View>
       <Footer />
     </NativeBaseProvider>
@@ -154,8 +192,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     width: 150,
-    marginTop: "5%",
+    marginTop: 20,
     alignItems: 'center',
+    alignSelf: 'center'
   },
   btnText: {
     color: 'white',

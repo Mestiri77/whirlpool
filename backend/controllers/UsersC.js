@@ -82,6 +82,42 @@ async function deleteUser(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function getUsersByPDVName(req, res) {
+  const pdvName = req.params.pdvName;
+
+  try {
+    // Rechercher le point de vente par nom
+    const pdv = await PDV.findOne({
+      where: { name: pdvName },  // Ajustez le nom du champ selon votre schéma
+      include: [{
+        model: Users,
+        as: 'Users'  // Assurez-vous que l'alias correspond à votre configuration d'association
+      }]
+    });
+
+    if (!pdv) {
+      return res.status(404).json({ message: `Aucun point de vente trouvé avec le nom ${pdvName}` });
+    }
+
+    // Afficher les informations des utilisateurs (animatrices)
+    const animatrices = pdv.Users;
+    if (animatrices && animatrices.length > 0) {
+      return res.status(200).json(animatrices.map(user => ({
+        id: user.id,
+        name: user.name,  // Ajustez les champs selon votre schéma
+        lastname: user.lastname,
+        email: user.email,
+        role: user.role
+      })));
+    } else {
+      return res.status(404).json({ message: `Aucune animatrice affectée à ${pdvName}` });
+    }
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des animatrices pour ${pdvName}:`, error);
+    return res.status(500).json({ message: 'Erreur interne du serveur' });
+  }
+}
+
 
 module.exports = {
   createUser,
@@ -89,5 +125,6 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-  getrolbyid
+  getrolbyid,
+  getUsersByPDVName
 };

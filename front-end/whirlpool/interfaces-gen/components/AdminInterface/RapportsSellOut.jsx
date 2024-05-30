@@ -5,6 +5,9 @@ import Header from './header';
 import Footer from './footer';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios'
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 
 function RapportSellOut() {
@@ -51,6 +54,29 @@ const GetRefSel=async()=>{
         console.error('Error fetching :', error)
       }
 }
+const exportToExcel = async () => {
+    const data = [
+      ["Reference", ...daysBetweenDates], // Première ligne avec les dates
+      ...references.map(ref => { // Lignes de données pour chaque référence
+        const nbrDVArray = FetchNbrDV(ref.idReference);
+        const totalSales = fetchTotalSales(ref.idReference);
+        const objectif = FetchObjectif(ref.idReference);
+        const percentage = calculatePercentage(totalSales, objectif).percentage + "%";
+
+        return [ref.Referencename, ...nbrDVArray, totalSales, objectif, percentage];
+      })
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rapport Sell-Out");
+
+    const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+    const uri = FileSystem.cacheDirectory + 'rapport_sellout.xlsx';
+    await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+    await Sharing.shareAsync(uri);
+};
+
 React.useEffect(()=>{
     Fetchallref()
     GetAllSellouts()
@@ -243,7 +269,7 @@ React.useEffect(()=>{
                 {Tableaux()}
                 </ScrollView>
                 <Center>
-                <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+                <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
                 <Text style={styles.btnText}>Exporter</Text>
                 </TouchableOpacity>
                 </Center>
