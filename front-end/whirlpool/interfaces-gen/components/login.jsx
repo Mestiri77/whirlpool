@@ -42,13 +42,13 @@ const LoginScreen = ({ navigation }) => {
 
       if (response.ok) {
         const { role } = data;
-
+console.log(role);
         // Navigate to appropriate screen based on role
         if (role === "Admin") {
           navigation.navigate("WelcomeAdmin");
         } else if (role === "Manager") {
           navigation.navigate("WelcomeManager");
-        } else if (role === "Animateur") {
+        } else if (role === "animatrice") {
           const animResponse = await axios.get(`http://${port}:3000/api/users/animateur`);
           let ani = animResponse.data.filter((e) => e.email === email);
           navigation.navigate("WelcomeAnime", { ani: ani[0] });
