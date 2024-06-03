@@ -1,4 +1,11 @@
 const Article = require('../models/Article.js');
+const Category=require('../models/Category.js')
+const Reference=require('../models/Reference.js')
+const Marque = require('../models/Marque.js'); // Adjust the path as needed
+const PriceM =require ('../models/PriceM.js')
+const PDV = require ('../models/Pdv.js')
+const Exposition =require('../models/Exposition.js')
+
 
 // Create
 async function createArticle(req, res) {
@@ -82,6 +89,116 @@ async function deleteArticle(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+const getArticlesByCategory = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    const { categoryName } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Reference,
+        include: {
+          model: Category,
+          where: {
+            Categoryname: categoryName,
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
+const getArticleDetails = async (req, res) => {
+  try {
+    const { categoryname, pdvname,dateC} = req.params;
+
+    if (!dateC || !categoryname || !pdvname) {
+      return res.status(400).json({ message: "Les paramètres 'dateC', 'categoryname' et 'pdvname' sont requis" });
+    }
+
+    // Trouver la catégorie
+    const categoryData = await Category.findOne({ where: { Categoryname: categoryname } });
+    if (!categoryData) {
+      return res.status(404).json({ message: "Catégorie non trouvée" });
+    }
+
+    // Trouver le point de vente
+    const pdvData = await PDV.findOne({ where: { pdvname: pdvname } });
+    if (!pdvData) {
+      return res.status(404).json({ message: "Point de vente non trouvé" });
+    }
+
+    // Récupérer les articles avec leurs références, marques, et expositions, filtrés par la catégorie, le point de vente et la date via PriceM
+    const articles = await Article.findAll({
+      include: [
+        {
+          model: Reference,
+          include: [
+            { model: Marque },
+            {
+              model: Category,
+              where: { idCategory: categoryData.idCategory }
+            }
+          ]
+        },
+        {
+          model: Exposition,
+          required: true,
+          where: {
+            PDV_idPDV: pdvData.idPDV,
+          },
+          include: [
+            {
+              model: PDV,
+              where: {
+                idPDV: pdvData.idPDV
+              }
+            }
+          ]
+        },
+        {
+          model: PriceM,
+          where: {
+            dateC: dateC,
+            PDV_idPDV: pdvData.idPDV
+          }
+        }
+      ]
+    });
+
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({ message: "Aucun article trouvé pour les critères spécifiés" });
+    }
+
+    // Formater les résultats
+    const formattedArticles = articles.map(article => ({
+      price: article.prix,
+      capacity: article.capacite,
+      reference: {
+        id: article.Reference.idReference,
+        name: article.Reference.Referencename,
+        marque: {
+          id: article.Reference.Marque.idMarque,
+          name: article.Reference.Marque.marquename
+        }
+      }
+    }));
+
+    res.status(200).json(formattedArticles);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des détails des articles :", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des détails des articles" });
+  }
+};
+
 
 module.exports = {
   createArticle,
@@ -89,5 +206,7 @@ module.exports = {
   getArticleById,
   updateArticle,
   deleteArticle,
-  getArticleByrefId
+  getArticleByrefId,
+  getArticlesByCategory,
+getArticleDetails
 };

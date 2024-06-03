@@ -4,10 +4,12 @@ import { NativeBaseProvider, Center,Stack,Input,Icon } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 
-function Modifpopup() {
-
+function Modifpopup({route}) {
+  // const { idref, idmarque, idarticle } = route.params;
     const [modif,setModif] = React.useState('');
-
+const [reff,setReff]=React.useState('')
+const [marque , setMarque]=React.useState('')
+const [article,setArticle]=React.useState('')
     const RenderInput=(text)=>{
         if(text=="Reference"){    
             return(
