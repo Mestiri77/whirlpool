@@ -7,7 +7,7 @@ const Presence = sequelize.define('Presence', {
       primaryKey: true,
       autoIncrement: true
     },
-    datePr: DataTypes.DATE,
+    datePr: DataTypes.STRING,
     checkin: DataTypes.STRING,
     checkout: DataTypes.STRING,
     position: DataTypes.STRING,

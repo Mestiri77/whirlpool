@@ -9,9 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from '../port'
 
 function RapportExpodet() {
-  const port = '192.168.248.6';
   const navigation = useNavigation();
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');

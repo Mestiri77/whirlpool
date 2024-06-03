@@ -23,17 +23,19 @@ const [affanim, setAffanim] = React.useState(false);
 const [categ,setCateg] =React.useState(false);
 const [marque, setMarque] = React.useState(false);
 const [ref,setRef]=React.useState(false)
+const [object,setObject]=React.useState(false)
 const [categs,setCategs]=React.useState([]);
 const [marques,setMarques]=React.useState([])
 const [nomspdv,setNomspdv]=React.useState([]);
 const [nomsanims,setNomanims]=React.useState([]);
-
+const [refnom,setRefnom]=React.useState([]);
 
 const [nomsanim,setNomanim]=React.useState('Animatrices');
 const [nompdv,setNompdv]=React.useState("Point de Vente");
 const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
+const [nomobj,setObj]=React.useState("")
 const [region,setRegion]=React.useState('Region')
 
 const [idcateg,setIdcateg]=React.useState(null)
@@ -56,6 +58,15 @@ const Pdv={
   location:region
 }
 ////////////////////////FUNCTIONS///////////////////////////
+const Fetchallref=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/reference/references")
+    setRefnom(response.data)
+    console.log(response.data);
+  }catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
 const Fetchallmarq=async()=>{
   try{
     const response=await axios.get("http://"+port+":3000/api/marques/marques")
@@ -214,6 +225,7 @@ React.useEffect(()=>{
   fetchAnimname()
   Fetchallmarq()
   Fetchallcateg()
+  Fetchallref()
 },[load])
 ////////////////////////FUNCTIONS///////////////////////////
 
@@ -406,12 +418,46 @@ const affectanim = async (nameanim, namepdv) => {
             <Select.Item label={el.marquename} value={el.marquename} />
           )
           })}
+          
           </Select>
         </Box>
       </Center>
       )
     }
-    /////////////////////////Exemple//////////////////////////////
+    else if(text=="Reference"){
+      return(
+        <Center>
+        <Box maxW="400">
+          <Select
+            selectedValue={nomref}
+            minWidth="318"
+            accessibilityLabel={nomref}
+            placeholder= "Reference"
+            _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+            } 
+            mt={1}
+            onValueChange={(itemValue) => {
+              setNommar(itemValue);
+              const selectedMarque = marques.find(el => el.marquename === itemValue);
+              setIdmarque(selectedMarque ? selectedMarque.idMarque : null);
+            }}          >
+          {refnom.map(el=>{
+            return(
+            <Select.Item label={el.Referencename} value={el.Referencename} />
+          )
+          })}
+          
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+   
     return (
       <Center>
         <Box maxW="400">
@@ -438,6 +484,7 @@ const affectanim = async (nameanim, namepdv) => {
       </Center>
     );
   };
+   /////////////////////////Exemple//////////////////////////////
   const renderform =(key)=>{
     if (key==='pdv'&& pdv) {
       return (
@@ -541,6 +588,26 @@ const affectanim = async (nameanim, namepdv) => {
       </View>
       )
     }
+    else if (key==='obj'&& object){
+      return (
+      <View style={styles.inputs}>
+      <Center flex={1} px="3">
+        <Box alignItems="center">
+          <Input mx="3" placeholder="Objectif" 
+            InputLeftElement={
+              <Icon as={<MaterialIcons name="show-chart" />} size={5} ml="2" color="muted.400" />
+            } onChangeText={item=>setObj(item)} w="100%" />
+        </Box>
+      </Center>
+      <Center flex={1} px="3">
+      <Example text={"Reference"} />
+      <TouchableOpacity onPress={() => {}} style={styles.btns}>
+        <Text style={styles.btnText}>Valider</Text>
+      </TouchableOpacity>
+      </Center>
+      </View>
+      )
+    }
   }
   return (
     <NativeBaseProvider>
@@ -573,7 +640,9 @@ const affectanim = async (nameanim, namepdv) => {
         {marque&&renderform('marque')}
         <RowItem text="References" truc={ref} settruc={setRef}/>
         {ref&&renderform('ref')}
-        <RowItem text="Objectif" truc={ref} settruc={setRef}/>
+        <RowItem text="Objectif" truc={object} settruc={setObject}/>
+        {object&&renderform('obj')}
+
 
       </ScrollView>
       </View>

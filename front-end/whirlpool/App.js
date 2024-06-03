@@ -37,13 +37,14 @@ export default function App() {
     <View style={styles.container}>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <Stack.Navigator initialRouteName="Login">
-          {/* <Stack.Screen name="Login" component={Login} /> */}
+        <Stack.Navigator  initialRouteName="Login">
+          {/* <Stack.Screen options={{ headerShown: false }} name="Login" component={Login} /> */}
+          <Stack.Screen name="WelcomeAnime" options={{ headerShown: false }} component={WelcomeAnime} />
           <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
           <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
           <Stack.Screen name="ConsultRapports" options={{ headerShown: false }} component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" options={{ headerShown: false }} component={RapportExpo} />
-          <Stack.Screen name="RapportExpoDet" component={RapportExpoDet} />
+          <Stack.Screen name="RapportExpoDet"  component={RapportExpoDet} />
           <Stack.Screen name="Modifpopup" component={Modifpopup} /> 
           <Stack.Screen name="RapportPriceMap" component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
@@ -57,7 +58,7 @@ export default function App() {
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
-          <Stack.Screen name="WelcomeAnime" component={WelcomeAnime} />
+          
           <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
           <Stack.Screen name="WelcomeManager" options={{ headerShown: false }}  component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo"   options={{ headerShown: false }} component={ManagerExpo} />

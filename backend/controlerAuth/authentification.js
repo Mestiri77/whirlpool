@@ -14,7 +14,7 @@ async function loginUser(req, res) {
   const { email, password } = req.body;
 
   try {
-    const user = await Users.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
 
     if (!user || user.password !== password) { // You should ideally hash the password
       return res.status(401).json({ message: 'Invalid email or password' });

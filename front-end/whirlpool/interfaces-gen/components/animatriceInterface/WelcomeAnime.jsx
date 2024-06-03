@@ -5,6 +5,7 @@ import Header from './header';
 import Footer from './footer';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import port from '../port'
 
 const image01 = require('../../../assets/image1+.png');
 const image02 = require('../../../assets/image2.png');
@@ -12,10 +13,9 @@ const image03 = require('../../../assets/image3.png');
 const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
 
-const port = "192.168.248.6";
 
 function WelcomeAnime({ route }) {
-  const { ani } = route.params;
+  // const { ani } = route.params;
   const navigation = useNavigation();
 
   const [load, setLoad] = React.useState(true);
@@ -23,38 +23,39 @@ function WelcomeAnime({ route }) {
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
   const [status, setStatus] = React.useState(false);
+  const [city,setCity]= React.useState("");
 
-  const checkIn = {
-    checkin: checkOn,
-    status: true,
-    Users_idusers: ani.id
-  };
 
-  const checkOut = {
-    checkout: checkOff,
-    status: false
-  };
-
+ const onligne={
+  datePr:formatDateWithoutTime(new Date()),
+  checkin:new Date().toLocaleTimeString(),
+  checkout:null,
+  position:city,
+  status:status,
+ }
+ const offligne={
+  datePr:formatDateWithoutTime(new Date()),
+  checkout:new Date().toLocaleTimeString(),
+  status:status,
+ }
+ function formatDateWithoutTime(date) {
+  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  return date.toLocaleDateString("fr-FR", options);
+}
+ const handleCityChange = (newCity) => {
+  setCity(newCity);
+};
   const hundlehistorique = (zone) => {
     setLoad(!load);
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
   };
 
   const presence = async () => {
-    if (status) {
-      setCheckOn(new Date());
-      try {
-        const response = await axios.post(`http://${port}:3000/api/presences/presences/checkin`, checkIn);
-      } catch (error) {
-        console.error('Error checking in:', error);
-      }
-    } else {
-      setCheckOff(new Date());
-      try {
-        const response = await axios.post(`http://${port}:3000/api/presences/presences/checkout`, checkOut);
-      } catch (error) {
-        console.error('Error checking out:', error);
-      }
+    if(!status){
+      await axios.post("http://"+port+":3000/api/presences/presences",onligne)
+    }
+    else{
+      await axios.put("http://"+port+":3000/api/presences/presences"+1,offligne)
     }
   };
 
@@ -82,7 +83,8 @@ function WelcomeAnime({ route }) {
 
   return (
     <NativeBaseProvider>
-      <ScrollView>
+      <ScrollView style={{marginTop:10}}>
+        <Header onCityChange={handleCityChange} />
         <Example />
         <View style={styles.view1}>
           <View style={styles.view2}>
@@ -90,7 +92,7 @@ function WelcomeAnime({ route }) {
               <Text style={styles.textEmoji}>Bonjour 👋,</Text>
             </View>
             <View style={styles.view4}>
-              <Text style={styles.textAdmin}>{ani.name}</Text>
+              <Text style={styles.textAdmin}>Hello</Text>
             </View>
           </View>
           <View style={styles.view10}>
@@ -273,7 +275,6 @@ const styles = StyleSheet.create({
   textRecentActivities: {
     fontSize: 14,
     color: "#263238",
-    fontFamily: "Open Sans, sans-serif",
     fontWeight: "700",
   },
   view15: {

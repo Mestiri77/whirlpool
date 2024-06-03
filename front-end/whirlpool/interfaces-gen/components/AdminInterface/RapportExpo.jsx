@@ -77,7 +77,6 @@ const Fetchallref=async(categname)=>{
   }
   const getpdvByID=async(id)=>{
     try{
-  router.get('/namepdv',pdvController.getOnePDV)
       let response=await axios.get("http://"+port+":3000/api/pdvs/pdvs/"+id)
       setPdvs(response.data)
       setLoad(!load)

@@ -4,7 +4,7 @@ import { NativeBaseProvider } from "native-base";
 import * as Location from "expo-location"
 import axios from 'axios';
 
-function Header() {
+function Header({ onCityChange }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [city, setCity] = useState(null);
@@ -40,6 +40,8 @@ function Header() {
       .then((response) => {
         if (response.data.address) {
           setCity(response.data.address.city); // Assurez-vous que le chemin vers la ville est correct
+          onCityChange(response.data.address.city); // Mettez à jour la ville via la prop onCityChange
+
         }
       })
       .catch((error) => {
