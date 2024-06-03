@@ -9,9 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from "../port";
 
 function RapportExpodet() {
-  const port = '192.168.248.6';
   const navigation = useNavigation();
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
@@ -27,21 +27,22 @@ function RapportExpodet() {
     }
   };
 
-  const fetchMarque = async (id) => {
-    try {
-      const response = await axios.get(`http://${port}:3000/api/marques/marques/${id}`);
-      setMarques(prevState => ({ ...prevState, [id]: response.data }));
-    } catch (error) {
-      console.error('Error fetching marque:', error);
-    }
-  };
-
   const fetchRef = async (id) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/reference/references/${id}`);
-      setRefs(prevState => ({ ...prevState, [id]: response.data }));
+      setRefs(prevRefs => ({ ...prevRefs, [id]: response.data }));
+      return response.data;
     } catch (error) {
       console.error('Error fetching reference:', error);
+    }
+  };
+
+  const fetchMarque = async (id) => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/marques/marques/${id}`);
+      setMarques(prevMarques => ({ ...prevMarques, [id]: response.data }));
+    } catch (error) {
+      console.error('Error fetching marque:', error);
     }
   };
 
@@ -60,7 +61,7 @@ function RapportExpodet() {
     const data = [
       ["Marques", "Référence", "Prix"],
       ...articles.map(article => [
-        marques[article.Marque_idMarque]?.marquename || '',
+        marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || '',
         refs[article.Reference_idReference]?.Referencename || '',
         article.prix
       ])
@@ -87,12 +88,10 @@ function RapportExpodet() {
   }, [categ]);
 
   useEffect(() => {
-    articles.forEach(article => {
-      if (!marques[article.Marque_idMarque]) {
-        fetchMarque(article.Marque_idMarque);
-      }
-      if (!refs[article.Reference_idReference]) {
-        fetchRef(article.Reference_idReference);
+    articles.forEach(async article => {
+      const refData = await fetchRef(article.Reference_idReference);
+      if (refData) {
+        fetchMarque(refData.Marque_idMarque);
       }
     });
   }, [articles]);
@@ -115,10 +114,10 @@ function RapportExpodet() {
               </View>
               {articles.map((article, index) => (
                 <View style={styles.row} key={index}>
-                  <View style={styles.cell1}><Text>{marques[article.Marque_idMarque]?.marquename}</Text></View>
-                  <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename}</Text></View>
+                  <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
+                  <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{article.prix}</Text></View>
-                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref: article.Reference_idReference, idmarque: article.Marque_idMarque, idarticle: article.id })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref: article.Reference_idReference, idmarque: refs[article.Reference_idReference]?.Marque_idMarque, idarticle: article.id })}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>

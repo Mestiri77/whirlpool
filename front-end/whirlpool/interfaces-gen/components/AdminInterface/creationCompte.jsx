@@ -4,7 +4,7 @@ import { Alert,CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, But
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import Footer from './footer';
-
+import port from "../port";
 function CreationCompte() {
   const [nom, setNom] = React.useState("");
   const [prenom, setPrenom] = React.useState("");
@@ -20,7 +20,7 @@ function CreationCompte() {
 
   const [load, setLoad] = React.useState(false);
 
-  const port = '192.168.218.26';
+
 
   const roles = ["manager", "animatrice","admin"];
   const datauser={ 

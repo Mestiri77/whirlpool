@@ -38,7 +38,7 @@ export default function App() {
       <NavigationContainer>
         <StatusBar style="auto" />
         <Stack.Navigator initialRouteName="Login">
-          {/* <Stack.Screen name="Login" component={Login} /> */}
+          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
           <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
           <Stack.Screen name="ConsultRapports" options={{ headerShown: false }} component={ConsultRapports} />
@@ -50,9 +50,9 @@ export default function App() {
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
           <Stack.Screen name="RapportLog" component={RapportLog} />
-           <Stack.Screen name="CreationCompte" options={{ headerShown: false }} component={CreationCompte} />
+          <Stack.Screen name="CreationCompte" options={{ headerShown: false }} component={CreationCompte} />
          <Stack.Screen name="PopupRapport" component={PopupRapport} />
-      <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
+         <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
           <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
           <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" component={ValidRExpo} />

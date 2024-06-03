@@ -6,7 +6,6 @@ import axios from 'axios';
 import port from '../port'
 import Footer from './footer'
 
-
 const leftimage = require('../../../assets/left-icon.png'); 
 const downicon = require('../../../assets/down-icon.png')
 const IconRregion=require ('../../../assets/region-icon.png')
