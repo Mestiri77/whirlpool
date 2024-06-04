@@ -91,11 +91,25 @@ async function updatePresence(req, res) {
   try {
     const { id } = req.params;
     const { datePr, checkin, checkout, position, status } = req.body;
+
+    // Trouver la présence par ID
     const presence = await Presence.findByPk(id);
     if (!presence) {
       return res.status(404).json({ message: 'Presence not found' });
     }
-    await presence.update({ datePr, checkin, checkout, position, status });
+
+    // Vérifier si la date fournie est la même que celle qui existe déjà
+    const existingDatePr = presence.datePr.toISOString().split('T')[0]; // Convertir la date en format ISO
+    const newDatePr = new Date(datePr).toISOString().split('T')[0]; // Convertir la nouvelle date en format ISO
+
+    if (existingDatePr !== newDatePr) {
+      return res.status(400).json({ message: 'Dates do not match' });
+    }
+
+    // Mettre à jour la présence
+    await presence.update({ checkin, checkout, position, status });
+
+    // Renvoyer la réponse mise à jour
     res.status(200).json(presence);
   } catch (error) {
     console.error('Error updating Presence:', error);
@@ -119,7 +133,7 @@ async function deletePresence(req, res) {
   }
 }
 async function getPresencesByPDVName(req, res) {
-  const pdvName = req.params.pdvName;
+  const pdvName = req.params;
 
   try {
     // Rechercher le point de vente par nom

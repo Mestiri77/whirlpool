@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
-import { NativeBaseProvider, Center,Box,Select,CheckIcon} from "native-base";
+import { NativeBaseProvider, Center,Box,Select,CheckIcon,Stack,Input,Icon} from "native-base";
 import Header from './header'
 import Footer from './footer'
+import port from '../port'
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 function RapportPriceMap(){
   
@@ -16,7 +19,6 @@ function RapportPriceMap(){
   const [pdv,setPdv]=React.useState('')
   const [pdvsel,setPdvsel]=React.useState('')
 
-  const port='192.168.1.26'
 
 ///////////////////////////////Functions//////////////////////////////
 
@@ -48,7 +50,40 @@ React.useEffect(()=>{
 
 
    
-
+const RenderInput=(text)=>{
+  if(text=='Date :'){
+    return(
+      <Stack space={4} w="100%" alignItems="center" mt="5%">
+      <Input 
+        w={{
+          base: "75%",
+          md: "25%"
+        }} 
+        InputLeftElement={
+          <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+        } 
+        placeholder={text}
+             />
+     
+    </Stack>
+    )
+  }
+  return(
+    <Stack space={4} w="100%" alignItems="center" mt="5%">
+    <Input 
+      w={{
+        base: "75%",
+        md: "25%"
+      }} 
+      InputLeftElement={
+        <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+      } 
+      placeholder={text}
+           />
+   
+  </Stack>
+  )
+}
 
     const navigation = useNavigation();
 
@@ -60,6 +95,7 @@ React.useEffect(()=>{
               <Select
                 selectedValue={pdvsel}
                 minWidth="100%"
+                
                 accessibilityLabel="Choose Service"
                 placeholder={text}
                 _selectedItem={{
@@ -68,6 +104,7 @@ React.useEffect(()=>{
                 }}
                 mt={1}
                 onValueChange={(itemValue) => setPdvsel(itemValue)}
+           
               >
                 {pdvs.map(el=>(
                 <Select.Item label={el.pdvname} value={el.pdvname} />
@@ -85,15 +122,17 @@ return(
         <Header />  
         <Center flex={8}>
             <Text style={{fontSize:18,fontWeight:600,marginBottom:30} }> Rapports Price Map : </Text>
-            <View >
-        <Example text={"Date :"}/>
-        <Example text={"Point de Vente :"}/>
+            <View style={styles.View2}>
+           <Text style={{fontSize:18,fontWeight:300}}>Date :</Text>
+           <Text style={{fontSize:18,fontWeight:300}}>Point De Vente :</Text>
         </View>
-        <View style={styles.categtext} ><Text style={{fontSize:18,fontWeight:300}}>Categories</Text></View>
+        <View style={styles.categtext} >
+          <Text style={{fontSize:18,fontWeight:300}}>Categories</Text>
+          </View>
         <ScrollView style={styles.viewbtns}>
             <View  >
               {categ.map(el=>(
-                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{keysprops:el.Categoryname})}}>
+                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory })}}>
                 <Text style={styles.btnText}>{el.Categoryname}</Text>
                </TouchableOpacity>
               ))}
@@ -111,6 +150,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 20,
+         },
+         View2:{
+          marginLeft:-200
          },
       categtext:{
         width:'100%',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { NativeBaseProvider, Center } from "native-base";
+import { NativeBaseProvider, Center, } from "native-base";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from './header';
 import Footer from './footer';
@@ -108,7 +108,7 @@ function RapportExpo() {
   };
 
   const TotalTaux = () => {
-    return categ.reduce((total, el) => total + CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)), 0);
+    return categ.reduce((total, el) => total + CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)),0);
   };
 
   const exportToExcel = async () => {
@@ -139,7 +139,7 @@ function RapportExpo() {
     Fetchallmarq();
     getpdvByID(pdv).then(() => {
       findIdWhirlpool();
-      FetchAnim(pdvs.idPDV);
+      // FetchAnim(pdvs.idPDV);
     });
   }, [pdvs.idPDV, pdv]);
 
@@ -210,6 +210,7 @@ function RapportExpo() {
           </View>
         </ScrollView>
       </View>
+
       <Footer />
     </NativeBaseProvider>
   );

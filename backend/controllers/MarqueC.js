@@ -81,11 +81,24 @@ async function deleteMarque(req, res) {
 //         res.status(500).send("erreur")
 //     }
 // }
+const getnamebyid=async(req,res)=>{
+  try{
+    const { idmarque }=req.params
+    const marque=await Marque.findByPk(idmarque)
+    res.status(200).json(marque);
+
+  }   
+  catch(err){
+        console.error(err);
+        res.status(500).send("erreur")
+    }
+}
 
 module.exports = {
   createMarque,
   getAllMarques,
   getMarqueById,
   updateMarque,
-  deleteMarque
+  deleteMarque,
+  getnamebyid
 };

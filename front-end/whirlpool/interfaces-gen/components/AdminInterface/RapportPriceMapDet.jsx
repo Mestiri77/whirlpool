@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Slider, Stack} from "native-base";
 import Header from './header'
@@ -6,33 +6,67 @@ import Footer from './footer'
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from "../port";
+import axios from 'axios';
 
-function RapportPriceMapDet(){
+function RapportPriceMapDet({ route }){
+
+  const { categoryId } = route.params;
+
     const [color,setColor]=React.useState('')
     const [onChangeValue, setOnChangeValue] = React.useState(70);
     const [onChangeEndValue, setOnChangeEndValue] = React.useState(70);
 
+    const [marques,setMarques]=React.useState([])
+    const [references,setReferences]=React.useState([])
+    const [categories,setCategories]=React.useState([])
+    const [prix,setPrix]=React.useState([])
+    const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
+
+
+    const Couleur=["Bleu","Gris","Rouge"]
+    const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+    /////////////////////////Functions///////////////////////////
+    const fetchReferences = async () => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/reference/referencebycateg/${categoryId}`);
+        setReferences(response.data);
+        fetchMarqueNames(response.data); // Fetch marque names after references are fetched
+      } catch (error) {
+        console.error('Error fetching references:', error);
+      }
+    };
+  
+    // Fetch marque names based on IDs from references
+    const fetchMarqueNames = async (references) => {
+      try {
+        const uniqueMarqueIds = [...new Set(references.map(ref => ref.Marque_idMarque))];
+        const namesPromises = uniqueMarqueIds.map(id => fetchMarqueById(id));
+        const names = await Promise.all(namesPromises);
+        setMarqueNames(names);
+      } catch (error) {
+        console.error('Error fetching marque names:', error);
+      }
+    };
+  
+    // Fetch marque name by ID
+    const fetchMarqueById = async (id) => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/marques/marques/${id}`);
+        return response.data.marquename;
+      } catch (error) {
+        console.error('Error fetching marque:', error);
+        return ''; // Return an empty string in case of error to prevent rendering an object
+      }
+    };
+
+    React.useEffect(()=>{
+      fetchReferences()
+    },[])
+    /////////////////////////Functions///////////////////////////
+
     const Example = ({text}) => {
         if(text=="Couleur"){
-
-
-          const Fetchallref=async()=>{
-            try{
-              const response=await axios.get("http://"+port+":3000/api/reference/references")
-              setReferences(response.data)
-            }catch (error) {
-                console.error('Error fetching :', error)
-              }
-            }
-            const GetRefSel=async()=>{
-              try{
-                  const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
-                  setSellRef(response.data)
-                  console.log(response.data);
-              }catch (error) {
-                  console.error('Error fetching :', error)
-                }
-          }
         return (
           <Center>
           <Box maxW="400">
@@ -48,11 +82,10 @@ function RapportPriceMapDet(){
               mt={1}
               onValueChange={(itemValue) => setColor(itemValue)}
             >
-              <Select.Item label="UX Research" value="ux" />
-              <Select.Item label="Web Development" value="web" />
-              <Select.Item label="Cross Platform Development" value="cross" />
-              <Select.Item label="UI Designing" value="ui" />
-              <Select.Item label="Backend Development" value="backend" />
+              {Couleur.map(el=>(
+              <Select.Item label={el} value={el} />
+              ))}
+            
             </Select>
           </Box>
         </Center>
@@ -75,11 +108,9 @@ function RapportPriceMapDet(){
                 mt={1}
                 onValueChange={(itemValue) => setColor(itemValue)}
               >
-                <Select.Item label="UX Research" value="ux" />
-                <Select.Item label="Web Development" value="web" />
-                <Select.Item label="Cross Platform Development" value="cross" />
-                <Select.Item label="UI Designing" value="ui" />
-                <Select.Item label="Backend Development" value="backend" />
+               {tdc.map(el=>(
+                <Select.Item label={el} value={el} />
+               ))}
               </Select>
             </Box>
           </Center>
@@ -137,12 +168,14 @@ function RapportPriceMapDet(){
               </View>
       
               {/* Deuxième ligne */}
+              {references.map((el, index)=>(
               <View style={styles.row}>
-                <View style={styles.cell1}><Text>Donnée 1</Text></View>
-                <View style={styles.cell1}><Text style={styles.textcell1}>Donnée 2</Text></View>
+                <View style={styles.cell1}><Text>{marqueNames[index]}</Text></View>
+                <View style={styles.cell1}><Text style={styles.textcell1}>{el.Referencename}</Text></View>
                 <View style={styles.cell1}><Text>Donnée 3</Text></View>
                 <View style={styles.cell1}><Text>Donnée 4</Text></View>
               </View>
+              ))}
             </View>
           </View>
         );

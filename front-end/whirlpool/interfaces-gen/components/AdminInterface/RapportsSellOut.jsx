@@ -8,6 +8,7 @@ import axios from 'axios'
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from '../port'
 
 
 function RapportSellOut() {
@@ -21,9 +22,6 @@ function RapportSellOut() {
     const [sellRef,setSellRef]=React.useState([])
     const [nbrDventes,setNbrDvents]=React.useState([])
     const [daysBetweenDates, setDaysBetweenDates] = useState([]);
-
-
-    const port='192.168.1.26'
 
     console.log(startDate);
     console.log(new Date());
