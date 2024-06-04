@@ -8,6 +8,7 @@ import axios from 'axios';
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from "../port";
 
 function RapportDePresence() {
   const route = useRoute();
@@ -16,11 +17,10 @@ function RapportDePresence() {
   const [user, setUser] = useState({});
   const [date, setDate] = useState("");
 
-  const port = 3000;  // Ajoutez le port approprié ici
 
   const fetchPresence = async (pdv) => {
     try {
-      const response = await axios.get(`http://${port}/api/presences/pdvName/${pdv}`);
+      const response = await axios.get(`http://${port}:3000/api/presences/pdvName/${pdv}`);
       console.log(response.data);
       setPres(response.data);
     } catch (error) {
@@ -30,7 +30,7 @@ function RapportDePresence() {
 
   const getUser = async (id) => {
     try {
-      const response = await axios.get(`http://${port}/api/user/user/${id}`);
+      const response = await axios.get(`http://${port}:3000/api/user/user/${id}`);
       console.log(response.data);
       setUser(response.data);
     } catch (error) {

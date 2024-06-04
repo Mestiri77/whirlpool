@@ -38,15 +38,15 @@ export default function App() {
       <NavigationContainer>
         <StatusBar style="auto" />
         <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
-          <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
+          {/* <Stack.Screen name="Login" options={{ headerShown: false }} component={Login} /> */}
+          {/* <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
+          <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} /> */}
           <Stack.Screen name="ConsultRapports" options={{ headerShown: false }} component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" options={{ headerShown: false }} component={RapportExpo} />
           <Stack.Screen name="RapportExpoDet"  component={RapportExpoDet} />
           <Stack.Screen name="Modifpopup" component={Modifpopup} /> 
-          <Stack.Screen name="RapportPriceMap" component={RapportPriceMap} />
-          <Stack.Screen name="RapportPriceMapDet" component={RapportPriceMapDet} />
+          <Stack.Screen name="RapportPriceMap"options={{ headerShown: false }} component={RapportPriceMap} />
+          <Stack.Screen name="RapportPriceMapDet"options={{ headerShown: false }} component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" component={RapportDePresence} />
           <Stack.Screen name="RapportLog" component={RapportLog} />

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider,Modal } from "native-base";
 import Header from './header';
 import Footer from './footer';
+import Modifpopup from './ModifRapExpo'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,6 +18,8 @@ function RapportExpodet() {
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
   const [refs, setRefs] = useState({});
+  const [showpopup, setShowpop]=useState(false)
+  const [popupData, setPopupData] = useState({});
 
   const fetchArticleByCategory = async (categ) => {
     try {
@@ -96,6 +99,12 @@ function RapportExpodet() {
     });
   }, [articles]);
 
+  const handleModifyClick = (article) => {
+    const refData = refs[article.Reference_idReference];
+    const marqueData = marques[refData?.Marque_idMarque];
+    setPopupData({ article, refData, marqueData });
+    setShowpop(true);
+  };
   return (
     <NativeBaseProvider>
       <View style={styles.view1}>
@@ -117,7 +126,7 @@ function RapportExpodet() {
                   <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{article.prix}</Text></View>
-                  <TouchableOpacity onPress={() => navigation.navigate('Modifpopup', { idref: article.Reference_idReference, idmarque: refs[article.Reference_idReference]?.Marque_idMarque, idarticle: article.id })}>
+                  <TouchableOpacity onPress={() => handleModifyClick(article)}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>
@@ -129,6 +138,9 @@ function RapportExpodet() {
           <Text style={styles.btnText}>Exporter</Text>
         </TouchableOpacity>
       </View>
+      <Modal isOpen={showpopup} onClose={() => setShowpop(false)}>
+        <Modifpopup {...popupData} onClose={() => setShowpop(false)} />
+      </Modal>
       <Footer />
     </NativeBaseProvider>
   );

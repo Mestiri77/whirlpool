@@ -133,7 +133,7 @@ async function deletePresence(req, res) {
   }
 }
 async function getPresencesByPDVName(req, res) {
-  const pdvName = req.params.pdvName;
+  const pdvName = req.params;
 
   try {
     // Rechercher le point de vente par nom

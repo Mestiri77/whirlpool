@@ -117,8 +117,39 @@ const getidcategory = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+const RefbyCateg = async (req, res) => {
+  const { id } = req.params; // Récupérer l'ID de la catégorie depuis les paramètres de la requête
+
+  try {
+    const references = await Reference.findAll({
+      where: {
+        Category_idCategory: id,
+      },
+    });
+    res.status(200).json(references);
+  } catch (error) {
+    console.error('Error fetching references:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 
+const getMCref = async (req, res) => {
+  const idMarque = req.body.Marque_idMarque;
+  const idCategory = req.body.Category_idCategory;
+  try {
+    const reference = await Reference.findAll({
+      where: {
+        Marque_idMarque: idMarque,
+        Category_idCategory: idCategory
+      }
+    });
+    res.status(200).json(reference);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 module.exports = {
   createReference,
@@ -127,5 +158,6 @@ module.exports = {
   updateReference,
   deleteReference,
   getidcategory,
-  getidmarque
+  getidmarque,
+  RefbyCateg
 };

@@ -90,9 +90,11 @@ const PostArticle=async(data1,id,data2,showAlert )=>{
   try{
     data1.Reference_idReference=id
     console.log(data1.Reference_idReference,'idddd');
-    await axios.post("http://"+port+":3000/api/articles/articles",data1)
-    await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
-    showAlert('success', "Un Nouveau Article a été créé");
+    if(data1.Reference_idReference!=null){
+      await axios.post("http://"+port+":3000/api/articles/articles",data1)
+      await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
+      showAlert('success', "Un Nouveau Article a été créé");
+    }
 
     setLoad(!load)
     console.log('article added');
