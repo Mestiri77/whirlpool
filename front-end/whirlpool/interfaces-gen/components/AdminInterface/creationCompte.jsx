@@ -4,8 +4,7 @@ import { Alert,CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, But
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import Footer from './footer';
-import port from '../port'
-
+import port from "../port";
 function CreationCompte() {
   const [nom, setNom] = React.useState("");
   const [prenom, setPrenom] = React.useState("");
@@ -20,6 +19,7 @@ function CreationCompte() {
   const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
   const [load, setLoad] = React.useState(false);
+
 
 
   const roles = ["manager", "animatrice","admin"];

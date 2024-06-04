@@ -1,2 +1,2 @@
-const port='192.168.226.26'
+const port='192.168.248.6'
 export default port

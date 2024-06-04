@@ -1,5 +1,5 @@
-const Users = require('../models/Users.js');
-
+const Users =require('../models/Users.js');
+const PDV =require ('../models/Pdv.js')
 // Create
 async function createUser(req, res) {
   try {
@@ -83,12 +83,11 @@ async function deleteUser(req, res) {
   }
 }
 async function getUsersByPDVName(req, res) {
-  const pdvName = req.params.pdvName;
+  const pdvId = req.params.pdvId;
 
   try {
-    // Rechercher le point de vente par nom
-    const pdv = await PDV.findOne({
-      where: { name: pdvName },  // Ajustez le nom du champ selon votre schéma
+    // Rechercher le point de vente par ID
+    const pdv = await PDV.findByPk(pdvId, {
       include: [{
         model: Users,
         as: 'Users'  // Assurez-vous que l'alias correspond à votre configuration d'association
@@ -96,7 +95,7 @@ async function getUsersByPDVName(req, res) {
     });
 
     if (!pdv) {
-      return res.status(404).json({ message: `Aucun point de vente trouvé avec le nom ${pdvName}` });
+      return res.status(404).json({ message: `Aucun point de vente trouvé avec l'ID ${pdvId}` });
     }
 
     // Afficher les informations des utilisateurs (animatrices)
@@ -110,10 +109,10 @@ async function getUsersByPDVName(req, res) {
         role: user.role
       })));
     } else {
-      return res.status(404).json({ message: `Aucune animatrice affectée à ${pdvName}` });
+      return res.status(404).json({ message: `Aucune animatrice affectée au point de vente avec l'ID ${pdvId}` });
     }
   } catch (error) {
-    console.error(`Erreur lors de la récupération des animatrices pour ${pdvName}:`, error);
+    console.error(`Erreur lors de la récupération des animatrices pour le point de vente avec l'ID ${pdvId}:`, error);
     return res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 }
