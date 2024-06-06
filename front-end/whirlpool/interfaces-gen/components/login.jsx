@@ -4,7 +4,7 @@ import axios from "axios";
 
 const Divider = () => <View style={styles.divider} />;
 
-const port = '192.168.248.6';
+const port = '192.168.16.6';
 
 const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
   <>
@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
         const { role } = data;
 console.log(role);
         // Navigate to appropriate screen based on role
-        if (role === "Admin") {
+        if (role === "admin") {
           navigation.navigate("WelcomeAdmin");
         } else if (role === "Manager") {
           navigation.navigate("WelcomeManager");
