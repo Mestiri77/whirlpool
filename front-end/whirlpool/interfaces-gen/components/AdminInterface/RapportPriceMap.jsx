@@ -5,19 +5,24 @@ import Header from './header'
 import Footer from './footer'
 import port from '../port'
 import axios from 'axios'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import { MaterialIcons } from "@expo/vector-icons";
 
 
 function RapportPriceMap(){
-  
+  const route = useRoute();
+  const { month, pdv } = route.params;
+
   const [load,setLoad]=React.useState(false)
 
   const [pdvs,setPdvs]=React.useState([])
   const [categ,setCateg]=React.useState([])
 
-  const [pdv,setPdv]=React.useState('')
+  const [date, setDate] = useState('');
+  // const [pdv,setPdv]=React.useState('')
   const [pdvsel,setPdvsel]=React.useState('')
+  const [popupVisible, setPopupVisible] = useState(false);
+
 
 
 ///////////////////////////////Functions//////////////////////////////
@@ -123,8 +128,8 @@ return(
         <Center flex={8}>
             <Text style={{fontSize:18,fontWeight:600,marginBottom:30} }> Rapports Price Map : </Text>
             <View style={styles.View2}>
-           <Text style={{fontSize:18,fontWeight:300}}>Date :</Text>
-           <Text style={{fontSize:18,fontWeight:300}}>Point De Vente :</Text>
+           <Text style={{fontSize:18,fontWeight:300}}>Date : {month}</Text>
+           <Text style={{fontSize:18,fontWeight:300}}>Point De Vente : {pdv}</Text>
         </View>
         <View style={styles.categtext} >
           <Text style={{fontSize:18,fontWeight:300}}>Categories</Text>
