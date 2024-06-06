@@ -4,14 +4,15 @@ import { NativeBaseProvider, Center,Stack,Input,Icon } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 
-function Modifpopup({route}) {
+function Modifpopup({ article, refData, marqueData, onClose }) {
   // const { idref, idmarque, idarticle } = route.params;
     const [modif,setModif] = React.useState('');
-const [reff,setReff]=React.useState('')
-const [marque , setMarque]=React.useState('')
-const [article,setArticle]=React.useState('')
-    const RenderInput=(text)=>{
-        if(text=="Reference"){    
+    const [reff, setReff] = React.useState(refData?.Referencename || '');
+    const [marque, setMarque] = React.useState(marqueData?.marquename || '');
+    const [prix, setPrix] = React.useState(article?.prix || null);
+    
+    const RenderInput=(text, value, onChange)=>{
+        if(text=="Reference"&&value==reff,onChange== setReff){    
             return(
             <Stack space={4} w="100%" alignItems="center" mt="5%">
             <Input 
@@ -23,13 +24,13 @@ const [article,setArticle]=React.useState('')
                 <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>{setModif(item)}}
-            />
+              value={value}
+              onChangeText={onChange}            />
            
           </Stack>
           )
         }
-    else if(text=="Marque") {
+    else if(text=="Marque"&&value== marque,onChange== setMarque) {
         return (
             <Stack space={4} w="42%" alignItems="center" mt="5%" ml="7%" >
             <Input 
@@ -41,13 +42,13 @@ const [article,setArticle]=React.useState('')
                 <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setModif(item)}
-            />
+              value={value}
+              onChangeText={onChange}            />
            
           </Stack>
          )
     }
-    else if(text=="Prix") {
+    else if(text=="Prix"&&value==  prix,onChange== setPrix) {
         return (
             <Stack space={4} w="42%" alignItems="center" mt="5%" mr="7%" style={{}} >
             <Input 
@@ -59,8 +60,8 @@ const [article,setArticle]=React.useState('')
                 <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setModif(item)}
-            />
+              value={value}
+              onChangeText={onChange}            />
            
           </Stack>
          )
@@ -71,10 +72,10 @@ const [article,setArticle]=React.useState('')
     <View style={styles.view1}>
         <Center><View style={styles.view2}><Text style={{fontWeight:500}}>Modifer Cette Ligne</Text></View></Center>
         <View style={styles.allinputs}>
-        {RenderInput('Reference')}
+        {RenderInput('Reference', reff, setReff)}
         <View style={styles.inputs}>
-        {RenderInput('Marque')}
-        {RenderInput('Prix')}
+        {RenderInput('Marque', marque, setMarque)}
+        {RenderInput('Prix', prix, setPrix)}
         </View>
         </View>
         <Center>
@@ -86,7 +87,7 @@ const [article,setArticle]=React.useState('')
             <Text style={styles.btnTextcans}>Supprimer</Text>
         </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() =>{}} style={styles.btnsup}>
+        <TouchableOpacity onPress={() =>{onClose()}} style={styles.btnsup}>
             <Text style={styles.btnTextcans}>Annuler</Text>
         </TouchableOpacity>
         </Center>
@@ -103,8 +104,10 @@ const styles = StyleSheet.create({
         width:'80%',
         height:'50%',
         margin:'10%',
-        borderRadius: 5,
+        marginTop:'40%',
+        borderRadius: 15,
         borderWidth:0.2,
+        backgroundColor:"white",
       },
       view2:{
         padding: 20,

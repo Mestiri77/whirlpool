@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
-
+import port from './port'
 const Divider = () => <View style={styles.divider} />;
 
 const port = '192.168.16.6';
@@ -72,7 +72,7 @@ console.log(role);
         <Divider />
         <InputField label="Password" placeholder="Enter your password" isPassword={true} onChangeText={setPassword} />
         <Divider />
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={()=>{handleLogin()}}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
