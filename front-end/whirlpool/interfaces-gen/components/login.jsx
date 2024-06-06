@@ -4,7 +4,7 @@ import axios from "axios";
 import port from './port'
 const Divider = () => <View style={styles.divider} />;
 
-const port = '192.168.16.6';
+
 
 const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
   <>
