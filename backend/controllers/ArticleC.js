@@ -199,6 +199,17 @@ const getArticleDetails = async (req, res) => {
   }
 };
 
+const GettingArticlebyCU = async (req, res) => {
+  try {
+    const couleur = req.body.couleur; // Assuming the request body still uses 'couleur'
+    const unite = req.body.unite;
+    const response = await Article.findAll({ where: { coloeur: couleur, typeC: unite } });
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error getting article by couleur and unite:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 module.exports = {
   createArticle,
@@ -208,5 +219,6 @@ module.exports = {
   deleteArticle,
   getArticleByrefId,
   getArticlesByCategory,
-getArticleDetails
+  getArticleDetails,
+  GettingArticlebyCU
 };

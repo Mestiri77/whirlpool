@@ -11,6 +11,6 @@ router.delete('/articles/:id', articleController.deleteArticle);
 router.get('/articlesbyref/:id', articleController.getArticleByrefId);
 router.get('/artCat/:categoryName',articleController.getArticlesByCategory)
 router.get('/articledet/:category/:pdv/:date',articleController.getArticleDetails)
-
+router.post('/articlesCU',articleController.GettingArticlebyCU)
 
 module.exports = router;

@@ -563,7 +563,7 @@ const hideAlert = () => {
                   }} space={2} mx={{
                     base: "auto",
                     md: "0",
-                  }}>              
+                  }}>
             {RenderInput('Marque',true)}
             <TouchableOpacity onPress={() =>{Modifbtn('marque')}} style={styles.btns}>
     <Text style={styles.btnText}>Modifier</Text>
@@ -603,9 +603,9 @@ const hideAlert = () => {
                 <View style={styles.inputs}>
                 <Center flex={1} px="3">
                 <Example text={"Reference"}/>
-                <Example text={"Marque"} />
+                {/* <Example text={"Marque"} /> */}
                 {RenderInput('couleur',false)}
-                <Example text={"categorie"}/>
+                {/* <Example text={"categorie"}/> */}
                 <Example text={"Type de Capacité"}/>
                 {RenderInput('Capacite',false)}
                 {RenderInput('Prix',false)}
