@@ -102,7 +102,7 @@ async function getUsersByPDVName(req, res) {
     const animatrices = pdv.Users;
     if (animatrices && animatrices.length > 0) {
       return res.status(200).json(animatrices.map(user => ({
-        id: user.id,
+        id: user.idusers,
         name: user.name,  // Ajustez les champs selon votre schéma
         lastname: user.lastname,
         email: user.email,

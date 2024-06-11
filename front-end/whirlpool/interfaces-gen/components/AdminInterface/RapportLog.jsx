@@ -12,16 +12,28 @@ import * as Sharing from 'expo-sharing';
 function RapportLog() {
   const route = useRoute();
   const { month, pdv } = route.params;
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(""); 
+  const [pdvs,setPdvs]=useState([])
   const [pres, setPres] = useState([]);
   const [log, setLog] = useState([]);
-  const port = '192.168.248.6'; // Update with the correct port
+  const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
 
-  const fetchPresence = async (pdv) => {
+  const port='192.168.134.6'; // Update with the correct port
+
+  const getPdvs = async (pdv) => {
     try {
-      const response = await axios.get(`http://${port}/api/presences/pdvName/${pdv}`);
-      console.log(response.data);
-      setPres(response.data);
+      const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdv}`);
+      console.log(response.data)
+      setPdvs(response.data);
+    } catch (error) {
+      console.error('Error fetching pdvs:', error);
+    }
+  };
+  const getPresence = async () => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/presences/presences`);
+      const presences = response.data.filter(e => e.PDV_idPDV === pdvs.idPDV);
+      setPres(presences);
     } catch (error) {
       console.error('Error fetching presence:', error);
     }
@@ -30,8 +42,8 @@ function RapportLog() {
   const fetchLog = async () => {
     try {
       const response = await axios.get(`http://${port}:3000/api/logs/logs`);
-      console.log(response.data);
-      setLog(response.data);
+      const logs = response.data.filter(e => e.Presence_idPresence === pdvs.idPDV && new Date(e.createdAt).getMonth() === month - 1);
+      setLog(logs);
     } catch (error) {
       console.error('Error fetching logs:', error);
     }
@@ -72,9 +84,9 @@ function RapportLog() {
           </View>
           {log.map((logEntry, index) => (
             <View style={styles.row} key={index}>
-              <View style={styles.cell1}><Text>{logEntry.date}</Text></View>
-              <View style={styles.cell1}><Text>{logEntry.time}</Text></View>
-              <View style={styles.cell2}><Text>{logEntry.activity}</Text></View>
+              <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleDateString()}</Text></View>
+              <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleTimeString()}</Text></View>
+              <View style={styles.cell2}><Text>{logEntry.messageAc}</Text></View>
             </View>
           ))}
         </View>
@@ -86,8 +98,8 @@ function RapportLog() {
     const data = [
       ["Date", "Time", "Activite"],
       ...log.map(logEntry => [
-        logEntry.date,
-        logEntry.time,
+        new Date(logEntry.createdAt).toLocaleDateString(),
+        new Date(logEntry.createdAt).toLocaleTimeString(),
         logEntry.activity
       ])
     ];
@@ -103,9 +115,17 @@ function RapportLog() {
   };
 
   useEffect(() => {
-    fetchLog();
-    fetchPresence(pdv);
-  }, []);
+    const fetchData = async () => {
+      try {
+        await Promise.all([fetchLog(), getPdvs(pdv), getPresence()]);
+        setIsLoading(false); // Mettre à jour isLoading une fois que toutes les données sont chargées
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [isLoading]);
 
   return (
     <NativeBaseProvider>

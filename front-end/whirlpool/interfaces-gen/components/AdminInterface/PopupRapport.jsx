@@ -6,7 +6,7 @@ import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";  // Importing the icons from @expo/vector-icons
 import port from '../port';
 
-function PopupRapport({ popupType, onClose, setPdv, pdv, rapportName, link }) {
+function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportName, link }) {
     const navigation = useNavigation();
 
     const [month, setMonth] = React.useState("");

@@ -16,16 +16,21 @@ function RapportPriceMapDet({ route }){
     const [color,setColor]=React.useState('')
     const [onChangeValue, setOnChangeValue] = React.useState(70);
     const [onChangeEndValue, setOnChangeEndValue] = React.useState(70);
+    const [unite,setUnite]=React.useState('')
 
     const [marques,setMarques]=React.useState([])
     const [references,setReferences]=React.useState([])
     const [categories,setCategories]=React.useState([])
     const [prix,setPrix]=React.useState([])
     const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
+    const [articles,setArticles]= useState([])
 
-
-    const Couleur=["Bleu","Gris","Rouge"]
+    const Couleur=["Bleu","GRIS","Rouge"]
     const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+    const dataArt={ 
+      couleur:color,
+      unite:unite
+    }
     /////////////////////////Functions///////////////////////////
     const fetchReferences = async () => {
       try {
@@ -59,10 +64,25 @@ function RapportPriceMapDet({ route }){
         return ''; // Return an empty string in case of error to prevent rendering an object
       }
     };
-
+    const fetchArticlbyCU =async (colorr,unitee)=>{
+      try{
+        if(colorr===color && unitee===unite){
+          const response =await axios.post("http://"+port+":3000/api/articles/articlesCU",{
+            couleur: colorr,
+            unite: unitee
+          })
+          setArticles(response.data)
+        }
+      }
+      catch (error) {
+        console.error('Error fetching Article:', error);
+      }
+    }
     React.useEffect(()=>{
       fetchReferences()
-    },[])
+      fetchArticlbyCU(color,unite)
+  
+    },[color,unite])
     /////////////////////////Functions///////////////////////////
 
     const Example = ({text}) => {
@@ -96,7 +116,7 @@ function RapportPriceMapDet({ route }){
             <Center>
             <Box maxW="400" ml='-300'>
               <Select
-                selectedValue={color}
+                selectedValue={unite}
                 minWidth="30%"
                 
                 accessibilityLabel="Choose Service"
@@ -106,7 +126,7 @@ function RapportPriceMapDet({ route }){
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(itemValue) => setColor(itemValue)}
+                onValueChange={(itemValue) => setUnite(itemValue)}
               >
                {tdc.map(el=>(
                 <Select.Item label={el} value={el} />
@@ -155,32 +175,33 @@ function RapportPriceMapDet({ route }){
   await Sharing.shareAsync(uri);
 };
 
-    const Tableaux = () => {
-        return (
-          <View style={{marginTop:20}}>
-            <View style={styles.container}>
-              {/* Première ligne */}
-              <View style={styles.row}>
-                <View style={styles.cell}><Text>Marque</Text></View>
-                <View style={styles.cell}><Text>References</Text></View>
-                <View style={styles.cell}><Text>Capacité</Text></View>
-                <View style={styles.cell}><Text>Prix</Text></View>
-              </View>
-      
-              {/* Deuxième ligne */}
-              {references.map((el, index)=>(
-              <View style={styles.row}>
-                <View style={styles.cell1}><Text>{marqueNames[index]}</Text></View>
-                <View style={styles.cell1}><Text style={styles.textcell1}>{el.Referencename}</Text></View>
-                <View style={styles.cell1}><Text>Donnée 3</Text></View>
-                <View style={styles.cell1}><Text>Donnée 4</Text></View>
-              </View>
-              ))}
+const Tableaux = () => {
+  return (
+    <View style={{ marginTop: 20 }}>
+      <View style={styles.container}>
+        {/* Première ligne */}
+        <View style={styles.row}>
+          <View style={styles.cell}><Text>Marque</Text></View>
+          <View style={styles.cell}><Text>References</Text></View>
+          <View style={styles.cell}><Text>Capacité</Text></View>
+          <View style={styles.cell}><Text>Prix</Text></View>
+        </View>
+
+        {/* Deuxième ligne */}
+        {references.map((el, index) => (
+          articles.filter(item => item.Reference_idReference === el.idReference && item.capacite <= onChangeValue).map((article, idx) => (
+            <View style={styles.row} key={index + '-' + idx}>
+              <View style={styles.cell1}><Text>{marqueNames[index]}</Text></View>
+              <View style={styles.cell1}><Text style={styles.textcell1}>{el.Referencename}</Text></View>
+              <View style={styles.cell1}><Text>{article.capacite}</Text></View>
+              <View style={styles.cell1}><Text>{article.prix}</Text></View>
             </View>
-          </View>
-        );
-      };
-      
+          ))
+        ))}
+      </View>
+    </View>
+  );
+};
 
     return(
         <NativeBaseProvider>
@@ -200,7 +221,7 @@ function RapportPriceMapDet({ route }){
                 {Tableaux()}
             </ScrollView>
             <Center>
-            <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+            <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
         <Text style={styles.btnText}>Exporter</Text>
       </TouchableOpacity>
       </Center>
