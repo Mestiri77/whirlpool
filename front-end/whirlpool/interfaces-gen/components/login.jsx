@@ -5,6 +5,7 @@ import port from './port'
 const Divider = () => <View style={styles.divider} />;
 
 
+
 const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
   <>
     <Text style={styles.label}>{label}</Text>
@@ -43,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
         const { role } = data;
 console.log(role);
         // Navigate to appropriate screen based on role
-        if (role === "Admin") {
+        if (role === "admin") {
           navigation.navigate("WelcomeAdmin");
         } else if (role === "Manager") {
           navigation.navigate("WelcomeManager");
