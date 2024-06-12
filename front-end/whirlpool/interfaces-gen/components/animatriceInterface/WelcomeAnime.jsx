@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView } from "rea
 import { Switch, HStack, Center, NativeBaseProvider } from "native-base";
 import Header from './header';
 import Footer from './footer';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import port from '../port'
 
@@ -14,29 +14,37 @@ const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
 
 
-function WelcomeAnime({ route }) {
-  // const { ani } = route.params;
+function WelcomeAnime() {
+  const route = useRoute();
+  const { ani } = route.params;
   const navigation = useNavigation();
-
   const [load, setLoad] = React.useState(true);
   const [historique, setHistorique] = React.useState([]);
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
   const [status, setStatus] = React.useState(false);
   const [city,setCity]= React.useState("");
-
-
+  const [iduser,setIdUser]= React.useState(ani.idusers);
+  const [idpdv,setIdpdv]= React.useState(ani.PDV_idPDV);
+console.log('heerrrree',ani);
  const onligne={
   datePr:formatDateWithoutTime(new Date()),
   checkin:new Date().toLocaleTimeString(),
   checkout:null,
   position:city,
   status:status,
+  Users_idusers:iduser,
+  PDV_idPDV:idpdv
  }
+
  const offligne={
   datePr:formatDateWithoutTime(new Date()),
-  checkout:new Date().toLocaleTimeString(),
+  timecheckout:new Date().toLocaleTimeString(),
   status:status,
+ }
+ const dataget={
+  userId:ani.idusers,
+  pdvId:ani.PDV_idPDV
  }
  function formatDateWithoutTime(date) {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -51,11 +59,35 @@ function WelcomeAnime({ route }) {
   };
 
   const presence = async () => {
-    if(!status){
-      await axios.post("http://"+port+":3000/api/presences/presences",onligne)
-    }
-    else{
-      await axios.put("http://"+port+":3000/api/presences/presences"+1,offligne)
+    try {
+      if (!status) {
+        await axios.post(`http://${port}:3000/api/presences/presences`, onligne);
+      } else {
+        const userId = onligne.Users_idusers; // Assuming you have these values in `onligne`
+        const pdvId = onligne.PDV_idPDV;
+  
+        // Fetch the latest Presence ID for the specific user and PDV
+        const response = await axios.post(`http://${port}:3000/api/presences/presence/latest`, {
+          userId: userId,
+          pdvId: pdvId
+        });
+  
+        if (response.status === 200) {
+          const latestPresence = response.data;
+          const latestId = latestPresence.idPresence;
+          
+          // Ensure the presence ID is valid before making the PUT request
+          if (latestId) {
+            await axios.put("http://"+port+":3000/api/presences/presences/checkout/"+latestId,offligne);
+          } else {
+            console.error('Latest presence ID is invalid');
+          }
+        } else {
+          console.error('Failed to fetch the latest presence');
+        }
+      }
+    } catch (error) {
+      console.error('Error handling presence:', error);
     }
   };
 
@@ -92,7 +124,7 @@ function WelcomeAnime({ route }) {
               <Text style={styles.textEmoji}>Bonjour 👋,</Text>
             </View>
             <View style={styles.view4}>
-              <Text style={styles.textAdmin}>Hello</Text>
+              <Text style={styles.textAdmin}>{ani.name} {ani.lastname}</Text>
             </View>
           </View>
           <View style={styles.view10}>

@@ -47,12 +47,18 @@ async function addPosition(req, res) {
 async function addCheckout(req, res) {
   try {
     const { id } = req.params;
-    const { timecheckout } = req.body;
+    console.log('Received id:', id);
+    const { timecheckout, status } = req.body;
+    console.log('Request body:', req.body);
+
     const presence = await Presence.findByPk(id);
     if (!presence) {
+      console.log('Presence not found for id:', id);
       return res.status(404).json({ message: 'Presence not found' });
     }
-    await presence.update({ checkout: timecheckout });
+
+    await presence.update({ checkout: timecheckout, status: status });
+    console.log('Updated presence:', presence);
     res.status(200).json(presence);
   } catch (error) {
     console.error('Error updating checkout:', error);
@@ -161,7 +167,28 @@ async function getPresencesByPDVName(req, res) {
     return res.status(500).json({ message: 'Erreur interne du serveur' });
   }
 }
+const getLatestPresence = async (req, res) => {
+  const { userId, pdvId } = req.body; // Using req.body to get userId and pdvId
 
+  try {
+    const latestPresence = await Presence.findOne({
+      where: {
+        Users_idusers: userId,
+        PDV_idPDV: pdvId
+      },
+      order: [['createdAt', 'DESC']]
+    });
+
+    if (!latestPresence) {
+      return res.status(404).json({ message: 'No presence records found' });
+    }
+
+    res.status(200).json(latestPresence);
+  } catch (error) {
+    console.error('Error fetching latest presence:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 module.exports = {
   createPresence,
@@ -172,5 +199,6 @@ module.exports = {
   addCheckin,
   addCheckout,
   addPosition, 
-  getPresencesByPDVName
+  getPresencesByPDVName,
+  getLatestPresence
 };
