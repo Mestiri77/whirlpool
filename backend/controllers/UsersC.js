@@ -106,7 +106,8 @@ async function getUsersByPDVName(req, res) {
         name: user.name,  // Ajustez les champs selon votre schéma
         lastname: user.lastname,
         email: user.email,
-        role: user.role
+        role: user.role,
+        PDV_idPDV:user.PDV_idPDV
       })));
     } else {
       return res.status(404).json({ message: `Aucune animatrice affectée au point de vente avec l'ID ${pdvId}` });
