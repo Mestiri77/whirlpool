@@ -29,9 +29,9 @@ function RapportDePresence() {
 
   const getUsers = async (userIds) => {
     try {
-      const responses = await Promise.all(userIds.map(id => axios.get(`http://${port}:3000/api/user/user/${id}`)));
+      const responses = await Promise.all(userIds.map(id => axios.get(`http://${port}:3000/api/user/users/${id}`)));
       const usersData = responses.reduce((acc, response) => {
-        acc[response.data[0].id] = response.data;
+        acc[response.data.idusers] = response.data;
         return acc;
       }, {});
       setUsers(usersData);
@@ -91,6 +91,15 @@ function RapportDePresence() {
     }
   }, [pdvs]);
 
+  const filterPresences = () => {
+    if (date === "AM") {
+      return pres.filter(presence => parseInt(presence.checkin) < 12);
+    } else if (date === "PM") {
+      return pres.filter(presence => parseInt(presence.checkin)>= 12);
+    }
+    return pres;
+  };
+
   const Example = ({ text }) => (
     <Center>
       <Box maxW="400">
@@ -107,35 +116,39 @@ function RapportDePresence() {
           onValueChange={(itemValue) => setDate(itemValue)}
         >
           <Select.Item label="AM" value="AM" />
-          <Select.Item label="PM" value="PM" />
+          <Select.Item label="PM" value="PM" /> 
         </Select>
       </Box>
     </Center>
   );
 
-  const Tableaux = () => (
-    <View style={{ marginTop: 20 }}>
-      <View style={styles.container2}>
-        {/* Première ligne */}
-        <View style={styles.row}>
-          <View style={styles.cell}><Text>Animatrice</Text></View>
-          <View style={styles.cell}><Text>Check in</Text></View>
-          <View style={styles.cell}><Text>Check out</Text></View>
-          <View style={styles.cell}><Text>Position GPS</Text></View>
-        </View>
+  const Tableaux = () => {
+    const filteredPresences = filterPresences();
+    
+    return (
+      <View style={{ marginTop: 20 }}>
+        <View style={styles.container2}>
+          {/* Première ligne */}
+          <View style={styles.row}>
+            <View style={styles.cell}><Text>Animatrice</Text></View>
+            <View style={styles.cell}><Text>Check in</Text></View>
+            <View style={styles.cell}><Text>Check out</Text></View>
+            <View style={styles.cell}><Text>Position GPS</Text></View>
+          </View>
 
-        {/* Contenu dynamique basé sur les présences */}
-        {pres.map((presence, index) => (
-  <View key={index} style={styles.row}>
-    <View style={styles.cell1}><Text>{users[presence.Users_idusers]?.[0]?.name}</Text></View>
-    <View style={styles.cell1}><Text style={styles.textcell1}>{formatTime(presence.checkin)}</Text></View>
-    <View style={styles.cell1}><Text>{formatTime(presence.checkout)}</Text></View>
-    <View style={styles.cell1}><Text>{presence.position}</Text></View>
-  </View>
-))}
+          {/* Contenu dynamique basé sur les présences */}
+          {filteredPresences.map((presence, index) => (
+            <View key={index} style={styles.row}>
+              <View style={styles.cell1}><Text>{users[presence.Users_idusers]?.name}</Text></View>
+              <View style={styles.cell1}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
+              <View style={styles.cell1}><Text>{(presence.checkout)}</Text></View>
+              <View style={styles.cell1}><Text>{presence.position}</Text></View>
+            </View>
+          ))}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <NativeBaseProvider>
