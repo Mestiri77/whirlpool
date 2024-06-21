@@ -1,5 +1,6 @@
 const Sellout = require('../models/Sellout.js');
-const Sequelize = require('sequelize');
+const Reference_has_Sellout=require('../models/Ref-Sel.js')
+const Sequelize = require('../config/config.js');
 const Article = require('./ArticleC.js')
 const Exposition = require ('./ExpoC.js')
 const Refference = require ('./RefC.js')
@@ -8,14 +9,16 @@ const Pdv = require ('./PdvC.js')
 // Create
 async function createSellout(req, res) {
   try {
-    const { dateCr, nbrV, objectif } = req.body;
-    const sellout = await Sellout.create({ dateCr, nbrV, objectif });
-    res.status(201).json(sellout);
+    const {dateCr , nbrV}=req.body
+    const sellout = await Sellout.create({dateCr , nbrV})
+    res.status(201).json(sellout)
   } catch (error) {
+    await transaction.rollback();
     console.error('Error creating Sellout:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
 
 // Read all
 async function getAllSellouts(req, res) {
@@ -23,6 +26,17 @@ async function getAllSellouts(req, res) {
     const sellouts = await Sellout.findAll();
     res.status(200).json(sellouts);
   } catch (error) {
+    console.error('Error getting Sellouts:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+async function getlastone(req,res){
+  try {
+    const sellouts = await Sellout.findAll({  order: [['createdAt', 'DESC']]}
+    );
+    res.status(200).json(sellouts);
+  }
+  catch (error) {
     console.error('Error getting Sellouts:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -47,12 +61,12 @@ async function getSelloutById(req, res) {
 async function updateSellout(req, res) {
   try {
     const { id } = req.params;
-    const { dateCr, nbrV, objectif } = req.body;
+    const { nbrV } = req.body;
     const sellout = await Sellout.findByPk(id);
     if (!sellout) {
       return res.status(404).json({ message: 'Sellout not found' });
     }
-    await sellout.update({ dateCr, nbrV, objectif });
+    await sellout.update({ nbrV:nbrV });
     res.status(200).json(sellout);
   } catch (error) {
     console.error('Error updating Sellout:', error);
@@ -124,5 +138,6 @@ module.exports = {
   getAllSellouts,
   getSelloutById,
   updateSellout,
-  deleteSellout
+  deleteSellout,
+  getlastone
 };

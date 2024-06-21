@@ -2,11 +2,13 @@ import * as React from "react";
 import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity} from "react-native";
 import { FontAwesome } from '@expo/vector-icons'; // Importez FontAwesome ou tout autre icône dont vous avez besoin
 const Add=require('../../../assets/Add.png')
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
-function Footer() {
-  const navigation=useNavigation()
+function Footer({ ani }) {
+  const navigation = useNavigation();
+  const route = useRoute();
+  
   return (
     <View style={styles.container}>
         <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
@@ -20,7 +22,7 @@ function Footer() {
         <FontAwesome name="plus" size={24} color="black" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeAnime')}>
+      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeAnime',{ ani })}>
     <View style={styles.item}>
       <FontAwesome name="home" size={24} color="#FFF" />
       <Text style={styles.text}>Home</Text>

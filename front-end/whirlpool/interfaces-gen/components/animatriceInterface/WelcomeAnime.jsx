@@ -19,14 +19,23 @@ function WelcomeAnime() {
   const { ani } = route.params;
   const navigation = useNavigation();
   const [load, setLoad] = React.useState(true);
+
   const [historique, setHistorique] = React.useState([]);
+  const [lastpres,setLastpres]= React.useState(null);
+
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
+
   const [status, setStatus] = React.useState(false);
+
   const [city,setCity]= React.useState("");
+
   const [iduser,setIdUser]= React.useState(ani.idusers);
   const [idpdv,setIdpdv]= React.useState(ani.PDV_idPDV);
+
 console.log('heerrrree',ani);
+
+
  const onligne={
   datePr:formatDateWithoutTime(new Date()),
   checkin:new Date().toLocaleTimeString(),
@@ -42,10 +51,13 @@ console.log('heerrrree',ani);
   timecheckout:new Date().toLocaleTimeString(),
   status:status,
  }
- const dataget={
-  userId:ani.idusers,
-  pdvId:ani.PDV_idPDV
- }
+
+//  const datalog={
+//   messageAc:,
+//   dateAc:, 
+//   TimeAc:
+//  }
+
  function formatDateWithoutTime(date) {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return date.toLocaleDateString("fr-FR", options);
@@ -53,11 +65,35 @@ console.log('heerrrree',ani);
  const handleCityChange = (newCity) => {
   setCity(newCity);
 };
-  const hundlehistorique = (zone) => {
+  const hundlehistorique = (zone,message) => {
     setLoad(!load);
+    logHistory(message)
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
   };
 
+  const logHistory= async (message)=>{
+    try{
+        await axios.post("http://"+port+":3000/api/logs/logs",{messageAc:message,dateAc:formatDateWithoutTime(new Date()),TimeAc:new Date().toLocaleTimeString(),Presence_idPresence:lastpres})
+    }
+    catch (error) {
+      console.error('Error handling Log:', error);
+    }
+  }
+  const getlastidpresence=async(userIdd,pdvIdd)=>{
+    try{
+      console.log(userIdd,pdvIdd);
+      const response = await axios.post(`http://${port}:3000/api/presences/presence/latest`, {
+        userId:userIdd ,
+        pdvId: pdvIdd
+      });
+      console.log("hello",response.data.idPresence);
+      setLastpres(response.data.idPresence)
+    }
+    catch (error) {
+      console.error('Error handling lastpres:', error);
+    }
+
+  }
   const presence = async () => {
     try {
       if (!status) {
@@ -111,7 +147,9 @@ console.log('heerrrree',ani);
     );
   };
 
-  React.useEffect(() => {}, [load]);
+  React.useEffect(() => {
+    getlastidpresence(ani.idusers,ani.PDV_idPDV)
+  }, [load]);
 
   return (
     <NativeBaseProvider>
@@ -128,7 +166,7 @@ console.log('heerrrree',ani);
             </View>
           </View>
           <View style={styles.view10}>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles', image: image03 }); navigation.navigate('CreationRapportSO') }}>
+            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO') }}>
               <View style={styles.view11}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -136,7 +174,7 @@ console.log('heerrrree',ani);
                 <Image resizeMode="contain" source={image03} style={styles.image3} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports', image: image03 }); navigation.navigate('CreationRapportExpo') }}>
+            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo') }}>
               <View style={styles.view13}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Exposition</Text>
@@ -163,7 +201,7 @@ console.log('heerrrree',ani);
           ))}
         </View>
       </ScrollView>
-      <Footer />
+      <Footer ani={ani} />
     </NativeBaseProvider>
   );
 }

@@ -3,7 +3,17 @@ const Log = require('../models/Log.js');
 // Create
 async function createLog(req, res) {
   try {
-    const { messageAc, dateAc, TimeAc } = req.body;
+    const { messageAc, dateAc, TimeAc,Presence_idPresence } = req.body;
+    const log = await Log.create({ messageAc, dateAc, TimeAc,Presence_idPresence});
+    res.status(201).json(log);
+  } catch (error) {
+    console.error('Error creating log:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+async function createLogbyid(req, res) {
+  try {
+    const { messageAc, dateAc, TimeAc,Presence_idPresence } = req.body;
     const log = await Log.create({ messageAc, dateAc, TimeAc });
     res.status(201).json(log);
   } catch (error) {
@@ -11,7 +21,6 @@ async function createLog(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-
 // Read all
 async function getAllLogs(req, res) {
   try {
