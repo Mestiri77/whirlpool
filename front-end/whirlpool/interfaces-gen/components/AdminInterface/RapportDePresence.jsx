@@ -92,9 +92,9 @@ function RapportDePresence() {
   }, [pdvs]);
 
   const filterPresences = () => {
-    if (date === "AM") {
+    if (date === "PM") {
       return pres.filter(presence => parseInt(presence.checkin) < 12);
-    } else if (date === "PM") {
+    } else if (date === "AM") {
       return pres.filter(presence => parseInt(presence.checkin)>= 12);
     }
     return pres;
