@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView,Image } from "react-native";
 import { Select, Box, Center, NativeBaseProvider } from "native-base";
 import axios from 'axios';
 import port from '../port';
@@ -19,6 +19,8 @@ function CreationRapportSO() {
     const [city, setCity] = useState("");
     const [categories, setCategories] = useState([]);
     const [references, setReferences] = useState([]);
+    const [sellouts,setSellouts]=useState([]);
+    const [refsell,setRefSell]=useState([]);
     const [sales, setSales] = useState({});
 
     console.log(sales);
@@ -26,6 +28,25 @@ function CreationRapportSO() {
     
     const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
+    const getAllSellout=async ()=>{
+        try{
+            const response = await axios.get(`http://${port}:3000/api/sellout/sellouts`)
+                setSellouts(response.data)
+        }
+        catch (error) {
+            console.error('Error fetching sellout:', error);
+        }
+    }
+
+    const getAllRefSel=async ()=>{
+        try{
+            const allrefsel = await axios.get(`http://${port}:3000/api/refsel/ReferenceSel`);
+            setRefSell(allrefsel.data)
+        }
+        catch (error) {
+            console.error('Error fetching sellout:', error);
+        }
+    }
     const fetchAllCateg = async () => {
         try {
             const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
@@ -53,6 +74,8 @@ function CreationRapportSO() {
 
     useEffect(() => {
         fetchAllCateg();
+        getAllSellout()
+        getAllRefSel()
     }, [load]);
 
     useEffect(() => {
@@ -117,10 +140,12 @@ function CreationRapportSO() {
 
             if (existingRefSel) {
                 // Mettre à jour le sellout existant
-                await axios.put(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`, { nbrV: updatedSales });
+                console.log(ani.PDV_idPDV);
+                await axios.put(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`, { nbrV: updatedSales, PDV_idPDV:ani.PDV_idPDV });
             } else {
                 // Créer un nouveau sellout
-                const selloutData = { dateCr: todayDate, nbrV: updatedSales };
+                const selloutData = { dateCr: todayDate, nbrV: updatedSales, PDV_idPDV:ani.PDV_idPDV };
+                
                 const selloutcreate = await axios.post(`http://${port}:3000/api/sellout/sellouts`, selloutData);
                 const selloutId = selloutcreate.data.idSellout;
 
@@ -135,6 +160,10 @@ function CreationRapportSO() {
             // Gérez les erreurs et affichez un message à l'utilisateur si nécessaire
         }
     };
+
+    const hundleNbrVente=()=>{
+        
+    }
 
     const Table = () => {
         return (

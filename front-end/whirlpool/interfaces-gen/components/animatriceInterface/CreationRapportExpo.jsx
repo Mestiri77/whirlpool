@@ -15,6 +15,7 @@ function CreationRapportExpo(){
   const navigation = useNavigation();
   const route = useRoute();
     const { ani } = route.params;
+
     function RowItem({ text,settruc2}) {
         if(settruc2==""){
             return (

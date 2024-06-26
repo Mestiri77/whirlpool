@@ -9,8 +9,8 @@ const Pdv = require ('./PdvC.js')
 // Create
 async function createSellout(req, res) {
   try {
-    const {dateCr , nbrV}=req.body
-    const sellout = await Sellout.create({dateCr , nbrV})
+    const {dateCr , nbrV,PDV_idPDV}=req.body
+    const sellout = await Sellout.create({dateCr , nbrV, PDV_idPDV})
     res.status(201).json(sellout)
   } catch (error) {
     await transaction.rollback();
@@ -61,12 +61,12 @@ async function getSelloutById(req, res) {
 async function updateSellout(req, res) {
   try {
     const { id } = req.params;
-    const { nbrV } = req.body;
+    const { nbrV,PDV_idPDV } = req.body;
     const sellout = await Sellout.findByPk(id);
     if (!sellout) {
       return res.status(404).json({ message: 'Sellout not found' });
     }
-    await sellout.update({ nbrV:nbrV });
+    await sellout.update({ nbrV:nbrV ,PDV_idPDV:PDV_idPDV });
     res.status(200).json(sellout);
   } catch (error) {
     console.error('Error updating Sellout:', error);
