@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity,ScrollView } from "react-native";
+import { View, Text, StyleSheet,Image, Button, TouchableOpacity,ScrollView } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -22,6 +22,7 @@ function RapportSellOut() {
     const [sellRef,setSellRef]=React.useState([])
     const [nbrDventes,setNbrDvents]=React.useState([])
     const [daysBetweenDates, setDaysBetweenDates] = useState([]);
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
     console.log(startDate);
     console.log(new Date());
@@ -255,6 +256,8 @@ React.useEffect(()=>{
 
     return (
         <NativeBaseProvider>
+                  <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
             <View style={styles.container}>
                 <Header />
                 <Center flex={1} mt={'-140%'}>
@@ -394,6 +397,13 @@ const styles = StyleSheet.create({
         color: 'white', // Text color
         fontSize: 16,
         textAlign:"center"
+      },
+      image12: {
+        width: 125,
+        height: 95,
+        position: "absolute",
+        top: 0,
+        left: 15,
       },
 });
 

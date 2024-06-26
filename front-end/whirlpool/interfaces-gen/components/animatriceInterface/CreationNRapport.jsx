@@ -7,6 +7,7 @@ import Header from './header';
 import Footer from './footer';
 
 const downicon = require('../../../assets/icons8-down-50.png');
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function CreationNRapport() {
 
@@ -106,6 +107,8 @@ function CreationNRapport() {
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <Header />
       <View style={styles.container}>
         <RowItem text="Créer un nouveau rapport" settruc2={""} />
@@ -137,6 +140,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 80,
     marginTop:-550
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   row: {
     flexDirection: 'row',

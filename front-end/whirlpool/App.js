@@ -30,18 +30,18 @@ import ManagerExpoDet from './interfaces-gen/components/managerInterface/Rapport
 import ManagerPresence from './interfaces-gen/components/managerInterface/RapportPresence'
 import ManagerPriceMap from './interfaces-gen/components/managerInterface/RapportPriceMap'
 import ManagerPriceMapDet from './interfaces-gen/components/managerInterface/RapportPriceMapDet'
-
+import Ouverture from './interfaces-gen/components/AdminInterface/ouverture'
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
     <View style={styles.container}>
       <NavigationContainer>
         <StatusBar style="auto" />
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="ouverture">
+        {/* <Stack.Screen name="ouverture" options={{ headerShown: false }} component={Ouverture} />
           <Stack.Screen name="Login" options={{ headerShown: false }} component={Login} />
-          <Stack.Screen name="WelcomeAnime" options={{ headerShown: false }}  component={WelcomeAnime} />
-
-          {/* <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} /> */}
+          <Stack.Screen name="WelcomeAnime" options={{ headerShown: false }}  component={WelcomeAnime} /> */}
+          <Stack.Screen name="WelcomeAdmin" component={WelcomeAdmin} />
           <Stack.Screen name="Creationpdv" options={{ headerShown: false }} component={Creationpdv} />
           <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
           <Stack.Screen name="ConsultRapports" options={{ headerShown: false }} component={ConsultRapports} />

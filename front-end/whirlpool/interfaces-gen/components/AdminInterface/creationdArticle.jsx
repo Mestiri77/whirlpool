@@ -8,6 +8,8 @@ import Footer from './footer'
 
 const leftimage = require('../../../assets/left-icon.png'); 
 const downicon = require('../../../assets/down-icon.png')
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
 
 function CreationArticle(){
 const [load,setLoad]=React.useState(false)
@@ -630,6 +632,8 @@ const hideAlert = () => {
 
     return (
         <NativeBaseProvider>
+                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.view1}>
         <Text style={{fontSize:18, fontWeight:700 , marginTop:20}}>Creation d'Article :</Text>
         {alertData.visible && (
@@ -677,6 +681,13 @@ const hideAlert = () => {
           borderRadius: 5,
           width:150,
           marginTop:"5%",
+        },
+        image12: {
+          width: 125,
+          height: 95,
+          position: "absolute",
+          top: 0,
+          left: 15,
         },
         btnText: {
           color: 'white', // Text color

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { View, Text,Image, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Stack,Input,Icon} from "native-base";
 import Header from './header'
 import Footer from './footer'
@@ -22,6 +22,7 @@ function RapportPriceMap(){
   // const [pdv,setPdv]=React.useState('')
   const [pdvsel,setPdvsel]=React.useState('')
   const [popupVisible, setPopupVisible] = useState(false);
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 
 
@@ -123,6 +124,8 @@ const RenderInput=(text)=>{
 
 return(
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.view1}>
         <Header />  
         <Center flex={8}>
@@ -159,6 +162,13 @@ const styles = StyleSheet.create({
          View2:{
           marginLeft:-200
          },
+         image12: {
+          width: 125,
+          height: 95,
+          position: "absolute",
+          top: 0,
+          left: 15,
+        },
       categtext:{
         width:'100%',
         alignItems:'center',

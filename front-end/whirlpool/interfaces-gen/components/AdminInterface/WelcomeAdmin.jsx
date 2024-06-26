@@ -8,6 +8,7 @@ const image02 = require('../../../assets/image2.png');
 const image03 = require('../../../assets/image3.png');
 const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function WelcomeAdmin() {
   const navigation = useNavigation();
@@ -25,6 +26,8 @@ function WelcomeAdmin() {
   return (
     <>
       <ScrollView>
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.view1}>
           <View style={styles.view2}>
             <View style={styles.view3}>
@@ -174,6 +177,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 75,
     left: -15,
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   view8: {
     borderRadius: 10,

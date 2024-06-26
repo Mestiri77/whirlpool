@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text,Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -17,6 +17,7 @@ function RapportLog() {
   const [pres, setPres] = useState([]);
   const [log, setLog] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
   const port='192.168.134.6'; // Update with the correct port
 
@@ -129,6 +130,8 @@ function RapportLog() {
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <View style={styles.container}>
         <Header />
         <Center flex={1} mt={'-140%'}>
@@ -151,6 +154,13 @@ function RapportLog() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   content: {
     paddingHorizontal: 20,

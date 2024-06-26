@@ -10,6 +10,7 @@ function CreationRapportSO(){
 
     const [Ref, setRef] = React.useState("");
 
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
     const data = [
         { key: '1', col1: 'Row 1 Col 1', col2: ' 1', col3: 'Row 1 Col 3' },
@@ -61,6 +62,7 @@ function CreationRapportSO(){
     
     return(
         <NativeBaseProvider>
+                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
             <Header />
             <View style={styles.container}>
                 <Example text={'Categories'}/>
@@ -112,6 +114,13 @@ const styles = StyleSheet.create({
         borderRadius:5,
         padding:8,
         margin:2
+      },
+      image12: {
+        width: 125,
+        height: 95,
+        position: "absolute",
+        top: 0,
+        left: 15,
       },
       cell1: {
         flex: 1,
