@@ -19,7 +19,7 @@ function RapportLog() {
   const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
   const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
-  const port='192.168.134.6'; // Update with the correct port
+  const port='192.168.234.6'; // Update with the correct port
 
   const getPdvs = async (pdv) => {
     try {
@@ -29,6 +29,7 @@ function RapportLog() {
     } catch (error) {
       console.error('Error fetching pdvs:', error);
     }
+    
   };
   const getPresence = async () => {
     try {
@@ -70,6 +71,7 @@ function RapportLog() {
             <Select.Item label="PM" value="PM" />
           </Select>
         </Box>
+      
       </Center>
     );
   };

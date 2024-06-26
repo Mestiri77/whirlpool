@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text,Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -17,7 +17,7 @@ function RapportDePresence() {
   const [pres, setPres] = useState([]);
   const [users, setUsers] = useState({});
   const [date, setDate] = useState("");
-  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png')
 
   const getPdvs = async (pdv) => {
     try {
@@ -92,11 +92,11 @@ function RapportDePresence() {
     }
   }, [pdvs]);
 
-  const filterPresences = () => {
-    if (date === "PM") {
-      return pres.filter(presence => parseInt(presence.checkin) < 12);
-    } else if (date === "AM") {
-      return pres.filter(presence => parseInt(presence.checkin)>= 12);
+  const filterPresences = (date, pres) => {
+    if (date === "AM") {
+      return pres.filter(presence => presence.checkin.includes('AM'));
+    } else if (date === "PM") {
+      return pres.filter(presence => presence.checkin.includes('PM'));
     }
     return pres;
   };
@@ -117,15 +117,15 @@ function RapportDePresence() {
           onValueChange={(itemValue) => setDate(itemValue)}
         >
           <Select.Item label="AM" value="AM" />
-          <Select.Item label="PM" value="PM" /> 
+          <Select.Item label="PM" value="PM" />
         </Select>
       </Box>
     </Center>
   );
 
   const Tableaux = () => {
-    const filteredPresences = filterPresences();
-    
+    const filteredPresences = filterPresences(date, pres);
+
     return (
       <View style={{ marginTop: 20 }}>
         <View style={styles.container2}>
@@ -153,8 +153,7 @@ function RapportDePresence() {
 
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.container}>
         <Header />
         <Center flex={1} mt={'-140%'}>
