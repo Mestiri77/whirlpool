@@ -23,6 +23,9 @@ function CreationRapportSO() {
 
     console.log(sales);
 
+    
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
     const fetchAllCateg = async () => {
         try {
             const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
