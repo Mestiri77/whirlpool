@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 function ValidRExpo() {
 
     const [modif,setModif] = React.useState('');
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
     const RenderInput=(text,pos)=>{
       if(pos=="left" ) {
@@ -48,6 +49,8 @@ function ValidRExpo() {
     }
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
     <View style={styles.view1}>
         <Center><View style={styles.view2}><Text style={{fontWeight:500}}>Validation Rapport Exposition</Text></View></Center>
         <View style={styles.allinputs}>
@@ -88,6 +91,13 @@ const styles = StyleSheet.create({
         margin:'10%',
         borderRadius: 5,
         borderWidth:0.2,
+      },
+      image12: {
+        width: 125,
+        height: 95,
+        position: "absolute",
+        top: 0,
+        left: 15,
       },
       view2:{
         padding: 20,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text,Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -17,6 +17,7 @@ function RapportDePresence() {
   const [pres, setPres] = useState([]);
   const [users, setUsers] = useState({});
   const [date, setDate] = useState("");
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
   const getPdvs = async (pdv) => {
     try {
@@ -152,6 +153,8 @@ function RapportDePresence() {
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <View style={styles.container}>
         <Header />
         <Center flex={1} mt={'-140%'}>
@@ -195,6 +198,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: 'black',
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   cell: {
     flex: 1,

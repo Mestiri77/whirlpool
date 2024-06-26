@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet,Button,Image, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Slider, Stack} from "native-base";
 import Header from './header'
 import Footer from './footer'
@@ -24,6 +24,7 @@ function RapportPriceMapDet({ route }){
     const [prix,setPrix]=React.useState([])
     const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
     const [articles,setArticles]= useState([])
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
     const Couleur=["Bleu","GRIS","Rouge"]
     const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
@@ -205,6 +206,8 @@ const Tableaux = () => {
 
     return(
         <NativeBaseProvider>
+                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.container}>
             <Header />
             <ScrollView style={styles.scrollView}>
@@ -235,7 +238,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
- 
+    image12: {
+      width: 125,
+      height: 95,
+      position: "absolute",
+      top: 0,
+      left: 15,
+    },
     scrollView: {
         flex: 1,
         padding: 20,

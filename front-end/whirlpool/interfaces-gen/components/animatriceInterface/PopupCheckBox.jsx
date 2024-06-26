@@ -1,9 +1,11 @@
 import * as React from "react";
-import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
+import { View, Text,Image, StyleSheet,TouchableOpacity } from "react-native";
 import { Checkbox, Center, NativeBaseProvider } from "native-base";
 
 function PopupCheckBox() {
     const [groupValues, setGroupValues] = React.useState([]);
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
   const Example = () => {
     return (
       <Checkbox.Group onChange={setGroupValues} value={groupValues} accessibilityLabel="choose numbers">
@@ -25,6 +27,7 @@ function PopupCheckBox() {
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.container}>
         <Text style={styles.title}>Check Box</Text>
         <Center flex={1} px="3">
@@ -53,6 +56,13 @@ const styles = StyleSheet.create({
     maxHeight:450,
     borderWidth:1,
     borderRadius:15
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   title: {
     fontSize: 20,

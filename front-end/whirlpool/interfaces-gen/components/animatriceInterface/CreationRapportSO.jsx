@@ -23,6 +23,9 @@ function CreationRapportSO() {
 
     console.log(sales);
 
+    
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
     const fetchAllCateg = async () => {
         try {
             const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
@@ -182,7 +185,8 @@ function CreationRapportSO() {
 
     return (
         <NativeBaseProvider>
-            <Header onCityChange={handleCityChange} />
+                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+            <Header />
             <View style={styles.container}>
                 <Example text={'Categories'} />
                 <Table />
@@ -232,6 +236,13 @@ const styles = StyleSheet.create({
         padding: 8,
         margin: 2
     },
+      image12: {
+        width: 125,
+        height: 95,
+        position: "absolute",
+        top: 0,
+        left: 15,
+      },
     cell1: {
         flex: 1,
         borderRadius: 5,

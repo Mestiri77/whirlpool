@@ -1,8 +1,9 @@
 import * as React from "react";
-import {  View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {  View,Image, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Alert,CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
+import WHIRLPOOL_LOGO from "../../../assets/WHIRLPOOL_LOGO.png"
 import Footer from './footer';
 import port from "../port";
 function CreationCompte() {
@@ -19,6 +20,7 @@ function CreationCompte() {
   const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
   const [load, setLoad] = React.useState(false);
+
 
 
 
@@ -194,7 +196,10 @@ if(text=="Mot De Passe :"){
 
 
   return (
+    
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <View style={styles.view1}>
         <Center flex={1} px="0">
        {alertData.visible && (
@@ -252,6 +257,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center"
   },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
+  }
 });
 
 export default CreationCompte;

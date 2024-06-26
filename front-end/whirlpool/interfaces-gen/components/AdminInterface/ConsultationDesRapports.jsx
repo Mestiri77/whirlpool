@@ -5,6 +5,7 @@ import Footer from './footer';
 import PopupRapport from './PopupRapport';
 
 const leftimage = require('../../../assets/left-icon.png');
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 
 function ConsultationDesRapports() {
@@ -30,6 +31,8 @@ function ConsultationDesRapports() {
     ];
     return (
         <NativeBaseProvider>
+                  <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
             <View style={styles.view1}>
                 <Text style={{ fontSize: 18, fontWeight: 700, marginTop: 20 }}>Consultation Des Rapports :</Text>
                 <View style={styles.view2}>
@@ -111,6 +114,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 35,
         paddingBottom: 80,
     },
+    image12: {
+        width: 125,
+        height: 95,
+        position: "absolute",
+        top: 0,
+        left: 15,
+      },
     view2: {
         flex: 1,
         alignItems: 'center',

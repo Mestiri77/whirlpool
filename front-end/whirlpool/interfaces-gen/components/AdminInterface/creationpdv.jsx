@@ -13,6 +13,8 @@ const ptDv = require ('../../../assets/point-de-vente-icon.png')
 const refference = require('../../../assets/reference-icon.png')
 const categorie = require ('../../../assets/category-icon.png')
 const marque =require ('../../../assets/marque-icon.png')
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
 function Creationpdv() {
   const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
@@ -610,6 +612,7 @@ const affectanim = async (nameanim, namepdv) => {
   }
   return (
     <NativeBaseProvider>
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
 
     <View style={styles.view1}>
       <Text style={{fontSize:18, fontWeight:700 , marginTop:20}}>Creation de Point de Vente :</Text>
@@ -659,6 +662,13 @@ const styles = StyleSheet.create({
     width:150,
     marginTop:"5%",
     
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   btnText: {
     color: 'white', // Text color
