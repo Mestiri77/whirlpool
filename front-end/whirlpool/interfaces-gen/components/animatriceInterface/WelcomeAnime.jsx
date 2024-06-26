@@ -30,7 +30,7 @@ function WelcomeAnime() {
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
 
-  const [status, setStatus] = React.useState(Boolean);
+  const [status, setStatus] = React.useState(false);
 
   const [city,setCity]= React.useState("");
 

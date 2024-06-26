@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   view2: {
     marginTop: 27,
-    font: "12px Nunito, sans-serif ",
+    font: "12px ",
   },
   view3: {
     borderRadius: 8,
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     aspectRatio: "1.37",
   },
   view5: {
-    fontFamily: "Nunito, sans-serif",
     alignSelf: "start",
     marginTop: 82,
     flexGrow: "1",

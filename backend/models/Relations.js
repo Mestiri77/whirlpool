@@ -48,6 +48,7 @@ Category.belongsToMany(PriceM, { through: 'PriceM_Category', foreignKey: 'idCate
 Reference.belongsToMany(Sellout, { through: 'Reference_has_Sellout', foreignKey: 'Reference_idReference' });
 Sellout.belongsToMany(Reference, { through: 'Reference_has_Sellout', foreignKey: 'Sellout_idSellout' });
 
+PDV.hasMany(Sellout,{foreignKey:'PDV_idPDV'})
 
 // sequelize
 //   .sync()
