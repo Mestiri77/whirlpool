@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useNavigation,useRoute } from '@react-navigation/native';
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function CreationRapportExpo(){
   
@@ -47,6 +48,7 @@ function CreationRapportExpo(){
         }
 return(
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
  <View style={styles.view1}>
           <View style={styles.view2}>
             <Image
@@ -80,6 +82,13 @@ const styles = StyleSheet.create({
     textprop:{
         fontSize: 18,
         fontWeight:"600"
+    },
+    image12: {
+      width: 125,
+      height: 95,
+      position: "absolute",
+      top: 0,
+      left: 15,
     },
     btns: {
       backgroundColor: '#FDC100', // Background color of the button

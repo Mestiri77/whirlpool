@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text,Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { NativeBaseProvider,Modal } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -20,6 +20,7 @@ function RapportExpodet() {
   const [refs, setRefs] = useState({});
   const [showpopup, setShowpop]=useState(false)
   const [popupData, setPopupData] = useState({});
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
   const fetchArticleByCategory = async (categ) => {
     try {
@@ -107,6 +108,8 @@ function RapportExpodet() {
   };
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <View style={styles.view1}>
         <Header />
         <ScrollView style={{ marginTop: -350 }}>
@@ -185,6 +188,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D3D4',
     borderWidth: 0.5,
     borderColor: '#D0D3D4',
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   cell2: {
     flex: 1,

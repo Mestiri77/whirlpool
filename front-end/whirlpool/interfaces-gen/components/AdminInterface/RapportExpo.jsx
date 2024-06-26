@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text,Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center, } from "native-base";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from './header';
@@ -23,6 +23,7 @@ function RapportExpo() {
   const [pdvs, setPdvs] = useState({});
   const [anim, setAnim] = useState([]);
   const [idWhirlpool, setIdwhirlpool] = useState(null);
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
   const storeData = async (key, category) => {
     try {
@@ -145,6 +146,8 @@ function RapportExpo() {
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <View style={styles.view1}>
         <Header />
         <ScrollView style={{ marginTop: -50 }}>
@@ -221,6 +224,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   textexpo: {
     fontSize: 15,

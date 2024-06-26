@@ -12,6 +12,7 @@ const image02 = require('../../../assets/image2.png');
 const image03 = require('../../../assets/image3.png');
 const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
+const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 
 function WelcomeAnime() {
@@ -169,6 +170,8 @@ console.log('heerrrree',ani);
 
   return (
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
       <ScrollView style={{marginTop:10}}>
         <Header onCityChange={handleCityChange} />
         <Example />
@@ -283,6 +286,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 75,
     left: -15,
+  },
+  image12: {
+    width: 125,
+    height: 95,
+    position: "absolute",
+    top: 0,
+    left: 15,
   },
   view8: {
     borderRadius: 10,
