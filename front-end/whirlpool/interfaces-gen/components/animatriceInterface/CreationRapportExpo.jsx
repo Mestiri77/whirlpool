@@ -5,20 +5,22 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function CreationRapportExpo(){
+  
   const navigation = useNavigation();
-
+  const route = useRoute();
+    const { ani } = route.params;
     function RowItem({ text,settruc2}) {
         if(settruc2==""){
             return (
                 <View style={styles.row}>
                   <Text style={styles.text}>{text}</Text>
-                  <TouchableOpacity onPress={() => navigation.navigate('CreationNRapport')} >
+                  <TouchableOpacity onPress={() => navigation.navigate('CreationNRapport',{ ani })} >
                     <Image
                       resizeMode="contain"
                       source={leftimage}
@@ -63,8 +65,8 @@ return(
           </ScrollView>
           </View>
         </View>
-    <Footer/>
-    </NativeBaseProvider>
+        <Footer ani={ani} />
+        </NativeBaseProvider>
 
 
 )

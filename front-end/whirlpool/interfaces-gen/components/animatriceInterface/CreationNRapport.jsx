@@ -6,10 +6,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Header from './header';
 import Footer from './footer';
 
+import { useNavigation,useRoute } from '@react-navigation/native';
+
 const downicon = require('../../../assets/icons8-down-50.png');
 const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function CreationNRapport() {
+
+  const route = useRoute();
+  const { ani } = route.params;
 
   const [marque,setMarque]  = React.useState("");
   const [categ,setCateg]= React.useState("");
@@ -127,8 +132,8 @@ function CreationNRapport() {
           <Text style={styles.btnText}>Valider</Text>
         </TouchableOpacity>
       </View>
-      <Footer />
-    </NativeBaseProvider>
+      <Footer ani={ani} />
+      </NativeBaseProvider>
   );
 }
 

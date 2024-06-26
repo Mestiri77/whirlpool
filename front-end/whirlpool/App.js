@@ -46,20 +46,19 @@ export default function App() {
           <Stack.Screen name="CreationArt" options={{ headerShown: false }} component={CreationArt} />
           <Stack.Screen name="ConsultRapports" options={{ headerShown: false }} component={ConsultRapports} />
           <Stack.Screen name="RapportExpo" options={{ headerShown: false }} component={RapportExpo} />
-          <Stack.Screen name="RapportExpoDet"  component={RapportExpoDet} />
-          <Stack.Screen name="Modifpopup" component={Modifpopup} /> 
+          <Stack.Screen name="RapportExpoDet" options={{ headerShown: false }}  component={RapportExpoDet} />
+          <Stack.Screen name="Modifpopup" options={{ headerShown: false }} component={Modifpopup} /> 
           <Stack.Screen name="RapportPriceMap"options={{ headerShown: false }} component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet"options={{ headerShown: false }} component={RapportPriceMapDet} />
           <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" options={{ headerShown: false }} component={RapportDePresence} />
-          <Stack.Screen name="RapportLog" component={RapportLog} />
+          <Stack.Screen name="RapportLog" options={{ headerShown: false }} component={RapportLog} />
           <Stack.Screen name="CreationCompte" options={{ headerShown: false }} component={CreationCompte} />
          <Stack.Screen name="PopupRapport" component={PopupRapport} />
-         <Stack.Screen name="CreationRapportExpo" component={CreationRapportExpo} />
-          <Stack.Screen name="PopupCheckBox" component={PopupCheckBox} />
-          <Stack.Screen name="CreationNRapport" component={CreationNRapport} />
-          <Stack.Screen name="ValidRExpo" component={ValidRExpo} />
-          <Stack.Screen name="CreationRapportSO" component={CreationRapportSO} /> 
+         <Stack.Screen name="CreationRapportExpo" options={{ headerShown: false }} component={CreationRapportExpo} />
+          <Stack.Screen name="PopupCheckBox" options={{ headerShown: false }} component={PopupCheckBox} />
+          <Stack.Screen name="CreationNRapport" options={{ headerShown: false }} component={CreationNRapport} />
+          <Stack.Screen name="ValidRExpo" options={{ headerShown: false }} component={ValidRExpo} />
 
           <Stack.Screen name="WelcomeManager" options={{ headerShown: false }}  component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo"   options={{ headerShown: false }} component={ManagerExpo} />
