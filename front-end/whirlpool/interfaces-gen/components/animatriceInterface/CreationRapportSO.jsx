@@ -6,8 +6,14 @@ import port from '../port';
 
 import Header from './header';
 import Footer from './footer';
+import { useNavigation,useRoute } from '@react-navigation/native';
+
 
 function CreationRapportSO() {
+
+    const route = useRoute();
+    const { ani } = route.params;
+
     const [load, setLoad] = useState(false);
     const [categ, setCateg] = useState("");
     const [city, setCity] = useState("");
@@ -180,11 +186,9 @@ function CreationRapportSO() {
             <View style={styles.container}>
                 <Example text={'Categories'} />
                 <Table />
-                <TouchableOpacity style={styles.btns}>
-                    <Text style={styles.btnText}>Valider</Text>
-                </TouchableOpacity>
+                
             </View>
-            <Footer />
+      <Footer ani={ani} />
         </NativeBaseProvider>
     );
 }

@@ -22,11 +22,14 @@ function WelcomeAnime() {
 
   const [historique, setHistorique] = React.useState([]);
   const [lastpres,setLastpres]= React.useState(null);
+  const [allpres,setAllpres]=React.useState([])
+  const [alluser,setAllusers]=React.useState([])
+
 
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
 
-  const [status, setStatus] = React.useState(false);
+  const [status, setStatus] = React.useState(Boolean);
 
   const [city,setCity]= React.useState("");
 
@@ -41,7 +44,7 @@ console.log('heerrrree',ani);
   checkin:new Date().toLocaleTimeString(),
   checkout:null,
   position:city,
-  status:status,
+  status:false,
   Users_idusers:iduser,
   PDV_idPDV:idpdv
  }
@@ -49,7 +52,7 @@ console.log('heerrrree',ani);
  const offligne={
   datePr:formatDateWithoutTime(new Date()),
   timecheckout:new Date().toLocaleTimeString(),
-  status:status,
+  status:true,
  }
 
 //  const datalog={
@@ -71,6 +74,26 @@ console.log('heerrrree',ani);
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
   };
 
+  const Allpresence=async()=>{
+    try{
+      const response = await axios.get(`http://${port}:3000/api/presences/presences`);
+      setAllpres(response.data)
+    }
+    catch (error) {
+      console.error('Error handling getallpresence:', error);
+    }
+  }
+  const Allusers=async()=>{
+    try{
+      const response = await axios.get("http://"+port+":3000/api/users/animateur")
+      setAllusers(response.data)
+    }
+    catch (error) {
+      console.error('Error handling getallAnnime:', error);
+    }
+  }
+
+
   const logHistory= async (message)=>{
     try{
         await axios.post("http://"+port+":3000/api/logs/logs",{messageAc:message,dateAc:formatDateWithoutTime(new Date()),TimeAc:new Date().toLocaleTimeString(),Presence_idPresence:lastpres})
@@ -79,6 +102,7 @@ console.log('heerrrree',ani);
       console.error('Error handling Log:', error);
     }
   }
+  
   const getlastidpresence=async(userIdd,pdvIdd)=>{
     try{
       console.log(userIdd,pdvIdd);
@@ -88,54 +112,44 @@ console.log('heerrrree',ani);
       });
       console.log("hello",response.data.idPresence);
       setLastpres(response.data.idPresence)
+      console.log("hello2",response.data.status);
+
+      setStatus(response.data.status)
     }
     catch (error) {
       console.error('Error handling lastpres:', error);
     }
-
   }
+
   const presence = async () => {
     try {
-      if (!status) {
-        await axios.post(`http://${port}:3000/api/presences/presences`, onligne);
+      if (status) {
+        const response = await axios.post(`http://${port}:3000/api/presences/presences`, onligne);
+        setLastpres(response.data.idPresence);
       } else {
-        const userId = onligne.Users_idusers; // Assuming you have these values in `onligne`
-        const pdvId = onligne.PDV_idPDV;
-  
-        // Fetch the latest Presence ID for the specific user and PDV
-        const response = await axios.post(`http://${port}:3000/api/presences/presence/latest`, {
-          userId: userId,
-          pdvId: pdvId
-        });
-  
-        if (response.status === 200) {
-          const latestPresence = response.data;
-          const latestId = latestPresence.idPresence;
-          
-          // Ensure the presence ID is valid before making the PUT request
-          if (latestId) {
-            await axios.put("http://"+port+":3000/api/presences/presences/checkout/"+latestId,offligne);
-          } else {
-            console.error('Latest presence ID is invalid');
-          }
+        if (lastpres) {
+          await axios.put(`http://${port}:3000/api/presences/presences/checkout/${lastpres}`, offligne);
         } else {
-          console.error('Failed to fetch the latest presence');
+          console.error('Latest presence ID is invalid');
         }
       }
     } catch (error) {
       console.error('Error handling presence:', error);
     }
   };
+  
+
+
 
   const Example = () => {
     return (
       <HStack alignItems="center" space={4} ml={9}>
-        <Text style={{ color: status ? "#FDC100" : "#D0D3D4", fontSize: 18 }}>
-          {status ? "On ligne" : "Off ligne"}
+        <Text style={{ color: !status ? "#FDC100" : "#D0D3D4", fontSize: 18 }}>
+          {status ? "Off ligne" : "On ligne"}
         </Text>
         <Switch
           size="sm"
-          isChecked={status}
+          isChecked={!status}
           onTrackColor="#FDC100"
           offTrackColor="#D0D3D4"
           onToggle={() => {
@@ -149,6 +163,8 @@ console.log('heerrrree',ani);
 
   React.useEffect(() => {
     getlastidpresence(ani.idusers,ani.PDV_idPDV)
+    Allpresence()
+    Allusers()
   }, [load]);
 
   return (
@@ -166,7 +182,7 @@ console.log('heerrrree',ani);
             </View>
           </View>
           <View style={styles.view10}>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Création d'articles", link: 'link_to_creation_articles', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO') }}>
+            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
               <View style={styles.view11}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -174,7 +190,7 @@ console.log('heerrrree',ani);
                 <Image resizeMode="contain" source={image03} style={styles.image3} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Consultation des rapports', link: 'link_to_consultation_rapports', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo') }}>
+            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
               <View style={styles.view13}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Exposition</Text>
@@ -187,7 +203,7 @@ console.log('heerrrree',ani);
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index}>
+            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link)}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />
