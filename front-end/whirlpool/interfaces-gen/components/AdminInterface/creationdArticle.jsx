@@ -78,7 +78,7 @@ const Fetchallmarq=async()=>{
 }
 const Fetchallcateg=async()=>{
   try{
-    const response=await axios.get("http://"+port+":3000/api/categories/categories")
+    const response=await axios.get("http://"+port+":3000/api/categories/categorie")
     setCategories(response.data)
   }
   catch (error) {

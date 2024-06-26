@@ -1,8 +1,10 @@
 import * as React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
-import { Input, Select, Box, Center, NativeBaseProvider, ScrollView } from "native-base";
+import { CheckIcon,Input, Select, Box,Icon, Center, NativeBaseProvider, ScrollView } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
+import port from '../port'
+import axios from 'axios';
 import Header from './header';
 import Footer from './footer';
 
@@ -15,6 +17,8 @@ function CreationNRapport() {
   const route = useRoute();
   const { ani } = route.params;
 
+  const [load,setLoad]=React.useState(false)
+
   const [marque,setMarque]  = React.useState("");
   const [categ,setCateg]= React.useState("");
   const [Ref, setRef] = React.useState("");
@@ -22,6 +26,98 @@ function CreationNRapport() {
   const [capacite,setCapacite]= React.useState("");
   const [unite,setUnite]= React.useState("");
   const [couleur,setCouleur] = React.useState("");
+
+  const [idref,setIdref]=React.useState(null)
+  const [idmarque,setIdmarque]=React.useState(null)
+  const [idcateg,setIdcateg]=React.useState(null)
+
+  const [references,setReferences]=React.useState([])
+  const [marques,setMarques]=React.useState([])
+  const [Categories,setCategories]=React.useState([])
+  const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+
+
+  const dataArticle={
+    coloeur:couleur,
+    typeC:unite,
+    capacite:capacite,
+    Reference_idReference:idref,
+    prix:prix
+  }
+///////////////////////////Function///////////////////////
+const Fetchallref=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/reference/references")
+    setReferences(response.data)
+  }catch (error) {
+      console.error('Error fetching :', error)
+    }
+  }
+  const Fetchallmarq=async()=>{
+    try{
+      const response=await axios.get("http://"+port+":3000/api/marques/marques")
+      setMarques(response.data)
+    }catch (error) {
+      console.error('Error fetching :', error)
+    }
+  }
+  const Fetchallcateg=async()=>{
+    try{
+      const response=await axios.get("http://"+port+":3000/api/categories/categorie")
+      setCategories(response.data)
+    }
+    catch (error) {
+      console.error('Error fetching :', error)
+    }
+  }
+
+  const PostArticle=async(data1,id,data2,showAlert )=>{
+    try{
+      data1.Reference_idReference=id
+      console.log(data1.Reference_idReference,'idddd');
+      if(data1.Reference_idReference!=null){
+        await axios.post("http://"+port+":3000/api/articles/articles",data1)
+        await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
+        showAlert('success', "Un Nouveau Article a été créé");
+      }
+  
+      setLoad(!load)
+      console.log('article added');
+    }
+    catch (error) {
+      console.error('Error Ading :', error)
+      showAlert('error', "Erreur lors de la création de l'Article. Veuillez réessayer plus tard.");
+  
+    }
+  }
+
+  React.useEffect(()=>{
+    Fetchallref()
+    Fetchallmarq()
+    Fetchallcateg()
+  },[load])
+///////////////////////////Function///////////////////////
+
+const findId = (data, name, dataname, idname, setid) => {
+  const element = data.find(el => el[dataname] === name);
+  if (element) {
+    console.log(element);
+    setid(element[idname]);
+  }
+}
+
+const validAdd=()=>{
+  Promise.all([
+    findId(marques,marque,'marquename','idMarque',setIdmarque),
+    findId(Categories,categ,'Categoryname','idCategory',setIdcateg),
+    findId(references,Ref,'Referencename','idReference',setIdref)
+  ]).then(()=>{
+    PostArticle(dataArticle,idref,updateRef,showAlert)
+  })
+  .catch(error => {
+    console.error('Error in operation:', error);
+  });
+}
 
   function RowItem({ text, settruc2 }) {
     if (settruc2 == "") {
@@ -50,11 +146,25 @@ function CreationNRapport() {
             <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
           }
           placeholder={placeholder}
-          onChangeText={(text) => setRef(text)}
+          onChangeText={(text) => setCapacite(text)}
         />
       </Center>
         )
     }
+    else if(placeholder=="Couleur"){
+      return(
+        <Center mt={3}>
+        <Input
+          w="75%"
+          InputLeftElement={
+            <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
+          }
+          placeholder={placeholder}
+          onChangeText={(text) => setCouleur(text)}
+        />
+      </Center>
+      )
+  }
     return (
       <Center mt={3}>
         <Input
@@ -63,51 +173,92 @@ function CreationNRapport() {
             <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
           }
           placeholder={placeholder}
-          onChangeText={(text) => setRef(text)}
+          onChangeText={(text) => setPrix(text)}
         />
       </Center>
     );
   };
 
-  const Example = ({ text }) => {
-    if(text=="unités"){
+  const Example = ({text}) => {
+
+    if(text=='Références'){
+      return (
+        <Center>
+            <Box maxW="400" mt={3}>
+            <Select selectedValue={Ref} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
+          bg: "teal.600",
+          endIcon: <CheckIcon size="5" />
+        }}
+        InputLeftElement={
+          <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+        }  mt={1} onValueChange={itemValue => setRef(itemValue)}>
+          {references.map(el=>(
+            <Select.Item label={el.Referencename} value={el.Referencename}/>
+          ))}
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    else if(text=='Marque'){
+      return (
+        <Center>
+            <Box maxW="400" mt={3}>
+            <Select selectedValue={marque} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
+          bg: "teal.600",
+          endIcon: <CheckIcon size="5" />
+        }}
+        InputLeftElement={
+          <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
+        }  mt={1} onValueChange={itemValue => setMarque(itemValue)}>
+          {marques.map(el=>(
+            <Select.Item label={el.marquename} value={el.marquename}/>
+          ))}
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    else if(text=='Categories'){
+      return (
+        <Center>
+            <Box maxW="400" mt={3}>
+            <Select selectedValue={categ} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
+          bg: "teal.600",
+          endIcon: <CheckIcon size="5" />
+        }}
+        InputLeftElement={
+          <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+        }  mt={1} onValueChange={itemValue => setCateg(itemValue)}>
+          {Categories.map(el=>(
+            <Select.Item label={el.Categoryname} value={el.Categoryname}/>
+          ))}
+          </Select>
+        </Box>
+      </Center>
+      )
+    }
+    else if(text=="unités"){
       return  <Center>
         <Box maxW="150" mt={3}mr={12}>
           <Select
-            selectedValue={Ref}
+            selectedValue={unite}
             minWidth="100"
             accessibilityLabel={text}
             placeholder={text}
-            onValueChange={(itemValue) => setRef(itemValue)}
+            onValueChange={(itemValue) => setUnite(itemValue)}
           >
-            <Select.Item label="aaaaa" value="aaaaa" />
-            <Select.Item label="aaaaa" value="aaaaa" />
-            <Select.Item label="aaaaa" value="aaaaa" />
+            {tdc.map(el=>(
+                  <Select.Item label={el} value={el} />
+            ))}
+            
           </Select>
         </Box>
       </Center>
     }
-    else{
-
-        return (
-          <Center>
-            <Box maxW="400" mt={3}>
-              <Select
-                selectedValue={Ref}
-                minWidth="280"
-                accessibilityLabel={text}
-                placeholder={text}
-                onValueChange={(itemValue) => setRef(itemValue)}
-              >
-                <Select.Item label="aaaaa" value="aaaaa" />
-                <Select.Item label="aaaaa" value="aaaaa" />
-                <Select.Item label="aaaaa" value="aaaaa" />
-              </Select>
-            </Box>
-          </Center>
-        );
-    }
+    
   };
+
 
   return (
     <NativeBaseProvider>
@@ -115,7 +266,7 @@ function CreationNRapport() {
       <View style={styles.container}>
         <RowItem text="Créer un nouveau rapport" settruc2={""} />
         <ScrollView style={{marginTop:40}}>
-        {RenderInput("Marque")}
+        <Example text={'Marque'} />
         <Example text={'Categories'} />
         <Example text={'Références'} />
         {RenderInput("Prix")}
@@ -123,7 +274,7 @@ function CreationNRapport() {
           {RenderInput("Capacité")}
           <Example text={'unités'} />
         </View>
-        <Example text={'Couleur'} />
+        {RenderInput("Couleur")}
         </ScrollView>
         <TouchableOpacity onPress={() => {}} style={styles.btns}>
           <Text style={styles.btnText}>Valider</Text>
