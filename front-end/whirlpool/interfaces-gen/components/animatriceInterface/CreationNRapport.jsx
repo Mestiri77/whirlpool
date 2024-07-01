@@ -1,301 +1,210 @@
 import * as React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
-import { CheckIcon,Input, Select, Box,Icon, Center, NativeBaseProvider, ScrollView } from "native-base";
+import { CheckIcon, Select, Box, Icon, Center, NativeBaseProvider, ScrollView } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import port from '../port'
+import port from '../port';
 import axios from 'axios';
 import Header from './header';
 import Footer from './footer';
 
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 const downicon = require('../../../assets/icons8-down-50.png');
-const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
 function CreationNRapport() {
 
   const route = useRoute();
   const { ani } = route.params;
 
-  const [load,setLoad]=React.useState(false)
+  const [load, setLoad] = React.useState(false);
 
-  const [marque,setMarque]  = React.useState("");
-  const [categ,setCateg]= React.useState("");
+  const [marque, setMarque] = React.useState("");
+  const [categ, setCateg] = React.useState("");
   const [Ref, setRef] = React.useState("");
-  const [prix,setPrix] = React.useState("");
-  const [capacite,setCapacite]= React.useState("");
-  const [unite,setUnite]= React.useState("");
-  const [couleur,setCouleur] = React.useState("");
+  const [prix, setPrix] = React.useState("");
+  const [capacite, setCapacite] = React.useState("");
+  const [unite, setUnite] = React.useState("");
+  const [couleur, setCouleur] = React.useState("");
 
-  const [idref,setIdref]=React.useState(null)
-  const [idmarque,setIdmarque]=React.useState(null)
-  const [idcateg,setIdcateg]=React.useState(null)
+  const [idref, setIdref] = React.useState(null);
+  const [idmarque, setIdmarque] = React.useState(null);
+  const [idcateg, setIdcateg] = React.useState(null);
 
-  const [references,setReferences]=React.useState([])
-  const [marques,setMarques]=React.useState([])
-  const [Categories,setCategories]=React.useState([])
-  const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+  const [references, setReferences] = React.useState([]);
+  const [sellouts, setSellouts] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
+  const [totals, setTotals] = React.useState({});
 
+  const tdc = ["L", "kg", "ft³", "W", "BTU", "bar"];
 
-  const dataArticle={
-    coloeur:couleur,
-    typeC:unite,
-    capacite:capacite,
-    Reference_idReference:idref,
-    prix:prix
-  }
-///////////////////////////Function///////////////////////
-const Fetchallref=async()=>{
-  try{
-    const response=await axios.get("http://"+port+":3000/api/reference/references")
-    setReferences(response.data)
-  }catch (error) {
-      console.error('Error fetching :', error)
+  const dataArticle = {
+    coloeur: couleur,
+    typeC: unite,
+    capacite: capacite,
+    Reference_idReference: idref,
+    prix: prix
+  };
+
+  ///////////////////////////Function///////////////////////
+
+  const getAllSellout = async () => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/sellout/sellouts`);
+      setSellouts(response.data);
+    } catch (error) {
+      console.error('Error fetching sellouts:', error);
     }
-  }
-  const Fetchallmarq=async()=>{
-    try{
-      const response=await axios.get("http://"+port+":3000/api/marques/marques")
-      setMarques(response.data)
-    }catch (error) {
-      console.error('Error fetching :', error)
-    }
-  }
-  const Fetchallcateg=async()=>{
-    try{
-      const response=await axios.get("http://"+port+":3000/api/categories/categorie")
-      setCategories(response.data)
-    }
-    catch (error) {
-      console.error('Error fetching :', error)
-    }
-  }
+  };
 
-  const PostArticle=async(data1,id,data2,showAlert )=>{
-    try{
-      data1.Reference_idReference=id
-      console.log(data1.Reference_idReference,'idddd');
-      if(data1.Reference_idReference!=null){
-        await axios.post("http://"+port+":3000/api/articles/articles",data1)
-        await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
-        showAlert('success', "Un Nouveau Article a été créé");
+  const getRefSellByidRef = async (id) => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/refsel/RefSels/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching refsell:', error);
+    }
+  };
+
+  const fetchRefByCatg = async (id) => {
+    if (!id) return;
+    try {
+      const response = await axios.get(`http://${port}:3000/api/reference/referencebycateg/${id}`);
+      setReferences(response.data);
+      calculateTotals(response.data);
+    } catch (error) {
+      console.error('Error fetching references:', error);
+    }
+  };
+
+  const fetchAllCategories = async () => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/categories/categorie`);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const calculateTotals = async (references) => {
+    let tempTotals = {};
+    for (let ref of references) {
+      let refSells = await getRefSellByidRef(ref.idReference);
+      let total = 0;
+      for (let refSell of refSells) {
+        let sellout = sellouts.find(sell => sell.idSellout === refSell.Sellout_idSellout);
+        if (sellout) {
+          total += sellout.nbrV;
+        }
       }
-  
-      setLoad(!load)
-      console.log('article added');
+      tempTotals[ref.idReference] = total;
     }
-    catch (error) {
-      console.error('Error Ading :', error)
-      showAlert('error', "Erreur lors de la création de l'Article. Veuillez réessayer plus tard.");
-  
+    setTotals(tempTotals);
+  };
+
+  React.useEffect(() => {
+    fetchAllCategories();
+    getAllSellout();
+  }, []);
+
+  React.useEffect(() => {
+    const fetchReferencesForCategory = async () => {
+      const categoryId = findId(categories, categ, 'Categoryname', 'idCategory');
+      fetchRefByCatg(categoryId);
+    };
+    if (categ) {
+      fetchReferencesForCategory();
     }
-  }
+  }, [load, categ]);
 
-  React.useEffect(()=>{
-    Fetchallref()
-    Fetchallmarq()
-    Fetchallcateg()
-  },[load])
-///////////////////////////Function///////////////////////
+  ///////////////////////////Function///////////////////////
 
-const findId = (data, name, dataname, idname, setid) => {
-  const element = data.find(el => el[dataname] === name);
-  if (element) {
-    console.log(element);
-    setid(element[idname]);
-  }
-}
+  const findId = (data, name, dataname, idname) => {
+    const element = data.find(el => el[dataname] === name);
+    if (element) {
+      return element[idname];
+    }
+    return null;
+  };
 
-const validAdd=()=>{
-  Promise.all([
-    findId(marques,marque,'marquename','idMarque',setIdmarque),
-    findId(Categories,categ,'Categoryname','idCategory',setIdcateg),
-    findId(references,Ref,'Referencename','idReference',setIdref)
-  ]).then(()=>{
-    PostArticle(dataArticle,idref,updateRef,showAlert)
-  })
-  .catch(error => {
-    console.error('Error in operation:', error);
-  });
-}
-
-  function RowItem({ text, settruc2 }) {
-    if (settruc2 == "") {
+  const Example = ({ text }) => {
+    if (text === 'Categories') {
       return (
-        <View style={styles.row}>
-          <Text style={styles.text}>{text}</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Image
-              resizeMode="contain"
-              source={downicon}
-              style={styles.leftimage}
-            />
-          </TouchableOpacity>
-        </View>
+        <Center>
+          <Box maxW="400" mt={3}>
+            <Select selectedValue={categ} minWidth="320" accessibilityLabel={text} placeholder={text} _selectedItem={{
+              bg: "teal.600",
+              endIcon: <CheckIcon size="5" />
+            }}
+              InputLeftElement={
+                <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
+              } mt={1} onValueChange={itemValue => setCateg(itemValue)}>
+              {categories.map(el => (
+                <Select.Item label={el.Categoryname} value={el.Categoryname} key={el.idCategory} />
+              ))}
+            </Select>
+          </Box>
+        </Center>
       );
     }
-  }
+  };
 
-  const RenderInput = (placeholder) => {
-    if(placeholder=="Capacité"){
-        return(
-            <Center mt={3} ml={'26%'}>
-        <Input
-          w="290%"
-          InputLeftElement={
-            <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
-          }
-          placeholder={placeholder}
-          onChangeText={(text) => setCapacite(text)}
-        />
-      </Center>
-        )
-    }
-    else if(placeholder=="Couleur"){
-      return(
-        <Center mt={3}>
-        <Input
-          w="75%"
-          InputLeftElement={
-            <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
-          }
-          placeholder={placeholder}
-          onChangeText={(text) => setCouleur(text)}
-        />
-      </Center>
-      )
-  }
+  const Tableaux = () => {
     return (
-      <Center mt={3}>
-        <Input
-          w="75%"
-          InputLeftElement={
-            <MaterialIcons name="person" size={24} color="black" style={{ marginLeft: 2 }} />
-          }
-          placeholder={placeholder}
-          onChangeText={(text) => setPrix(text)}
-        />
-      </Center>
+      <View style={{ marginTop: 20, marginLeft: 20 }}>
+        <View style={styles.container2}>
+          <View style={styles.row2}>
+            <View style={styles.cell}><Text>Reference</Text></View>
+            <View style={styles.cell3}><Text>Total Ventes</Text></View>
+          </View>
+          {references.map(el => (
+            <View style={styles.row2} key={el.idReference}>
+              <View style={styles.cell1}><Text style={{ color: "white" }}>{el.Referencename}</Text></View>
+              <View style={styles.cell2}><Text>{totals[el.idReference] || 0}</Text></View>
+            </View>
+          ))}
+        </View>
+      </View>
     );
   };
 
-  const Example = ({text}) => {
-
-    if(text=='Références'){
-      return (
-        <Center>
-            <Box maxW="400" mt={3}>
-            <Select selectedValue={Ref} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />
-        }}
-        InputLeftElement={
-          <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
-        }  mt={1} onValueChange={itemValue => setRef(itemValue)}>
-          {references.map(el=>(
-            <Select.Item label={el.Referencename} value={el.Referencename}/>
-          ))}
-          </Select>
-        </Box>
-      </Center>
-      )
-    }
-    else if(text=='Marque'){
-      return (
-        <Center>
-            <Box maxW="400" mt={3}>
-            <Select selectedValue={marque} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />
-        }}
-        InputLeftElement={
-          <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
-        }  mt={1} onValueChange={itemValue => setMarque(itemValue)}>
-          {marques.map(el=>(
-            <Select.Item label={el.marquename} value={el.marquename}/>
-          ))}
-          </Select>
-        </Box>
-      </Center>
-      )
-    }
-    else if(text=='Categories'){
-      return (
-        <Center>
-            <Box maxW="400" mt={3}>
-            <Select selectedValue={categ} minWidth="280" accessibilityLabel={text} placeholder={text} _selectedItem={{
-          bg: "teal.600",
-          endIcon: <CheckIcon size="5" />
-        }}
-        InputLeftElement={
-          <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
-        }  mt={1} onValueChange={itemValue => setCateg(itemValue)}>
-          {Categories.map(el=>(
-            <Select.Item label={el.Categoryname} value={el.Categoryname}/>
-          ))}
-          </Select>
-        </Box>
-      </Center>
-      )
-    }
-    else if(text=="unités"){
-      return  <Center>
-        <Box maxW="150" mt={3}mr={12}>
-          <Select
-            selectedValue={unite}
-            minWidth="100"
-            accessibilityLabel={text}
-            placeholder={text}
-            onValueChange={(itemValue) => setUnite(itemValue)}
-          >
-            {tdc.map(el=>(
-                  <Select.Item label={el} value={el} />
-            ))}
-            
-          </Select>
-        </Box>
-      </Center>
-    }
-    
-  };
-
-
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
 
       <Header />
       <View style={styles.container}>
-        <RowItem text="Créer un nouveau rapport" settruc2={""} />
-        <ScrollView style={{marginTop:40}}>
-        <Example text={'Marque'} />
-        <Example text={'Categories'} />
-        <Example text={'Références'} />
-        {RenderInput("Prix")}
-        <View style={styles.doubleInput}>
-          {RenderInput("Capacité")}
-          <Example text={'unités'} />
+        <View style={{ marginLeft: 10 }}>
+          <Text style={styles.textexpo}>Date :</Text>
+          <Text style={styles.textexpo}>Magasin :</Text>
         </View>
-        {RenderInput("Couleur")}
+        <ScrollView style={{ marginTop: 20 }}>
+          <Example text={'Categories'} />
+          {Tableaux()}
         </ScrollView>
-        <TouchableOpacity onPress={() => {}} style={styles.btns}>
-          <Text style={styles.btnText}>Valider</Text>
-        </TouchableOpacity>
+        <Center>
+          <TouchableOpacity onPress={() => { }} style={styles.btns}>
+            <Text style={styles.btnText}>Valider</Text>
+          </TouchableOpacity>
+        </Center>
       </View>
       <Footer ani={ani} />
-      </NativeBaseProvider>
+    </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 20,
     paddingBottom: 80,
-    marginTop:-550
+    marginTop:-480
+  },
+  textexpo: {
+    fontSize: 15,
+    fontWeight: '500',
   },
   image12: {
     width: 125,
@@ -337,6 +246,56 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: "center",
+  },
+  container2: {
+    flexDirection: 'column',
+  },
+  row2: {
+    flexDirection: 'row',
+    marginBottom:9
+  },
+  cell: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+    backgroundColor: '#D0D3D4',
+    marginBottom:10,
+    maxWidth: 200,
+    minWidth: 200
+  },
+  cell1: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FDC100',
+    
+    maxWidth: 200,
+    minWidth: 200,
+  },
+  cell2: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#D0D3D4',
+    maxWidth: "30%",
+    minWidth: "30%",
+    marginLeft:30
+
+  },
+  cell3: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    maxWidth: "30%",
+    minWidth: "30%",
+    marginLeft:30,
+    backgroundColor: '#D0D3D4',
+    marginBottom:10
   },
 });
 

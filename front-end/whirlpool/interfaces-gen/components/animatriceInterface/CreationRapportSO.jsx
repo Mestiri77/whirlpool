@@ -1,81 +1,113 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView,Image } from "react-native";
-import { Select, Box, Center, NativeBaseProvider } from "native-base";
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { Select, Box, Center, NativeBaseProvider, Modal, Button } from "native-base";
 import axios from 'axios';
 import port from '../port';
 
 import Header from './header';
 import Footer from './footer';
-import { useNavigation,useRoute } from '@react-navigation/native';
-
+import { useRoute } from '@react-navigation/native';
 
 function CreationRapportSO() {
-
     const route = useRoute();
     const { ani } = route.params;
 
-    const [load, setLoad] = useState(false);
+    const [load,setLoad]=useState(true)
+
     const [categ, setCateg] = useState("");
-    const [city, setCity] = useState("");
     const [categories, setCategories] = useState([]);
     const [references, setReferences] = useState([]);
-    const [sellouts,setSellouts]=useState([]);
-    const [refsell,setRefSell]=useState([]);
+    const [article, setArticle]=useState([]);
+    const [couleurs,setCouleurs]=useState([]);
+    const [capacites,setCapacites]=useState([]);
+
     const [sales, setSales] = useState({});
 
-    console.log(sales);
+    const [couleur, setCouleur]=useState("")
+    const [capacitee,setCapacitee]=useState("")
 
-    
-    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedReferenceId, setSelectedReferenceId] = useState(null);
+    const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
-    const getAllSellout=async ()=>{
+    console.log(sales); 
+    const  fetchallArticle=async (id)=>{
         try{
-            const response = await axios.get(`http://${port}:3000/api/sellout/sellouts`)
-                setSellouts(response.data)
+            const response = await axios.get("http://"+port+":3000/api/articles/articles")
+            const articles = response.data;
+            console.log("idd",id);
+            const couleurs = articles.map(article =>{
+                if(article.Reference_idReference===id){
+                    return article.coloeur
+                }
+            });
+            const capacites = articles.map(article =>{
+                if(article.Reference_idReference===id){
+                    return article.capacite
+                }
+            });
+
+            setArticle(response.data);
+            setCouleurs(couleurs)
+            setCapacites(capacites)
+            
+            console.log(couleurs,capacites);
         }
         catch (error) {
-            console.error('Error fetching sellout:', error);
+            console.error('Error fetching Article:', error);
         }
     }
 
-    const getAllRefSel=async ()=>{
-        try{
-            const allrefsel = await axios.get(`http://${port}:3000/api/refsel/ReferenceSel`);
-            setRefSell(allrefsel.data)
-        }
-        catch (error) {
-            console.error('Error fetching sellout:', error);
-        }
-    }
     const fetchAllCateg = async () => {
         try {
-            const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
+            const response = await axios.get(`http://${port}:3000/api/categories/categorie`);
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
     };
-
     const fetchRefByCatg = async (id) => {
-        if (!id) return;  // Do nothing if no category ID
+        if (!id) return;
         try {
             const response = await axios.get(`http://${port}:3000/api/reference/referencebycateg/${id}`);
-            console.log(response.data);
             setReferences(response.data);
             const initialSales = response.data.reduce((acc, ref) => {
-                acc[ref.idReference] = { name: ref.Referencename, sales: 0 };
+                acc[ref.idReference] = { name: ref.Referencename, sales: 0, idarticles: null };
                 return acc;
             }, {});
             setSales(initialSales);
+            await fetchExistingSales(response.data, initialSales);
         } catch (error) {
             console.error('Error fetching references:', error);
         }
     };
 
+    const fetchExistingSales = async (references, initialSales) => {
+        try {
+            const selloutResponse = await axios.get(`http://${port}:3000/api/sellout/sellouts`);
+            const refselResponse = await axios.get(`http://${port}:3000/api/refsel/ReferenceSel`);
+            const todayDate = new Date().toISOString().split('T')[0];
+
+            const existingSales = selloutResponse.data.filter(sellout => sellout.PDV_idPDV === ani.PDV_idPDV && sellout.dateCr.split('T')[0] === todayDate);
+            const salesMap = references.reduce((acc, ref) => {
+                const refSellouts = refselResponse.data.filter(refsel => refsel.Reference_idReference === ref.idReference);
+                const totalSales = refSellouts.reduce((sum, refsel) => {
+                    const sellout = existingSales.find(sellout => sellout.idSellout === refsel.Sellout_idSellout);
+                    return sellout ? sum + sellout.nbrV : sum;
+                }, 0);
+                acc[ref.idReference] = { ...initialSales[ref.idReference], sales: totalSales, idarticles: null };
+                return acc;
+            }, { ...initialSales });
+
+            setSales(salesMap);
+        } catch (error) {
+            console.error('Error fetching existing sales:', error);
+        }
+    };
+
     useEffect(() => {
         fetchAllCateg();
-        getAllSellout()
-        getAllRefSel()
+        fetchallArticle(selectedReferenceId)
     }, [load]);
 
     useEffect(() => {
@@ -83,39 +115,86 @@ function CreationRapportSO() {
             const categoryId = await findId(categories, categ, 'Categoryname', 'idCategory');
             fetchRefByCatg(categoryId);
         };
-
         if (categ) {
             fetchReferencesForCategory();
         }
     }, [categ, categories]);
 
-    const handleCityChange = (newCity) => {
-        setCity(newCity);
+    const handleReferenceClick = async (refId) => {
+        setSelectedReferenceId(refId);
+        setModalVisible(true);
+        setLoad(!load)
     };
 
-    const handleReferenceClick = async (refId) => {
-        setSales((prevSales) => ({
-            ...prevSales,
-            [refId]: { ...prevSales[refId], sales: prevSales[refId].sales + 1 }
-        }));
-
+    const confirmIncrement = async () => {
         try {
-            await handleSelloutCreationorUpdate(refId, sales[refId].sales + 1);
+            if (selectedReferenceId !== null) {
+                const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${selectedReferenceId}`, {
+                    couleur: couleur,
+                    capacite: capacitee
+                });
+                const articleId = response.data.idArticle;
+                const existingSales = sales[selectedReferenceId]?.articles?.[articleId]?.sales || 0;
+                const updatedSales = existingSales + 1;
+    
+                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales, articleId);
+    
+                setSales(prevSales => ({
+                    ...prevSales,
+                    [selectedReferenceId]: {
+                        ...prevSales[selectedReferenceId],
+                        articles: {
+                            ...prevSales[selectedReferenceId]?.articles,
+                            [articleId]: {
+                                ...prevSales[selectedReferenceId]?.articles?.[articleId],
+                                sales: updatedSales,
+                                couleur: couleur,
+                                capacite: capacitee
+                            }
+                        }
+                    }
+                }));
+    
+                setModalVisible(false); // Cacher le modal après validation
+                setCouleur("")
+                setCapacitee("")
+            }
         } catch (error) {
             console.error('Error updating sales:', error);
         }
     };
+    
 
-    const handleCorrigerClick = async (refId) => {
-        setSales((prevSales) => ({
-            ...prevSales,
-            [refId]: { ...prevSales[refId], sales: prevSales[refId].sales > 0 ? prevSales[refId].sales - 1 : 0 }
-        }));
+    const confirmDecrement = async () => {
+        if (selectedReferenceId !== null) {
+            const updatedSales = sales[selectedReferenceId].sales > 0 ? sales[selectedReferenceId].sales - 1 : 0;
+            setSales(prevSales => ({
+                ...prevSales,
+                [selectedReferenceId]: { ...prevSales[selectedReferenceId], sales: updatedSales }
+            }));
+            try {
+                const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${selectedReferenceId}`, {
+                    couleur: couleur,
+                    capacite: capacitee
+                });
+                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales,response.data.idArticle);
 
-        try {
-            await handleSelloutCreationorUpdate(refId, sales[refId].sales > 0 ? sales[refId].sales - 1 : 0);
-        } catch (error) {
-            console.error('Error updating sales:', error);
+                // Mettre à jour les ventes pour chaque article
+                const updatedArticles = { ...sales[selectedReferenceId].articles };
+                updatedArticles[response.data.idArticle] = updatedSales;
+
+                setSales(prevSales => ({
+                    ...prevSales,
+                    [selectedReferenceId]: {
+                        ...prevSales[selectedReferenceId],
+                        articles: updatedArticles // Mettre à jour les ventes pour chaque article
+                    }
+                }));
+
+                setModalVisible(false);
+            } catch (error) {
+                console.error('Error updating sales:', error);
+            }
         }
     };
 
@@ -130,40 +209,104 @@ function CreationRapportSO() {
         });
     };
 
-    const handleSelloutCreationorUpdate = async (idref, updatedSales) => {
+    const handleSelloutCreationorUpdate = async (idref, updatedSales, idart) => {
         try {
-            // Obtenir tous les Ref-Sel existants
             const allrefsel = await axios.get(`http://${port}:3000/api/refsel/ReferenceSel`);
             const todayDate = new Date().toISOString().split('T')[0];
-
-            let existingRefSel = allrefsel.data.find(el => el.Reference_idReference === idref && el.createdAt.split('T')[0] === todayDate);
-
+    
+            // Recherche de l'enregistrement refsel existant pour la référence et l'article
+            const existingRefSel = allrefsel.data.find(el => el.Reference_idReference === idref && el.Article_idArticle === idart && el.createdAt.split('T')[0] === todayDate);
+    
             if (existingRefSel) {
-                // Mettre à jour le sellout existant
-                console.log(ani.PDV_idPDV);
-                await axios.put(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`, { nbrV: updatedSales, PDV_idPDV:ani.PDV_idPDV });
+                // Si un refsel existe, mettre à jour le sellout correspondant
+                const selloutResponse = await axios.get(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`);
+                const updatedSellout = {
+                    ...selloutResponse.data,
+                    nbrV: selloutResponse.data.nbrV + 1 // Incrementer nbrV
+                };
+                await axios.put(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`, updatedSellout);
             } else {
-                // Créer un nouveau sellout
-                const selloutData = { dateCr: todayDate, nbrV: updatedSales, PDV_idPDV:ani.PDV_idPDV };
-                
+                // Sinon, créer un nouveau sellout
+                const selloutData = { dateCr: todayDate, nbrV: updatedSales, PDV_idPDV: ani.PDV_idPDV };
                 const selloutcreate = await axios.post(`http://${port}:3000/api/sellout/sellouts`, selloutData);
                 const selloutId = selloutcreate.data.idSellout;
-
-                // Créer une nouvelle entrée Reference_has_Sellout
+    
+                // Créer un nouvel enregistrement refsel associant la référence et le sellout
                 await axios.post(`http://${port}:3000/api/refsel/creatRefSel`, {
                     Reference_idReference: idref,
-                    Sellout_idSellout: selloutId
+                    Sellout_idSellout: selloutId,
+                    Article_idArticle: idart
                 });
             }
+            setLoad(!load)
         } catch (error) {
             console.error('Error creating or updating sellout:', error);
-            // Gérez les erreurs et affichez un message à l'utilisateur si nécessaire
         }
     };
-
-    const hundleNbrVente=()=>{
-        
-    }
+    const Example = ({ text }) => {
+        if(text==="Categories"){
+            return (
+                <Center>
+                    <Box maxW="400" mt={3}>
+                        <Select
+                            selectedValue={categ}
+                            minWidth="280"
+                            accessibilityLabel={text}
+                            placeholder={text}
+                            onValueChange={(itemValue) => setCateg(itemValue)}
+                        >
+                            {categories.map(el => (
+                                <Select.Item label={el.Categoryname} value={el.Categoryname} key={el.idCategory} />
+                            ))}
+                        </Select>
+                    </Box>
+                </Center>
+            );
+        }
+        else if(text==="Couleur"){
+            return (
+                <Center>
+                    <Box maxW="400" mt={3}>
+                        <Select
+                            selectedValue={couleur}
+                            minWidth="280"
+                            accessibilityLabel={text}
+                            placeholder={text}
+                            onValueChange={(itemValue) => setCouleur(itemValue)}
+                        >
+                            {couleurs.map(el => {
+                                if(el){
+                                    return(<Select.Item label={el} value={el} />)
+                                }  
+                            })}
+                        </Select>
+                    </Box>
+                </Center>
+            );
+        }
+        else if(text==="Capacite"){
+            return (
+                <Center>
+                    <Box maxW="400" mt={3}>
+                        <Select
+                            selectedValue={capacitee}
+                            minWidth="280"
+                            accessibilityLabel={text}
+                            placeholder={text}
+                            onValueChange={(itemValue) => setCapacitee(itemValue)}
+                        >
+                            {capacites.map(el =>{
+                                if(el){
+                                    return(<Select.Item label={el} value={el} />)
+                                }
+                            })}
+                        </Select>
+                    </Box>
+                </Center>
+            );
+        }
+        return null
+    };
 
     const Table = () => {
         return (
@@ -182,7 +325,7 @@ function CreationRapportSO() {
                             <View style={styles.cell}>
                                 <Text style={styles.textcell}>{sales[item.idReference] ? sales[item.idReference].sales : 0}</Text>
                             </View>
-                            <TouchableOpacity style={styles.cell1} onPress={() => handleCorrigerClick(item.idReference)}>
+                            <TouchableOpacity style={styles.cell1} onPress={() => handleReferenceClick(item.idReference)}>
                                 <Text style={styles.textcell1}>Corriger</Text>
                             </TouchableOpacity>
                         </View>
@@ -191,37 +334,38 @@ function CreationRapportSO() {
             </View>
         );
     };
-
-    const Example = ({ text }) => {
-        return (
-            <Center>
-                <Box maxW="400" mt={3}>
-                    <Select
-                        selectedValue={categ}
-                        minWidth="280"
-                        accessibilityLabel={text}
-                        placeholder={text}
-                        onValueChange={(itemValue) => setCateg(itemValue)}
-                    >
-                        {categories.map(el => (
-                            <Select.Item label={el.Categoryname} value={el.Categoryname} key={el.idCategory} />
-                        ))}
-                    </Select>
-                </Box>
-            </Center>
-        );
-    };
-
     return (
         <NativeBaseProvider>
-                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
             <Header />
             <View style={styles.container}>
                 <Example text={'Categories'} />
                 <Table />
-                
+
+                {/* Modal for Confirmation */}
+                <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+                    <Modal.Content>
+                        <Modal.Header>Confirmation</Modal.Header>
+                        <Modal.Body>
+                            <View style={{margin:5}}>
+                                <Text>Choisir le Couleur :</Text>
+                                <Example text={'Couleur'} />
+                            </View>
+                            <View style={{margin:5}}>
+                                <Text>Choisir la Capacite :</Text>
+                                <Example text={'Capacite'} />
+                            </View>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button.Group space={2}>
+                                <Button onPress={() => setModalVisible(false)}>Annuler</Button>
+                                <Button colorScheme="teal" onPress={confirmIncrement}>Valider</Button>
+                            </Button.Group>
+                        </Modal.Footer>
+                    </Modal.Content>
+                </Modal>
             </View>
-      <Footer ani={ani} />
+            <Footer ani={ani} />
         </NativeBaseProvider>
     );
 }
@@ -233,10 +377,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         paddingHorizontal: 20,
         paddingBottom: 80,
-        marginTop: -550
+        marginTop: -950
     },
     tableContainer: {
-        marginTop: -50,
+        marginTop: -450,
         width: '100%'
     },
     tableHeader: {
@@ -265,13 +409,13 @@ const styles = StyleSheet.create({
         padding: 8,
         margin: 2
     },
-      image12: {
+    image12: {
         width: 125,
         height: 95,
         position: "absolute",
         top: 0,
         left: 15,
-      },
+    },
     cell1: {
         flex: 1,
         borderRadius: 5,
