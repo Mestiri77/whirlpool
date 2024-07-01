@@ -9,6 +9,10 @@ const Reference_has_Sellout = sequelize.define('Reference_has_Sellout', {
   Sellout_idSellout: {
     type: DataTypes.INTEGER,
     primaryKey: true
+  },
+  Article_idArticle: {
+    type: DataTypes.INTEGER,
+    primaryKey: true
   }
 }, {
   tableName: 'reference_has_sellout', // explicitly define the table name

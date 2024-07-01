@@ -4,6 +4,7 @@ const referenceselController = require('../controllers/Ref-SelC');
 
 router.get('/ReferenceSel',referenceselController.getAllReferencehasSellouts)
 router.post('/creatRefSel',referenceselController.createReference_has_Sellout)
+router.get('/RefSels/:idRef',referenceselController.getRefSelbyidRef)
 
 
 module.exports = router;

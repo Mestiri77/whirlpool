@@ -39,7 +39,7 @@ const getAllPdvs=async()=>{
 }
 const Fetchallcateg=async()=>{
   try{
-    const response=await axios.get("http://"+port+":3000/api/categories/categories")
+    const response=await axios.get("http://"+port+":3000/api/categories/categorie")
     console.log(response.data);
     setCateg(response.data)
   }
