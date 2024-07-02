@@ -11,9 +11,12 @@ import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import port from "../port";
+import {useRoute } from '@react-navigation/native';
 
 function RapportExpodet() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { adm } = route.params;
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
@@ -144,7 +147,7 @@ function RapportExpodet() {
       <Modal isOpen={showpopup} onClose={() => setShowpop(false)}>
         <Modifpopup {...popupData} onClose={() => setShowpop(false)} />
       </Modal>
-      <Footer />
+      <Footer adm={adm}/>
     </NativeBaseProvider>
   );
 }

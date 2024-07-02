@@ -9,14 +9,18 @@ import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import port from '../port'
+import { useRoute } from '@react-navigation/native';
 
 
 function RapportSellOut() {
+    const route = useRoute();
+    const { month, pdv } = route.params;
+    const { adm } = route.params;
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
+    const [pdvs,setPdvs]=useState('')
     const [references,setReferences]=React.useState([])
     const [sellouts,setSellouts]=React.useState([])
     const [sellRef,setSellRef]=React.useState([])
@@ -48,11 +52,19 @@ const GetRefSel=async()=>{
     try{
         const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
         setSellRef(response.data)
-        console.log(response.data);
+        console.log(response.data); 
     }catch (error) {
         console.error('Error fetching :', error)
       }
 }
+const getPdvs = async (pdv) => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdv}`);
+      setPdvs(response.data);
+    } catch (error) {
+      console.error('Error fetching pdvs:', error);
+    }
+  };
 const exportToExcel = async () => {
     const data = [
       ["Reference", ...daysBetweenDates], // Première ligne avec les dates
@@ -80,6 +92,7 @@ React.useEffect(()=>{
     Fetchallref()
     GetAllSellouts()
     GetRefSel()
+    getPdvs(pdv)
     const daysArray = calculateDaysBetweenDates(startDate, endDate);
     setDaysBetweenDates(daysArray);
   },[startDate, endDate])
@@ -87,7 +100,7 @@ React.useEffect(()=>{
 
     const handleStartDateChange = (event, selectedDate) => {
         setShowStartDatePicker(false);
-        setStartDate(selectedDate || startDate);
+        setStartDate(selectedDate || startDate); 
     };
 
     const handleEndDateChange = (event, selectedDate) => {
@@ -270,16 +283,15 @@ React.useEffect(()=>{
                 {Tableaux()}
                 </ScrollView>
                 <Center>
-                <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
+                <TouchableOpacity onPress={() =>{exportToExcel}} style={styles.btns}>
                 <Text style={styles.btnText}>Exporter</Text>
                 </TouchableOpacity>
                 </Center>
-                <Footer />
+                <Footer adm={adm} />
             </View>
         </NativeBaseProvider>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

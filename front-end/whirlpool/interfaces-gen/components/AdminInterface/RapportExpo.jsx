@@ -13,7 +13,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
@@ -174,7 +174,7 @@ function RapportExpo() {
               <View style={styles.column}>
                 <View style={styles.cell}><Text>Expo Globale</Text></View>
                 {categ.map(el => (
-                  <TouchableOpacity key={el.idCategory} onPress={() => { navigation.navigate('RapportExpoDet'); storeData('category', el.Categoryname); }}>
+                  <TouchableOpacity key={el.idCategory} onPress={() => { navigation.navigate('RapportExpoDet',{adm}); storeData('category', el.Categoryname); }}>
                     <View style={styles.cell2}>
                       <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
                     </View>
@@ -214,7 +214,7 @@ function RapportExpo() {
         </ScrollView>
       </View>
 
-      <Footer />
+      <Footer adm={adm}/>
     </NativeBaseProvider>
   );
 }

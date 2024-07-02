@@ -3,12 +3,17 @@ import { ScrollView, View, StyleSheet, Image, Text, TouchableOpacity, Modal } fr
 import { NativeBaseProvider } from "native-base";
 import Footer from './footer';
 import PopupRapport from './PopupRapport';
+import {useRoute } from '@react-navigation/native';
+
+
 
 const leftimage = require('../../../assets/left-icon.png');
 const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 
 function ConsultationDesRapports() {
+    const route = useRoute();
+    const { adm } = route.params;
     const [showPopup, setShowPopup] = React.useState(false);
     const [popupType, setPopupType] = React.useState("");
     const [rapportName, setRapportName] = React.useState("hello");
@@ -72,9 +77,10 @@ function ConsultationDesRapports() {
                     pdv={pdv}
                     rapportName={rapportName}
                     link={link}
+                    adm={adm}
                 />
             </Modal>
-            <Footer />
+            <Footer adm ={adm}/>
         </NativeBaseProvider>
     );
 }

@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons'; // Importez FontAwesome ou tou
 import { useNavigation } from '@react-navigation/native';
 
 
-function Footer() {
+function Footer({adm}) {
   const navigation = useNavigation();
 
   return (
@@ -15,7 +15,7 @@ function Footer() {
       <Text style={styles.text}>Log out</Text>
     </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeAdmin')}>
+      <TouchableOpacity onPress={()=>navigation.navigate('WelcomeAdmin',{adm})}>
     <View style={styles.item}>
       <FontAwesome name="home" size={24} color="#FFF" />
       <Text style={styles.text}>Home</Text>

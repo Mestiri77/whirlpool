@@ -11,7 +11,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportLog() {
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
   const [date, setDate] = useState(""); 
   const [pdvs,setPdvs]=useState([])
   const [pres, setPres] = useState([]);
@@ -147,7 +147,7 @@ function RapportLog() {
             <Text style={styles.btnText}>Exporter</Text>
           </TouchableOpacity>
         </Center>
-        <Footer />
+        <Footer adm={adm}/>
       </View>
     </NativeBaseProvider>
   );

@@ -11,7 +11,7 @@ import axios from 'axios';
 
 function RapportPriceMapDet({ route }){
 
-  const { categoryId } = route.params;
+  const { categoryId,adm } = route.params;
 
     const [color,setColor]=React.useState('')
     const [onChangeValue, setOnChangeValue] = React.useState(70);
@@ -228,7 +228,7 @@ const Tableaux = () => {
         <Text style={styles.btnText}>Exporter</Text>
       </TouchableOpacity>
       </Center>
-            <Footer />
+            <Footer adm={adm} />
         </View>
     </NativeBaseProvider>
 

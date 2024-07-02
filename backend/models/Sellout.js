@@ -9,6 +9,5 @@ const Sellout = sequelize.define('Sellout', {
     },
     dateCr: DataTypes.STRING,
     nbrV: DataTypes.INTEGER,
-    objectif: DataTypes.STRING
   });
   module.exports = Sellout;

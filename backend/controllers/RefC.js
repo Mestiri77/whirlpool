@@ -39,6 +39,23 @@ async function getReferenceById(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function getrefbyname(req, res) {
+  try {
+    const { Referencename } = req.params;
+    const reference = await Reference.findOne({ name: Referencename });
+
+    // Always return a 404 if no reference is found
+    if (!reference) {
+      return res.status(404).json({ message: 'Reference not found' });
+    }
+
+    // Return the reference if found
+    res.status(200).json(reference);
+  } catch (error) {
+    console.error('Error getting Reference by name:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 // Update
 async function updateReference(req, res) {
@@ -159,5 +176,6 @@ module.exports = {
   deleteReference,
   getidcategory,
   getidmarque,
-  RefbyCateg
+  RefbyCateg,
+  getrefbyname
 };

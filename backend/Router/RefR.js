@@ -6,6 +6,7 @@ const referenceController = require('../controllers/RefC');
 router.post('/references', referenceController.createReference);
 router.get('/references', referenceController.getAllReferences);
 router.get('/references/:id', referenceController.getReferenceById);
+router.get('/referencess/:Referencename', referenceController.getrefbyname);
 router.put('/references/:id', referenceController.updateReference);
 router.delete('/references/:id', referenceController.deleteReference);
 //////////////////////////

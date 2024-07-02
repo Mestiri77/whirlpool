@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import port from '../port'
 import Footer from './footer'
+import {useRoute } from '@react-navigation/native';
 
 const leftimage = require('../../../assets/left-icon.png'); 
 const downicon = require('../../../assets/down-icon.png')
@@ -12,6 +13,8 @@ const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 
 function CreationArticle(){
+  const route = useRoute();
+  const { adm } = route.params;
 const [load,setLoad]=React.useState(false)
 const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
 
@@ -94,7 +97,6 @@ const PostArticle=async(data1,id,data2,showAlert )=>{
     console.log(data1.Reference_idReference,'idddd');
     if(data1.Reference_idReference!=null){
       await axios.post("http://"+port+":3000/api/articles/articles",data1)
-      await axios.put("http://"+port+":3000/api/reference/references/"+id,data2)
       showAlert('success', "Un Nouveau Article a été créé");
     }
 
@@ -660,7 +662,7 @@ const hideAlert = () => {
           </View>
     
         </View>
-        <Footer/>
+        <Footer adm ={adm}/>
         </NativeBaseProvider>
       );
     }

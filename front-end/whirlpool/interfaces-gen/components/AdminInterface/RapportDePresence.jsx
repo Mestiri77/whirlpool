@@ -12,7 +12,7 @@ import port from "../port";
 
 function RapportDePresence() {
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
   const [pdvs, setPdvs] = useState({});
   const [pres, setPres] = useState([]);
   const [users, setUsers] = useState({});
@@ -170,7 +170,7 @@ function RapportDePresence() {
             <Text style={styles.btnText}>Exporter</Text>
           </TouchableOpacity>
         </Center>
-        <Footer />
+        <Footer adm ={adm}/>
       </View>
     </NativeBaseProvider>
   );

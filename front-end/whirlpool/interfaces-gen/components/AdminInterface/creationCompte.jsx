@@ -6,7 +6,11 @@ import axios from "axios";
 import WHIRLPOOL_LOGO from "../../../assets/WHIRLPOOL_LOGO.png"
 import Footer from './footer';
 import port from "../port";
+import {useRoute } from '@react-navigation/native';
+
 function CreationCompte() {
+  const route = useRoute();
+  const { adm } = route.params;
   const [nom, setNom] = React.useState("");
   const [prenom, setPrenom] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -224,7 +228,7 @@ if(text=="Mot De Passe :"){
         </TouchableOpacity>
       </Center>
      
-      <Footer />
+      <Footer adm ={adm} />
     </NativeBaseProvider>
   );
 }

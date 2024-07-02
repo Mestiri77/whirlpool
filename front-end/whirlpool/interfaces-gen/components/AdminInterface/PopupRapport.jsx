@@ -5,10 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";  // Importing the icons from @expo/vector-icons
 import port from '../port';
+import {useRoute } from '@react-navigation/native';
 
 function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportName, link }) {
     const navigation = useNavigation();
-
+    const route = useRoute();
+    const { adm } = route.params;
     const [month, setMonth] = React.useState("");
     const [nomspdv, setNomspdv] = React.useState([]);
 
@@ -103,7 +105,7 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
                         <Center mt={10}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate(link, { month, pdv })}
+                                    onPress={() => navigation.navigate(link, { month, pdv,adm })}
                                     style={styles.btns}
                                 >
                                     <Text style={styles.btnText}>Vérifier</Text>

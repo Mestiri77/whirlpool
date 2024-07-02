@@ -11,7 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 function RapportPriceMap(){
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
 
   const [load,setLoad]=React.useState(false)
 
@@ -148,7 +148,7 @@ return(
         </ScrollView>
         </Center>
         </View>
-        <Footer/>
+        <Footer adm={adm}/>
     </NativeBaseProvider>
 )
 
