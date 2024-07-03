@@ -8,7 +8,9 @@ import {
   Text,
 } from "react-native";
 
+console.disableYellowBox = true; // Pour masquer tous les avertissements jaunes
 function Start() {
+
   return (
     <View style={styles.view1}>
       <Image
