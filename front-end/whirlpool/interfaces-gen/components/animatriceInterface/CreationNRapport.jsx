@@ -43,6 +43,7 @@ function CreationNRapport() {
   const [nbrv,setNbrv] = React.useState({});
   const [datev,setDatev] = React.useState({});
 
+console.log(datev);
 
   const tdc = ["L", "kg", "ft³", "W", "BTU", "bar"];
   const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -311,7 +312,9 @@ function CreationNRapport() {
               <Text style={styles.text2}>Type De Capacite : {typeC[el.Article_idArticle]}</Text>
               <Text style={styles.text2}>Prix : {prix[el.Article_idArticle]}</Text>
               <Text style={styles.text2}>Nombre De Ventes : {nbrv[el.Sellout_idSellout]}</Text>
-              <Text style={styles.text2}>Date de Vente : {datev[el.Sellout_idSellout].split('T')[0]}</Text>
+              {datev && datev[el.Sellout_idSellout] && (
+                    <Text style={styles.text2}>Date de Vente : {datev[el.Sellout_idSellout].split('T')[0]}</Text>
+                  )}
               <View style={styles.separator} />
             </React.Fragment>
               ))}
