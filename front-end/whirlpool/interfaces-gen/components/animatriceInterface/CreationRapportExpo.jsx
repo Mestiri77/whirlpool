@@ -11,10 +11,14 @@ const leftimage = require('../../../assets/icons8-right-50.png');
 const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function CreationRapportExpo(){
-  
+  console.disableYellowBox = true; // Pour masquer tous les avertissements jaunes
+
   const navigation = useNavigation();
   const route = useRoute();
     const { ani } = route.params;
+
+
+    
 
     function RowItem({ text,settruc2}) {
         if(settruc2==""){

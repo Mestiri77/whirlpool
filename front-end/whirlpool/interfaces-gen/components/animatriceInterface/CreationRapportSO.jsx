@@ -9,10 +9,13 @@ import Footer from './footer';
 import { useRoute } from '@react-navigation/native';
 
 function CreationRapportSO() {
+    console.disableYellowBox = true; // Pour masquer tous les avertissements jaunes
+
     const route = useRoute();
     const { ani } = route.params;
 
     const [load,setLoad]=useState(true)
+    const [city,setCity]= React.useState("");
 
     const [categ, setCateg] = useState("");
     const [categories, setCategories] = useState([]);
@@ -26,11 +29,17 @@ function CreationRapportSO() {
     const [couleur, setCouleur]=useState("")
     const [capacitee,setCapacitee]=useState("")
 
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisibleAdd, setModalVisibleAdd] = useState(false);
+    const [modalVisibleSup, setModalVisibleSup] = useState(false);
+
     const [selectedReferenceId, setSelectedReferenceId] = useState(null);
     const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
-    console.log(sales); 
+
+
+    const handleCityChange = (newCity) => {
+        setCity(newCity);
+      };
     const  fetchallArticle=async (id)=>{
         try{
             const response = await axios.get("http://"+port+":3000/api/articles/articles")
@@ -122,7 +131,12 @@ function CreationRapportSO() {
 
     const handleReferenceClick = async (refId) => {
         setSelectedReferenceId(refId);
-        setModalVisible(true);
+        setModalVisibleAdd(true);
+        setLoad(!load)
+    };
+    const handleReferenceSupClick = async (refId) => {
+        setSelectedReferenceId(refId);
+        setModalVisibleSup(true);
         setLoad(!load)
     };
 
@@ -136,9 +150,9 @@ function CreationRapportSO() {
                 const articleId = response.data.idArticle;
                 const existingSales = sales[selectedReferenceId]?.articles?.[articleId]?.sales || 0;
                 const updatedSales = existingSales + 1;
-    
-                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales, articleId);
-    
+
+                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales, articleId,"add");
+
                 setSales(prevSales => ({
                     ...prevSales,
                     [selectedReferenceId]: {
@@ -154,47 +168,51 @@ function CreationRapportSO() {
                         }
                     }
                 }));
-    
-                setModalVisible(false); // Cacher le modal après validation
-                setCouleur("")
-                setCapacitee("")
+
+                setModalVisibleAdd(false); // Cacher le modal après validation
+                setCouleur("");
+                setCapacitee("");
             }
         } catch (error) {
             console.error('Error updating sales:', error);
         }
     };
-    
 
     const confirmDecrement = async () => {
-        if (selectedReferenceId !== null) {
-            const updatedSales = sales[selectedReferenceId].sales > 0 ? sales[selectedReferenceId].sales - 1 : 0;
-            setSales(prevSales => ({
-                ...prevSales,
-                [selectedReferenceId]: { ...prevSales[selectedReferenceId], sales: updatedSales }
-            }));
-            try {
+        try {
+            if (selectedReferenceId !== null) {
                 const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${selectedReferenceId}`, {
                     couleur: couleur,
                     capacite: capacitee
                 });
-                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales,response.data.idArticle);
-
-                // Mettre à jour les ventes pour chaque article
-                const updatedArticles = { ...sales[selectedReferenceId].articles };
-                updatedArticles[response.data.idArticle] = updatedSales;
-
+                const articleId = response.data.idArticle;
+                const existingSales = sales[selectedReferenceId]?.articles?.[articleId]?.sales || 0;
+                const updatedSales = existingSales - 1; // Décrémenter au lieu d'incrémenter
+    
+                await handleSelloutCreationorUpdate(selectedReferenceId, updatedSales, articleId,"sup");
+    
                 setSales(prevSales => ({
                     ...prevSales,
                     [selectedReferenceId]: {
                         ...prevSales[selectedReferenceId],
-                        articles: updatedArticles // Mettre à jour les ventes pour chaque article
+                        articles: {
+                            ...prevSales[selectedReferenceId]?.articles,
+                            [articleId]: {
+                                ...prevSales[selectedReferenceId]?.articles?.[articleId],
+                                sales: updatedSales, // Mettre à jour les ventes décrémentées
+                                couleur: couleur,
+                                capacite: capacitee
+                            }
+                        }
                     }
                 }));
-
-                setModalVisible(false);
-            } catch (error) {
-                console.error('Error updating sales:', error);
+    
+                setModalVisibleSup(false); // Cacher le modal après validation
+                setCouleur("");
+                setCapacitee("");
             }
+        } catch (error) {
+            console.error('Error updating sales:', error);
         }
     };
 
@@ -209,7 +227,7 @@ function CreationRapportSO() {
         });
     };
 
-    const handleSelloutCreationorUpdate = async (idref, updatedSales, idart) => {
+    const handleSelloutCreationorUpdate = async (idref, updatedSales, idart, option) => {
         try {
             const allrefsel = await axios.get(`http://${port}:3000/api/refsel/ReferenceSel`);
             const todayDate = new Date().toISOString().split('T')[0];
@@ -217,13 +235,22 @@ function CreationRapportSO() {
             // Recherche de l'enregistrement refsel existant pour la référence et l'article
             const existingRefSel = allrefsel.data.find(el => el.Reference_idReference === idref && el.Article_idArticle === idart && el.createdAt.split('T')[0] === todayDate);
     
+            let updatedSellout = {}; // Déclaration de la variable en dehors des conditions
+    
             if (existingRefSel) {
                 // Si un refsel existe, mettre à jour le sellout correspondant
                 const selloutResponse = await axios.get(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`);
-                const updatedSellout = {
-                    ...selloutResponse.data,
-                    nbrV: selloutResponse.data.nbrV + 1 // Incrementer nbrV
-                };
+                if (option === "add") {
+                    updatedSellout = {
+                        ...selloutResponse.data,
+                        nbrV: selloutResponse.data.nbrV + 1 // Incrementer nbrV
+                    };
+                } else {
+                    updatedSellout = {
+                        ...selloutResponse.data,
+                        nbrV: selloutResponse.data.nbrV - 1 // Décrémenter nbrV
+                    };
+                }
                 await axios.put(`http://${port}:3000/api/sellout/sellouts/${existingRefSel.Sellout_idSellout}`, updatedSellout);
             } else {
                 // Sinon, créer un nouveau sellout
@@ -238,11 +265,12 @@ function CreationRapportSO() {
                     Article_idArticle: idart
                 });
             }
-            setLoad(!load)
+            setLoad(!load);
         } catch (error) {
             console.error('Error creating or updating sellout:', error);
         }
     };
+    
     const Example = ({ text }) => {
         if(text==="Categories"){
             return (
@@ -325,7 +353,7 @@ function CreationRapportSO() {
                             <View style={styles.cell}>
                                 <Text style={styles.textcell}>{sales[item.idReference] ? sales[item.idReference].sales : 0}</Text>
                             </View>
-                            <TouchableOpacity style={styles.cell1} onPress={() => handleReferenceClick(item.idReference)}>
+                            <TouchableOpacity style={styles.cell1} onPress={() => handleReferenceSupClick(item.idReference)}>
                                 <Text style={styles.textcell1}>Corriger</Text>
                             </TouchableOpacity>
                         </View>
@@ -337,13 +365,13 @@ function CreationRapportSO() {
     return (
         <NativeBaseProvider>
             <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-            <Header />
+            <Header onCityChange={handleCityChange} />
             <View style={styles.container}>
                 <Example text={'Categories'} />
                 <Table />
 
                 {/* Modal for Confirmation */}
-                <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+                <Modal isOpen={modalVisibleAdd} onClose={() => setModalVisibleAdd(false)}>
                     <Modal.Content>
                         <Modal.Header>Confirmation</Modal.Header>
                         <Modal.Body>
@@ -358,8 +386,31 @@ function CreationRapportSO() {
                         </Modal.Body>
                         <Modal.Footer>
                             <Button.Group space={2}>
-                                <Button onPress={() => setModalVisible(false)}>Annuler</Button>
+                                <Button onPress={() => setModalVisibleAdd(false)}>Annuler</Button>
                                 <Button colorScheme="teal" onPress={confirmIncrement}>Valider</Button>
+                            </Button.Group>
+                        </Modal.Footer>
+                    </Modal.Content>
+                </Modal>
+                
+                {/* Modal for Delite */}
+                <Modal isOpen={modalVisibleSup} onClose={() => setModalVisibleSup(false)}>
+                    <Modal.Content>
+                        <Modal.Header>Confirmation</Modal.Header>
+                        <Modal.Body>
+                            <View style={{margin:5}}>
+                                <Text>Choisir le Couleur :</Text>
+                                <Example text={'Couleur'} />
+                            </View>
+                            <View style={{margin:5}}>
+                                <Text>Choisir la Capacite :</Text>
+                                <Example text={'Capacite'} />
+                            </View>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button.Group space={2}>
+                                <Button onPress={() => setModalVisibleSup(false)}>Annuler</Button>
+                                <Button colorScheme="teal" onPress={confirmDecrement}>Valider</Button>
                             </Button.Group>
                         </Modal.Footer>
                     </Modal.Content>
