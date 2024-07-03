@@ -206,7 +206,7 @@ console.log('heerrrree',ani);
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link)}>
+            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link,{ ani })}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />
