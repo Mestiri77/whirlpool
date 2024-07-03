@@ -13,7 +13,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { adm,month, pdv } = route.params;
+  const { adm,month, pdv } = route.params; 
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
@@ -36,12 +36,12 @@ function RapportExpo() {
   // Functions
   const Fetchallcateg = async () => {
     try {
-      const response = await axios.get("http://" + port + ":3000/api/categories/categories");
+      const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
       setCateg(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }; 
 
   const Fetchallref = async () => {
     try {
@@ -51,7 +51,7 @@ function RapportExpo() {
       console.error('Error fetching references:', error);
     }
   };
-
+ 
   const Fetchallmarq = async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/marques/marques");
@@ -70,18 +70,20 @@ function RapportExpo() {
       console.error('Error fetching PDVs:', error);
     }
   };
-
+ 
   const FetchAnim = async (idpdv) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/user/user/${idpdv}`);
       setAnim(response.data);
+      
     } catch (error) {
-      console.error('Error fetching animators:', error);
+      console.log('Error fetching animators:', error);
     }
   };
 
   const findIdWhirlpool = () => {
-    const marqueselement = marques.find(el => el.marquename === 'whirlpool');
+    const marqueselement = marques.find(el => el.marquename === 'Whirlpool'); 
+    setLoad(!load)
     if (marqueselement) {
       setIdwhirlpool(marqueselement.idMarque);
     }
@@ -140,7 +142,7 @@ function RapportExpo() {
     Fetchallmarq();
     getpdvByID(pdv).then(() => {
       findIdWhirlpool();
-      // FetchAnim(pdvs.idPDV);
+      FetchAnim(pdvs.idPDV);
     });
   }, [pdvs.idPDV, pdv]);
 
@@ -153,7 +155,7 @@ function RapportExpo() {
         <ScrollView style={{ marginTop: -50 }}>
           <View>
             <View>
-              <Text style={styles.textexpo}>Date :</Text>
+              <Text style={styles.textexpo}>Date :{month}</Text>
               <Text style={styles.textexpo}>Zone :{pdvs.location}</Text>
               <Text style={styles.textexpo}>Magasin :{pdv}</Text>
               <Text style={styles.textexpo}>Animatrice : {anim.length > 0 ? anim[0].name : "Loading..."}</Text>

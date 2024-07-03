@@ -17,17 +17,17 @@ function RapportPriceMapDet({ route }){
     const [onChangeValue, setOnChangeValue] = React.useState(70);
     const [onChangeEndValue, setOnChangeEndValue] = React.useState(70);
     const [unite,setUnite]=React.useState('')
-
     const [marques,setMarques]=React.useState([])
     const [references,setReferences]=React.useState([])
     const [categories,setCategories]=React.useState([])
     const [prix,setPrix]=React.useState([])
     const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
     const [articles,setArticles]= useState([])
+    const [colors,setColors]=useState([])
     const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
-    const Couleur=["Bleu","GRIS","Rouge"]
-    const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+    const Couleur=colors
+    const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]  
     const dataArt={ 
       couleur:color,
       unite:unite
@@ -42,7 +42,14 @@ function RapportPriceMapDet({ route }){
         console.error('Error fetching references:', error);
       }
     };
-  
+    const fetchcolor = async () => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/articles/colors`);
+        setColors(response.data);
+      } catch (error) {
+        console.error('Error fetching references:', error);
+      }
+    };
     // Fetch marque names based on IDs from references
     const fetchMarqueNames = async (references) => {
       try {
@@ -82,14 +89,14 @@ function RapportPriceMapDet({ route }){
     React.useEffect(()=>{
       fetchReferences()
       fetchArticlbyCU(color,unite)
-  
+     fetchcolor()
     },[color,unite])
     /////////////////////////Functions///////////////////////////
 
     const Example = ({text}) => {
         if(text=="Couleur"){
         return (
-          <Center>
+          <Center> 
           <Box maxW="400">
             <Select
               selectedValue={color}

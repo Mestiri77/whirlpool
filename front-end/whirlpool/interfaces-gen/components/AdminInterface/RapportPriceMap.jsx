@@ -39,7 +39,7 @@ const getAllPdvs=async()=>{
 }
 const Fetchallcateg=async()=>{
   try{
-    const response=await axios.get("http://"+port+":3000/api/categories/categories")
+    const response=await axios.get("http://"+port+":3000/api/categories/categorie")
     console.log(response.data);
     setCateg(response.data)
   }
@@ -140,7 +140,7 @@ return(
         <ScrollView style={styles.viewbtns}>
             <View  >
               {categ.map(el=>(
-                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory })}}>
+                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory , adm})}}>
                 <Text style={styles.btnText}>{el.Categoryname}</Text>
                </TouchableOpacity>
               ))}

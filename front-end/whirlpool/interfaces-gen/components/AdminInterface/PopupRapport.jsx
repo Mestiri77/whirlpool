@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";  // Importing the icons from @expo/vector-icons
 import port from '../port';
-import {useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportName, link }) {
     const navigation = useNavigation();
@@ -13,6 +13,7 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
     const { adm } = route.params;
     const [month, setMonth] = React.useState("");
     const [nomspdv, setNomspdv] = React.useState([]);
+    const [warningVisible, setWarningVisible] = React.useState(false);
 
     const fetchPdvsname = async () => {
         try {
@@ -89,6 +90,14 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
         </Center>
     );
 
+    const handleVerifyPress = () => {
+        if (month === "" || pdv === "") {
+            setWarningVisible(true);
+        } else {
+            navigation.navigate(link, { month, pdv, adm });
+        }
+    };
+
     return (
         <NativeBaseProvider>
             <Modal
@@ -105,7 +114,7 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
                         <Center mt={10}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate(link, { month, pdv,adm })}
+                                    onPress={handleVerifyPress}
                                     style={styles.btns}
                                 >
                                     <Text style={styles.btnText}>Vérifier</Text>
@@ -118,6 +127,27 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
                                 </TouchableOpacity>
                             </View>
                         </Center>
+                    </Box>
+                </Center>
+            </Modal>
+
+            {/* Warning Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={warningVisible}
+                onRequestClose={() => setWarningVisible(false)}
+            >
+                <Center style={styles.center}>
+                    <Box style={styles.warningModal}>
+                        <Text style={styles.warningTitle}>Avertissement</Text>
+                        <Text style={styles.warningText}>Veuillez remplir tous les champs.</Text>
+                        <TouchableOpacity
+                            onPress={() => setWarningVisible(false)}
+                            style={styles.btns}
+                        >
+                            <Text style={styles.btnText}>Fermer</Text>
+                        </TouchableOpacity>
                     </Box>
                 </Center>
             </Modal>
@@ -145,6 +175,27 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         marginBottom: 30,
+        textAlign: 'center',
+    },
+    warningModal: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 15,
+        width: "80%",
+        height: "20%",
+        borderWidth: 1,
+        borderColor: '#FDC100',
+        alignItems: 'center',
+    },
+    warningTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    warningText: {
+        fontSize: 16,
+        marginBottom: 20,
         textAlign: 'center',
     },
     btns: {

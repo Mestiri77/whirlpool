@@ -12,5 +12,7 @@ router.get('/articlesbyref/:id', articleController.getArticleByrefId);
 router.get('/artCat/:categoryName',articleController.getArticlesByCategory)
 router.get('/articledet/:category/:pdv/:date',articleController.getArticleDetails)
 router.post('/articlesCU',articleController.GettingArticlebyCU)
+router.post('/arcticlebyCC/:id',articleController.getArticleByCouleurAndCapcite)
+router.get('/colors',articleController.getAllColors)
 
 module.exports = router;

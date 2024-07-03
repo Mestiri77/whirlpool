@@ -4,7 +4,8 @@ const Reference=require('../models/Reference.js')
 const Marque = require('../models/Marque.js'); // Adjust the path as needed
 const PriceM =require ('../models/PriceM.js')
 const PDV = require ('../models/Pdv.js')
-const Exposition =require('../models/Exposition.js')
+const Exposition =require('../models/Exposition.js');
+const { where } = require('sequelize');
 
 
 // Create
@@ -40,6 +41,25 @@ async function getArticleById(req, res) {
     res.status(200).json(article);
   } catch (error) {
     console.error('Error getting article by id:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+// Get one by couleur & capcite
+async function getArticleByCouleurAndCapcite(req, res) {
+  try {
+    const { id } = req.params;
+    const { couleur, capacite} = req.body;
+    const article = await Article.findOne({where:{
+      coloeur: couleur,
+      capacite: capacite,
+      Reference_idReference:id
+    }})
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+      }
+      res.status(200).json(article);
+  } catch (error) {
+    console.error('Error getting article by couleur & capacite:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -210,6 +230,15 @@ const GettingArticlebyCU = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+async function getAllColors(req, res) {
+  try {
+    const colors = await Article.findAll();
+    res.status(200).json(colors.map(color => color.coloeur));
+  } catch (error) {
+    console.error('Error getting colors:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 module.exports = {
   createArticle,
@@ -220,5 +249,7 @@ module.exports = {
   getArticleByrefId,
   getArticlesByCategory,
   getArticleDetails,
-  GettingArticlebyCU
+  GettingArticlebyCU,
+  getArticleByCouleurAndCapcite,
+  getAllColors
 };

@@ -40,7 +40,6 @@ function RapportDePresence() {
       console.error('Error fetching users:', error);
     }
   };
-
   const getPresence = async () => {
     try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
@@ -140,10 +139,12 @@ function RapportDePresence() {
           {/* Contenu dynamique basé sur les présences */}
           {filteredPresences.map((presence, index) => (
             <View key={index} style={styles.row}>
-              <View style={styles.cell1}><Text>{users[presence.Users_idusers]?.name}</Text></View>
-              <View style={styles.cell1}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
-              <View style={styles.cell1}><Text>{(presence.checkout)}</Text></View>
-              <View style={styles.cell1}><Text>{presence.position}</Text></View>
+            <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}>
+              <Text style={styles.textcell1}>{users[presence.Users_idusers]?.name}</Text>
+            </View>
+              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
+              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkout)}</Text></View>
+              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{presence.position}</Text></View>
             </View>
           ))}
         </View>
@@ -214,6 +215,15 @@ const styles = StyleSheet.create({
     borderColor: '#D0D3D4',
     maxWidth: 95,
     minWidth: 95,
+  },
+  cellSuccess: {
+    backgroundColor: '#0EC320',
+  },
+  cellFail: {
+    backgroundColor: '#FF8372',
+  },
+  textcell1: {
+    color: 'white',
   },
   cell1: {
     flex: 1,

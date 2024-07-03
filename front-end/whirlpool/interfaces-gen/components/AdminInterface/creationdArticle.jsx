@@ -42,6 +42,8 @@ const [references,setReferences]=React.useState([])
 const [marques,setMarques]=React.useState([])
 const [Categories,setCategories]=React.useState([])
 const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
+const couleurs = ["rouge", "bleu", "vert", "jaune", "noir", "blanc", "orange", "violet", "rose", "marron"]
+
 const [oneref,setOneref]=React.useState([])
 const [oneArticle,setOneArticle]=React.useState([])
 
@@ -98,6 +100,10 @@ const PostArticle=async(data1,id,data2,showAlert )=>{
     if(data1.Reference_idReference!=null){
       await axios.post("http://"+port+":3000/api/articles/articles",data1)
       showAlert('success', "Un Nouveau Article a été créé");
+      setLoad(!load)
+      setIdref(null)
+      setRef("")
+      setTypeC("")
     }
 
     setLoad(!load)
@@ -237,6 +243,7 @@ const validAdd=()=>{
     findId(references,Ref,'Referencename','idReference',setIdref)
   ]).then(()=>{
     PostArticle(dataArticle,idref,updateRef,showAlert)
+  
   })
   .catch(error => {
     console.error('Error in operation:', error);
@@ -325,7 +332,7 @@ const hideAlert = () => {
             }}
             InputLeftElement={
               <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
-            }  mt={1} onValueChange={itemValue => setRef(itemValue)}>
+            }  mt={1} onValueChange={itemValue => {setRef(itemValue),setLoad(!load)}}>
               {references.map(el=>(
                 <Select.Item label={el.Referencename} value={el.Referencename}/>
               ))}
@@ -344,7 +351,7 @@ const hideAlert = () => {
             }}
             InputLeftElement={
               <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
-            }  mt={1} onValueChange={itemValue => setMarq(itemValue)}>
+            }  mt={1} onValueChange={itemValue => {setMarq(itemValue),setLoad(!load)}}>
               {marques.map(el=>(
                 <Select.Item label={el.marquename} value={el.marquename}/>
               ))}
