@@ -20,6 +20,8 @@ const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
 );
 
 const LoginScreen = ({ navigation }) => {
+  console.disableYellowBox = true; // Pour masquer tous les avertissements jaunes
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
