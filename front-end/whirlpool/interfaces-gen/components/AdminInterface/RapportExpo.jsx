@@ -13,7 +13,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params; 
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
@@ -36,12 +36,12 @@ function RapportExpo() {
   // Functions
   const Fetchallcateg = async () => {
     try {
-      const response = await axios.get("http://" + port + ":3000/api/categories/categories");
+      const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
       setCateg(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }; 
 
   const Fetchallref = async () => {
     try {
@@ -51,7 +51,7 @@ function RapportExpo() {
       console.error('Error fetching references:', error);
     }
   };
-
+ 
   const Fetchallmarq = async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/marques/marques");
@@ -70,18 +70,20 @@ function RapportExpo() {
       console.error('Error fetching PDVs:', error);
     }
   };
-
+ 
   const FetchAnim = async (idpdv) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/user/user/${idpdv}`);
       setAnim(response.data);
+      
     } catch (error) {
-      console.error('Error fetching animators:', error);
+      console.log('Error fetching animators:', error);
     }
   };
 
   const findIdWhirlpool = () => {
-    const marqueselement = marques.find(el => el.marquename === 'whirlpool');
+    const marqueselement = marques.find(el => el.marquename === 'Whirlpool'); 
+    setLoad(!load)
     if (marqueselement) {
       setIdwhirlpool(marqueselement.idMarque);
     }
@@ -140,7 +142,7 @@ function RapportExpo() {
     Fetchallmarq();
     getpdvByID(pdv).then(() => {
       findIdWhirlpool();
-      // FetchAnim(pdvs.idPDV);
+      FetchAnim(pdvs.idPDV);
     });
   }, [pdvs.idPDV, pdv]);
 
@@ -153,7 +155,7 @@ function RapportExpo() {
         <ScrollView style={{ marginTop: -50 }}>
           <View>
             <View>
-              <Text style={styles.textexpo}>Date :</Text>
+              <Text style={styles.textexpo}>Date :{month}</Text>
               <Text style={styles.textexpo}>Zone :{pdvs.location}</Text>
               <Text style={styles.textexpo}>Magasin :{pdv}</Text>
               <Text style={styles.textexpo}>Animatrice : {anim.length > 0 ? anim[0].name : "Loading..."}</Text>
@@ -174,7 +176,7 @@ function RapportExpo() {
               <View style={styles.column}>
                 <View style={styles.cell}><Text>Expo Globale</Text></View>
                 {categ.map(el => (
-                  <TouchableOpacity key={el.idCategory} onPress={() => { navigation.navigate('RapportExpoDet'); storeData('category', el.Categoryname); }}>
+                  <TouchableOpacity key={el.idCategory} onPress={() => { navigation.navigate('RapportExpoDet',{adm}); storeData('category', el.Categoryname); }}>
                     <View style={styles.cell2}>
                       <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
                     </View>
@@ -214,7 +216,7 @@ function RapportExpo() {
         </ScrollView>
       </View>
 
-      <Footer />
+      <Footer adm={adm}/>
     </NativeBaseProvider>
   );
 }

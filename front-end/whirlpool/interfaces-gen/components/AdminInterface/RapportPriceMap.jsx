@@ -11,7 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 function RapportPriceMap(){
   const route = useRoute();
-  const { month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
 
   const [load,setLoad]=React.useState(false)
 
@@ -140,7 +140,7 @@ return(
         <ScrollView style={styles.viewbtns}>
             <View  >
               {categ.map(el=>(
-                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory })}}>
+                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory , adm})}}>
                 <Text style={styles.btnText}>{el.Categoryname}</Text>
                </TouchableOpacity>
               ))}
@@ -148,7 +148,7 @@ return(
         </ScrollView>
         </Center>
         </View>
-        <Footer/>
+        <Footer adm={adm}/>
     </NativeBaseProvider>
 )
 

@@ -47,7 +47,9 @@ const LoginScreen = ({ navigation }) => {
 console.log(role);
         // Navigate to appropriate screen based on role
         if (role === "admin") {
-          navigation.navigate("WelcomeAdmin");
+          const adminResponse = await axios.get(`http://${port}:3000/api/users/admin`);
+          let adm = adminResponse.data.filter((e) => e.email === email);
+          navigation.navigate("WelcomeAdmin",{ adm: adm[0] });
         } else if (role === "Manager") {
           navigation.navigate("WelcomeManager");
         } else if (role === "animatrice") {
@@ -84,17 +86,17 @@ console.log(role);
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 20,
     backgroundColor: "#FFF",
     display: "flex",
     maxWidth: 422,
+    height: '100%',
     flexDirection: "column",
     alignItems: "stretch",
   },
   header: {
     backgroundColor: "#FDC100",
     width: "100%",
-    height: '40%',
+    height: '35%',
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 32,

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView } from "react-native";
 import Footer from './footer';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 
 const image01 = require('../../../assets/image1+.png');
 const image02 = require('../../../assets/image2.png');
@@ -12,7 +12,8 @@ const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function WelcomeAdmin() {
   const navigation = useNavigation();
-
+  const route = useRoute();
+  const { adm } = route.params;
   const [load, setLoad] = React.useState(true);
   const [historique, setHistorique] = React.useState([]);
 
@@ -34,14 +35,14 @@ function WelcomeAdmin() {
               <Text style={styles.textEmoji}>Hi 👋,</Text>
             </View>
             <View style={styles.view4}>
-              <Text style={styles.textAdmin}>Admin</Text>
+              <Text style={styles.textAdmin}>{adm.name}</Text>
             </View>
           </View>
           <View style={styles.view5}>
             <TouchableOpacity
               onPress={() => {
                 hundlehistorique({ name: 'Création de compte', link: 'CreationCompte', image: image01 });
-                navigation.navigate("CreationCompte");
+                navigation.navigate("CreationCompte",{adm});
               }}
             >
               <View style={styles.view6}>
@@ -54,7 +55,7 @@ function WelcomeAdmin() {
             <TouchableOpacity
               onPress={() => {
                 hundlehistorique({ name: 'Création de point de vente', link: 'Creationpdv', image: image02 });
-                navigation.navigate("Creationpdv");
+                navigation.navigate("Creationpdv",{adm});
               }}
             >
               <View style={styles.view8}>
@@ -69,7 +70,7 @@ function WelcomeAdmin() {
             <TouchableOpacity
               onPress={() => {
                 hundlehistorique({ name: "Création d'articles", link: 'CreationArt', image: image04 });
-                navigation.navigate("CreationArt");
+                navigation.navigate("CreationArt",{adm});
               }}
             >
               <View style={styles.view11}>
@@ -82,7 +83,7 @@ function WelcomeAdmin() {
             <TouchableOpacity
               onPress={() => {
                 hundlehistorique({ name: 'Consultation des rapports', link: 'ConsultRapports', image: image03 });
-                navigation.navigate("ConsultRapports");
+                navigation.navigate("ConsultRapports",{adm});
               }}
             >
               <View style={styles.view13}>

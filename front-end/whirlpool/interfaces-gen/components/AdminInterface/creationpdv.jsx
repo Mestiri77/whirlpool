@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import port from '../port'
 import Footer from './footer'
+import {useRoute } from '@react-navigation/native';
 
 const leftimage = require('../../../assets/left-icon.png'); 
 const downicon = require('../../../assets/down-icon.png')
@@ -17,7 +18,8 @@ const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
 function Creationpdv() {
   const [alertData, setAlertData] = React.useState({ visible: false, status: '', message: '' });
-
+  const route = useRoute();
+  const { adm } = route.params;
 const [load,setload]=React.useState(false)  
 const [pdv,setPdv]=React.useState(false);
 const [affanim, setAffanim] = React.useState(false);
@@ -36,7 +38,8 @@ const [nompdv,setNompdv]=React.useState("Point de Vente");
 const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
-const [nomobj,setObj]=React.useState("")
+const [objct,setObjct]=React.useState('')
+const [obj,setObj]=React.useState("")
 const [region,setRegion]=React.useState('Region')
 
 const [idcateg,setIdcateg]=React.useState(null)
@@ -68,6 +71,39 @@ const Fetchallref=async()=>{
     console.error('Error fetching :', error)
   }
 }
+// const addObjectif=async(idref,idsel,objc)=>{
+//   try{
+
+//     const response=await axios.put(`http://${port}:3000/api/refsel/addobjct/${idref}/${idsel}`,objc)
+//     setObjct(response.data)
+//     console.log(response.data);
+//   }catch (error) {
+//     console.error('Error fetching :', error)
+//   }
+// }
+
+const handleClick = async (pdvName,refName,obj) => {
+  try {
+    // Replace pdvName and refName with actual values from state
+    const pdvResponse = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdvName}`);
+    const pdv = pdvResponse.data;
+
+    const seloutResponse = await axios.get(`http://${port}:3000/api/sellout/sellouts`);
+    const selout = seloutResponse.data;
+
+    const refResponse = await axios.get(`http://${port}:3000/api/reference/referencess/${refName}`);
+    const ref = refResponse.data;
+
+    const seloutFiltered = selout.filter(e => e.PDV_idPDV === pdv.idPDV);
+    
+
+    await axios.put(`http://${port}:3000/api/refsel/addobjct/${ref.idReference}/${seloutFiltered[0].idSellout}`,{objectif:obj})
+    console.log(obj); 
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
 const Fetchallmarq=async()=>{
   try{
     const response=await axios.get("http://"+port+":3000/api/marques/marques")
@@ -309,7 +345,7 @@ const affectanim = async (nameanim, namepdv) => {
          
           <Select
             selectedValue={nompdv}
-            minWidth="240"
+            minWidth="319"
             accessibilityLabel={nompdv}
             placeholder={nompdv}
             _selectedItem={{
@@ -443,7 +479,7 @@ const affectanim = async (nameanim, namepdv) => {
             } 
             mt={1}
             onValueChange={(itemValue) => {
-              setNommar(itemValue);
+              setNomref(itemValue);
               const selectedMarque = marques.find(el => el.marquename === itemValue);
               setIdmarque(selectedMarque ? selectedMarque.idMarque : null);
             }}          >
@@ -602,7 +638,8 @@ const affectanim = async (nameanim, namepdv) => {
       </Center>
       <Center flex={1} px="3">
       <Example text={"Reference"} />
-      <TouchableOpacity onPress={() => {}} style={styles.btns}>
+      <Example text={"Point de Vente"} />
+      <TouchableOpacity onPress={()=>{handleClick(nompdv,nomref,obj)}} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
@@ -649,7 +686,7 @@ const affectanim = async (nameanim, namepdv) => {
       </ScrollView>
       </View>
     </View>
-    <Footer/>
+    <Footer adm={adm}/>
     </NativeBaseProvider>
   );
 }

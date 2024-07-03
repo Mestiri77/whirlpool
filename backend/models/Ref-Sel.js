@@ -13,7 +13,10 @@ const Reference_has_Sellout = sequelize.define('Reference_has_Sellout', {
   Article_idArticle: {
     type: DataTypes.INTEGER,
     primaryKey: true
-  }
+  } ,
+  objectif :{
+   type :  DataTypes.INTEGER
+  } 
 }, {
   tableName: 'reference_has_sellout', // explicitly define the table name
   timestamps: true // include timestamps if necessary

@@ -230,6 +230,15 @@ const GettingArticlebyCU = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+async function getAllColors(req, res) {
+  try {
+    const colors = await Article.findAll();
+    res.status(200).json(colors.map(color => color.coloeur));
+  } catch (error) {
+    console.error('Error getting colors:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 module.exports = {
   createArticle,
@@ -241,5 +250,6 @@ module.exports = {
   getArticlesByCategory,
   getArticleDetails,
   GettingArticlebyCU,
-  getArticleByCouleurAndCapcite
+  getArticleByCouleurAndCapcite,
+  getAllColors
 };

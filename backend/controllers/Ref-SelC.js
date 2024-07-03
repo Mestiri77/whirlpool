@@ -89,11 +89,41 @@ async function deleteReference_has_Sellout(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function updateObjective(req, res) {
+  try {
+    const { Reference_idReference, Sellout_idSellout } = req.params;
+    const { objectif } = req.body;
+
+    const result = await Reference_has_Sellout.update(
+      { objectif },
+      {
+        where: {
+          Reference_idReference, 
+          Sellout_idSellout 
+        }
+      }
+    );
+
+    if (result[0] === 0) {
+      console.log('Aucun enregistrement trouvé pour cette combinaison de Reference_id et Sellout_id.');
+      res.status(404).send('Aucun enregistrement trouvé.');
+    } else {
+      console.log('Objectif mis à jour avec succès.');
+      res.status(200).send('Objectif mis à jour avec succès.');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de l\'objectif:', error);
+    res.status(500).send('Erreur interne du serveur.');
+  }
+}
+
+
 
 module.exports = {
   createReference_has_Sellout,
   getAllReferencehasSellouts,
   getReference_has_SelloutById,
   deleteReference_has_Sellout,
+  updateObjective,
   getRefSelbyidRef
 };
