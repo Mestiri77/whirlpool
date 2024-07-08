@@ -50,8 +50,10 @@ console.log(role);
           const adminResponse = await axios.get(`http://${port}:3000/api/users/admin`);
           let adm = adminResponse.data.filter((e) => e.email === email);
           navigation.navigate("WelcomeAdmin",{ adm: adm[0] });
-        } else if (role === "Manager") {
-          navigation.navigate("WelcomeManager");
+        } else if (role === "manager") {
+          const adminResponse = await axios.get(`http://${port}:3000/api/users/manager`);
+          let adm = adminResponse.data.filter((e) => e.email === email);
+          navigation.navigate("WelcomeManager", {adm: adm[0] });
         } else if (role === "animatrice") {
           const animResponse = await axios.get(`http://${port}:3000/api/users/animateur`);
           let ani = animResponse.data.filter((e) => e.email === email);

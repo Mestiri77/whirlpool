@@ -82,7 +82,7 @@ function RapportExpo() {
   };
 
   const findIdWhirlpool = () => {
-    const marqueselement = marques.find(el => el.marquename === 'Whirlpool'); 
+    const marqueselement = marques.find(el => el.marquename === 'whirlpool'); 
     setLoad(!load)
     if (marqueselement) {
       setIdwhirlpool(marqueselement.idMarque);
