@@ -13,5 +13,7 @@ router.delete('/references/:id', referenceController.deleteReference);
 router.get('/reference/cat',referenceController.getidcategory)
 router.get('/references/marque',referenceController.getidmarque)
 router.get('/referencebycateg/:id',referenceController.RefbyCateg)
+router.put('/addObject',referenceController.AddObj)
+
 
 module.exports = router;

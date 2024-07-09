@@ -139,39 +139,47 @@ React.useEffect(()=>{
     const calculateDaysBetweenDates = (startDate, endDate) => {
         const daysArray = [];
         let currentDate = new Date(startDate);
-
+    
         while (currentDate <= endDate) {
-            const formattedDate = currentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const formattedDate = `${month}-${day}`;
+            console.log(formattedDate, "herr");
             daysArray.push(formattedDate);
             currentDate.setDate(currentDate.getDate() + 1);
         }
-
+    
         return daysArray;
     };
     const FetchNbrDV = (referenceId) => {
         const nbrDVArray = daysBetweenDates.map(date => {
-            const sellout = sellouts.find(sellout => 
-                sellout.dateCr.substring(0, 5) === date && 
-                sellRef.some(elrefsel => 
-                    elrefsel.Reference_idReference === referenceId && 
-                    elrefsel.Sellout_idSellout === sellout.idSellout
-                )
-            );
-            return sellout ? sellout.nbrV : 0;
+            const totalNbrV = sellouts.reduce((total, sellout) => {
+                const selloutDate = sellout.dateCr.substring(5);  // Assure-toi que sellout.dateCr est dans le format 'YYYY-MM-DD'
+    
+                if (selloutDate === date) {
+                    const match = sellRef.some(elrefsel => 
+                        elrefsel.Reference_idReference === referenceId && 
+                        elrefsel.Sellout_idSellout === sellout.idSellout
+                    );
+    
+                    if (match) {
+                        return total + sellout.nbrV;
+                    }
+                }
+    
+                return total;
+            }, 0);
+    
+            return totalNbrV;
         });
+    
         return nbrDVArray;
     };
     const FetchObjectif = (referenceId) => {
-        const sellout = sellRef.find(elrefsel => 
-            elrefsel.Reference_idReference === referenceId &&
-            sellouts.some(elsel => elrefsel.Sellout_idSellout === elsel.idSellout)
-        );
-    
-        if (sellout) {
-            const matchingSellout = sellouts.find(elsel => elsel.idSellout === sellout.Sellout_idSellout);
-            return matchingSellout ? matchingSellout.objectif : null;
-        }
-        return 0;
+        const object=references.find(el=>
+            el.idReference===referenceId
+        )
+        return object.objectif
     };
     const fetchSalesByDate = (referenceId, date) => {
         const selloutsByReference = sellRef.filter(elrefsel =>

@@ -1,19 +1,102 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet,Button,Image, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Slider, Stack} from "native-base";
 import Header from './header'
 import Footer from './footer'
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import port from "../port";
+import axios from 'axios';
 
-function RapportPriceMapDet(){
+function RapportPriceMapDet({ route }){
+
+  const { categoryId,adm } = route.params;
+
     const [color,setColor]=React.useState('')
     const [onChangeValue, setOnChangeValue] = React.useState(70);
     const [onChangeEndValue, setOnChangeEndValue] = React.useState(70);
+    const [unite,setUnite]=React.useState('')
+    const [marques,setMarques]=React.useState([])
+    const [references,setReferences]=React.useState([])
+    const [categories,setCategories]=React.useState([])
+    const [prix,setPrix]=React.useState([])
+    const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
+    const [articles,setArticles]= useState([])
+    const [colors,setColors]=useState([])
+    const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
+    const Couleur=colors
+    const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]  
+    const dataArt={ 
+      couleur:color,
+      unite:unite
+    }
+    /////////////////////////Functions///////////////////////////
+    const fetchReferences = async () => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/reference/referencebycateg/${categoryId}`);
+        setReferences(response.data);
+        fetchMarqueNames(response.data); // Fetch marque names after references are fetched
+      } catch (error) {
+        console.error('Error fetching references:', error);
+      }
+    };
+    const fetchcolor = async () => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/articles/colors`);
+        setColors(response.data);
+      } catch (error) {
+        console.error('Error fetching references:', error);
+      }
+    };
+    // Fetch marque names based on IDs from references
+    const fetchMarqueNames = async (references) => {
+      try {
+        const uniqueMarqueIds = [...new Set(references.map(ref => ref.Marque_idMarque))];
+        const namesPromises = uniqueMarqueIds.map(id => fetchMarqueById(id));
+        const names = await Promise.all(namesPromises);
+        setMarqueNames(names);
+      } catch (error) {
+        console.error('Error fetching marque names:', error);
+      }
+    };
+  
+    // Fetch marque name by ID
+    const fetchMarqueById = async (id) => {
+      try {
+        const response = await axios.get(`http://${port}:3000/api/marques/marques/${id}`);
+        return response.data.marquename;
+      } catch (error) {
+        console.error('Error fetching marque:', error);
+        return ''; // Return an empty string in case of error to prevent rendering an object
+      }
+    };
+    const fetchArticlbyCU =async (colorr,unitee)=>{
+      try{
+        if(colorr===color && unitee===unite){
+          const response =await axios.post("http://"+port+":3000/api/articles/articlesCU",{
+            couleur: colorr,
+            unite: unitee
+          })
+          setArticles(response.data)
+        }
+      }
+      catch (error) {
+        console.error('Error fetching Article:', error);
+      }
+    }
+    React.useEffect(()=>{
+      fetchReferences()
+      fetchArticlbyCU(color,unite)
+     fetchcolor()
+    },[color,unite])
+    /////////////////////////Functions///////////////////////////
 
     const Example = ({text}) => {
         if(text=="Couleur"){
-
         return (
-          <Center>
+          <Center> 
           <Box maxW="400">
             <Select
               selectedValue={color}
@@ -27,11 +110,10 @@ function RapportPriceMapDet(){
               mt={1}
               onValueChange={(itemValue) => setColor(itemValue)}
             >
-              <Select.Item label="UX Research" value="ux" />
-              <Select.Item label="Web Development" value="web" />
-              <Select.Item label="Cross Platform Development" value="cross" />
-              <Select.Item label="UI Designing" value="ui" />
-              <Select.Item label="Backend Development" value="backend" />
+              {Couleur.map(el=>(
+              <Select.Item label={el} value={el} />
+              ))}
+            
             </Select>
           </Box>
         </Center>
@@ -42,7 +124,7 @@ function RapportPriceMapDet(){
             <Center>
             <Box maxW="400" ml='-300'>
               <Select
-                selectedValue={color}
+                selectedValue={unite}
                 minWidth="30%"
                 
                 accessibilityLabel="Choose Service"
@@ -52,13 +134,11 @@ function RapportPriceMapDet(){
                   endIcon: <CheckIcon size="5" />,
                 }}
                 mt={1}
-                onValueChange={(itemValue) => setColor(itemValue)}
+                onValueChange={(itemValue) => setUnite(itemValue)}
               >
-                <Select.Item label="UX Research" value="ux" />
-                <Select.Item label="Web Development" value="web" />
-                <Select.Item label="Cross Platform Development" value="cross" />
-                <Select.Item label="UI Designing" value="ui" />
-                <Select.Item label="Backend Development" value="backend" />
+               {tdc.map(el=>(
+                <Select.Item label={el} value={el} />
+               ))}
               </Select>
             </Box>
           </Center>
@@ -81,34 +161,60 @@ function RapportPriceMapDet(){
     </Box>
         );
     };
+     const exportToExcel = async () => {
+  const data = [
+    ["marque", "References", "Capacité", "prix"],
+    ...categ.map(el => [
+      el.Categoryname,
+      CountSameCateg(el.idCategory),
+      Findwhirlpool(el.idCategory),
+      CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)) + "%"
+    ])
+  ];
 
-    const Tableaux = () => {
-        return (
-          <View style={{marginTop:20}}>
-            <View style={styles.container}>
-              {/* Première ligne */}
-              <View style={styles.row}>
-                <View style={styles.cell}><Text>Marque</Text></View>
-                <View style={styles.cell}><Text>References</Text></View>
-                <View style={styles.cell}><Text>Capacité</Text></View>
-                <View style={styles.cell}><Text>Prix</Text></View>
-              </View>
-      
-              {/* Deuxième ligne */}
-              <View style={styles.row}>
-                <View style={styles.cell1}><Text>Donnée 1</Text></View>
-                <View style={styles.cell1}><Text style={styles.textcell1}>Donnée 2</Text></View>
-                <View style={styles.cell1}><Text>Donnée 3</Text></View>
-                <View style={styles.cell1}><Text>Donnée 4</Text></View>
-              </View>
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rapport Expo",true);
+
+  const wbout = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });
+  const uri = FileSystem.cacheDirectory + 'rapport_expo.xlsx';
+  console.log("good");
+  await FileSystem.writeAsStringAsync(uri, wbout, { encoding: FileSystem.EncodingType.Base64 });
+  await Sharing.shareAsync(uri);
+};
+
+const Tableaux = () => {
+  return (
+    <View style={{ marginTop: 20 }}>
+      <View style={styles.container}>
+        {/* Première ligne */}
+        <View style={styles.row}>
+          <View style={styles.cell}><Text>Marque</Text></View>
+          <View style={styles.cell}><Text>References</Text></View>
+          <View style={styles.cell}><Text>Capacité</Text></View>
+          <View style={styles.cell}><Text>Prix</Text></View>
+        </View>
+
+        {/* Deuxième ligne */}
+        {references.map((el, index) => (
+          articles.filter(item => item.Reference_idReference === el.idReference && item.capacite <= onChangeValue).map((article, idx) => (
+            <View style={styles.row} key={index + '-' + idx}>
+              <View style={styles.cell1}><Text>{marqueNames[index]}</Text></View>
+              <View style={styles.cell1}><Text style={styles.textcell1}>{el.Referencename}</Text></View>
+              <View style={styles.cell1}><Text>{article.capacite}</Text></View>
+              <View style={styles.cell1}><Text>{article.prix}</Text></View>
             </View>
-          </View>
-        );
-      };
-      
+          ))
+        ))}
+      </View>
+    </View>
+  );
+};
 
     return(
         <NativeBaseProvider>
+                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.container}>
             <Header />
             <ScrollView style={styles.scrollView}>
@@ -125,11 +231,11 @@ function RapportPriceMapDet(){
                 {Tableaux()}
             </ScrollView>
             <Center>
-            <TouchableOpacity onPress={() =>{}} style={styles.btns}>
+            <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
         <Text style={styles.btnText}>Exporter</Text>
       </TouchableOpacity>
       </Center>
-            <Footer />
+            <Footer adm={adm} />
         </View>
     </NativeBaseProvider>
 
@@ -139,7 +245,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
- 
+    image12: {
+      width: 125,
+      height: 95,
+      position: "absolute",
+      top: 0,
+      left: 15,
+    },
     scrollView: {
         flex: 1,
         padding: 20,

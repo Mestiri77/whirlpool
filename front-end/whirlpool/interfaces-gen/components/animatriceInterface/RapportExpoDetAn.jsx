@@ -3,7 +3,7 @@ import { View, Text,Image, StyleSheet, ScrollView, TouchableOpacity } from "reac
 import { NativeBaseProvider,Modal } from "native-base";
 import Header from './header';
 import Footer from './footer';
-import Modifpopup from './ModifRapEx'
+import Modifpopup from '../AdminInterface/ModifRapExpo'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,7 +16,7 @@ import {useRoute } from '@react-navigation/native';
 function RapportExpodet() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { adm } = route.params;
+  const { ani } = route.params;
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
@@ -140,14 +140,11 @@ function RapportExpodet() {
             </View>
           </View>
         </ScrollView>
-        <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
-          <Text style={styles.btnText}>Exporter</Text>
-        </TouchableOpacity>
       </View>
       <Modal isOpen={showpopup} onClose={() => setShowpop(false)}>
         <Modifpopup {...popupData} onClose={() => setShowpop(false)} />
       </Modal>
-      <Footer adm={adm}/>
+      <Footer ani={ani}/>
     </NativeBaseProvider>
   );
 }

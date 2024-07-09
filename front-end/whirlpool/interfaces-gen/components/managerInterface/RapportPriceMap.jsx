@@ -1,13 +1,97 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
-import { NativeBaseProvider, Center,Box,Select,CheckIcon} from "native-base";
+import { View, Text,Image, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { NativeBaseProvider, Center,Box,Select,CheckIcon,Stack,Input,Icon} from "native-base";
 import Header from './header'
 import Footer from './footer'
+import port from '../port'
+import axios from 'axios'
+import { useNavigation,useRoute } from '@react-navigation/native';
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 function RapportPriceMap(){
+  const route = useRoute();
+  const { adm,month, pdv } = route.params;
 
-    const [pdv,setPdv]=React.useState('')
-    const [pdvsel,setPdvsel]=React.useState('')
+  const [load,setLoad]=React.useState(false)
+
+  const [pdvs,setPdvs]=React.useState([])
+  const [categ,setCateg]=React.useState([])
+
+  const [date, setDate] = useState('');
+  // const [pdv,setPdv]=React.useState('')
+  const [pdvsel,setPdvsel]=React.useState('')
+  const [popupVisible, setPopupVisible] = useState(false);
+  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+
+
+
+///////////////////////////////Functions//////////////////////////////
+
+const getAllPdvs=async()=>{
+  try{
+    let response=await axios.get("http://"+port+":3000/api/pdvs/pdvs")
+    setPdvs(response.data)
+  }
+  catch (error) {
+    console.error('Error fetching PDVs:', error)
+  }
+}
+const Fetchallcateg=async()=>{
+  try{
+    const response=await axios.get("http://"+port+":3000/api/categories/categorie")
+    console.log(response.data);
+    setCateg(response.data)
+  }
+  catch (error) {
+    console.error('Error fetching :', error)
+  }
+}
+
+React.useEffect(()=>{
+  getAllPdvs()
+  Fetchallcateg()
+},[])
+/////////////////////////////////////////////////////////////////////
+
+
+   
+const RenderInput=(text)=>{
+  if(text=='Date :'){
+    return(
+      <Stack space={4} w="100%" alignItems="center" mt="5%">
+      <Input 
+        w={{
+          base: "75%",
+          md: "25%"
+        }} 
+        InputLeftElement={
+          <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+        } 
+        placeholder={text}
+             />
+     
+    </Stack>
+    )
+  }
+  return(
+    <Stack space={4} w="100%" alignItems="center" mt="5%">
+    <Input 
+      w={{
+        base: "75%",
+        md: "25%"
+      }} 
+      InputLeftElement={
+        <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+      } 
+      placeholder={text}
+           />
+   
+  </Stack>
+  )
+}
+
+    const navigation = useNavigation();
 
     const Example = ({text}) => {
 
@@ -17,6 +101,7 @@ function RapportPriceMap(){
               <Select
                 selectedValue={pdvsel}
                 minWidth="100%"
+                
                 accessibilityLabel="Choose Service"
                 placeholder={text}
                 _selectedItem={{
@@ -25,12 +110,12 @@ function RapportPriceMap(){
                 }}
                 mt={1}
                 onValueChange={(itemValue) => setPdvsel(itemValue)}
+           
               >
-                <Select.Item label="UX Research" value="ux" />
-                <Select.Item label="Web Development" value="web" />
-                <Select.Item label="Cross Platform Development" value="cross" />
-                <Select.Item label="UI Designing" value="ui" />
-                <Select.Item label="Backend Development" value="backend" />
+                {pdvs.map(el=>(
+                <Select.Item label={el.pdvname} value={el.pdvname} />
+                ))}
+                
               </Select>
             </Box>
           </Center>
@@ -39,25 +124,31 @@ function RapportPriceMap(){
 
 return(
     <NativeBaseProvider>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+
         <View style={styles.view1}>
         <Header />  
         <Center flex={8}>
-            <Text style={{fontSize:18,fontWeight:600,marginBottom:30}}> Rapports Price Map : </Text>
-            <View >
-        <Example text={"Date :"}/>
-        <Example text={"Point de Vente :"}/>
+            <Text style={{fontSize:18,fontWeight:600,marginBottom:30} }> Rapports Price Map : </Text>
+            <View style={styles.View2}>
+           <Text style={{fontSize:18,fontWeight:300}}>Date : {month}</Text>
+           <Text style={{fontSize:18,fontWeight:300}}>Point De Vente : {pdv}</Text>
         </View>
-        <View style={styles.categtext} ><Text style={{fontSize:18,fontWeight:300}}>Categories</Text></View>
+        <View style={styles.categtext} >
+          <Text style={{fontSize:18,fontWeight:300}}>Categories</Text>
+          </View>
         <ScrollView style={styles.viewbtns}>
             <View  >
-            <TouchableOpacity style={styles.btns}>
-                <Text style={styles.btnText}>Réfrigérateur 2 porte</Text>
-            </TouchableOpacity>
+              {categ.map(el=>(
+                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('ManagerPriceMapDet',{ categoryId: el.idCategory , adm})}}>
+                <Text style={styles.btnText}>{el.Categoryname}</Text>
+               </TouchableOpacity>
+              ))}
             </View>
         </ScrollView>
         </Center>
         </View>
-        <Footer/>
+        <Footer adm={adm}/>
     </NativeBaseProvider>
 )
 
@@ -68,6 +159,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
          },
+         View2:{
+          marginLeft:-200
+         },
+         image12: {
+          width: 125,
+          height: 95,
+          position: "absolute",
+          top: 0,
+          left: 15,
+        },
       categtext:{
         width:'100%',
         alignItems:'center',

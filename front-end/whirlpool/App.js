@@ -31,6 +31,9 @@ import ManagerPresence from './interfaces-gen/components/managerInterface/Rappor
 import ManagerPriceMap from './interfaces-gen/components/managerInterface/RapportPriceMap'
 import ManagerPriceMapDet from './interfaces-gen/components/managerInterface/RapportPriceMapDet'
 import Ouverture from './interfaces-gen/components/AdminInterface/ouverture'
+import RapportExpoAn from './interfaces-gen/components/animatriceInterface/RapportExpoAn';
+import RapportExpoDetAn from './interfaces-gen/components/animatriceInterface/RapportExpoDetAn';
+
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -50,7 +53,7 @@ export default function App() {
           <Stack.Screen name="Modifpopup" options={{ headerShown: false }} component={Modifpopup} /> 
           <Stack.Screen name="RapportPriceMap"options={{ headerShown: false }} component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet"options={{ headerShown: false }} component={RapportPriceMapDet} />
-          <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
+          <Stack.Screen name="RapportSellOut" options={{ headerShown: false }} component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" options={{ headerShown: false }} component={RapportDePresence} />
           <Stack.Screen name="RapportLog" options={{ headerShown: false }} component={RapportLog} />
           <Stack.Screen name="CreationCompte" options={{ headerShown: false }} component={CreationCompte} />
@@ -60,6 +63,8 @@ export default function App() {
           <Stack.Screen name="CreationNRapport" options={{ headerShown: false }} component={CreationNRapport} />
           <Stack.Screen name="ValidRExpo" options={{ headerShown: false }} component={ValidRExpo} />
           <Stack.Screen name="CreationRapportSO" options={{ headerShown: false }} component={CreationRapportSO} />
+          <Stack.Screen name="RapportExpoAn" options={{ headerShown: false }} component={RapportExpoAn} />
+          <Stack.Screen name="RapportExpoDetAn" options={{ headerShown: false }} component={RapportExpoDetAn} />
 
           <Stack.Screen name="WelcomeManager" options={{ headerShown: false }}  component={WelcomeManager} />
           <Stack.Screen name="ManagerExpo"   options={{ headerShown: false }} component={ManagerExpo} />
