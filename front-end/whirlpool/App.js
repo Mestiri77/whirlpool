@@ -50,7 +50,7 @@ export default function App() {
           <Stack.Screen name="Modifpopup" options={{ headerShown: false }} component={Modifpopup} /> 
           <Stack.Screen name="RapportPriceMap"options={{ headerShown: false }} component={RapportPriceMap} />
           <Stack.Screen name="RapportPriceMapDet"options={{ headerShown: false }} component={RapportPriceMapDet} />
-          <Stack.Screen name="RapportSellOut" component={RapportSellOut} />
+          <Stack.Screen name="RapportSellOut" options={{ headerShown: false }} component={RapportSellOut} />
           <Stack.Screen name="RapportDePresence" options={{ headerShown: false }} component={RapportDePresence} />
           <Stack.Screen name="RapportLog" options={{ headerShown: false }} component={RapportLog} />
           <Stack.Screen name="CreationCompte" options={{ headerShown: false }} component={CreationCompte} />

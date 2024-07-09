@@ -112,7 +112,7 @@ function WelcomeAdmin() {
           ))}
         </View>
       </ScrollView>
-      <Footer />
+      <Footer adm={adm}/>
     </>
   );
 }

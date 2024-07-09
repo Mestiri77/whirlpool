@@ -27,7 +27,7 @@ function CreationRapportSO() {
     const [sales, setSales] = useState({});
 
     const [couleur, setCouleur]=useState("")
-    const [capacitee,setCapacitee]=useState("")
+    const [capacitee,setCapacitee]=useState(null)
 
     const [modalVisibleAdd, setModalVisibleAdd] = useState(false);
     const [modalVisibleSup, setModalVisibleSup] = useState(false);
