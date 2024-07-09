@@ -116,7 +116,7 @@ function WelcomeAnime() {
         setStatus(response.data.status);
       } else {
         console.log("No presence data found for user, setting status to offline");
-        setLastpres(null);
+        setLastpres(response.data.idPresence);
         setStatus(false); // User is offline when no presence data is found
       }
     } catch (error) {
@@ -206,7 +206,7 @@ function WelcomeAnime() {
             </View>
           </View>
           <View style={styles.view10}>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
               <View style={styles.view11}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -214,7 +214,7 @@ function WelcomeAnime() {
                 <Image resizeMode="contain" source={image03} style={styles.image3} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
               <View style={styles.view13}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Exposition</Text>
@@ -227,7 +227,7 @@ function WelcomeAnime() {
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link,{ ani })}>
+            <TouchableOpacity key={index} disabled={!status} onPress={() => navigation.navigate(item.link,{ ani })}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />
