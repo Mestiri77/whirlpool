@@ -1,11 +1,12 @@
 import * as React from "react";
-import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
+import {FlatList,Alert,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,Modal } from "react-native";
 import { CheckIcon,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import Header from './header'
 import Footer from './footer'
 import axios from 'axios';
 import { useNavigation,useRoute } from '@react-navigation/native';
+import PopupRapport from './PopupRapportAn';
 
 const leftimage = require('../../../assets/icons8-right-50.png'); 
 const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
@@ -17,8 +18,18 @@ function CreationRapportExpo(){
   const route = useRoute();
     const { ani } = route.params;
 
-
-    
+    const [showPopup, setShowPopup] = React.useState(false);
+    const [popupType, setPopupType] = React.useState("");
+    const [rapportName, setRapportName] = React.useState("hello");
+    const [pdv, setPdv] = React.useState("");
+    const [link, setLink] = React.useState("");
+  
+    const handleRowItemPress = (report) => {
+      setPopupType(report.popupType);
+      setRapportName(report.text);
+      setLink(report.link);
+      setShowPopup(true);
+    };
 
     function RowItem({ text,settruc2}) {
         if(settruc2==""){
@@ -39,7 +50,8 @@ function CreationRapportExpo(){
           return (
               <View style={styles.row}>
                 <Text style={styles.text}>{text}</Text>
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => {
+                  handleRowItemPress({ text: "Rapport Exposition", popupType: "expo", link: "RapportExpoAn" })}}>
                   <Image
                     resizeMode="contain"
                     source={leftimage}
@@ -70,6 +82,22 @@ return(
           </ScrollView>
           </View>
         </View>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showPopup}
+        onRequestClose={() => setShowPopup(false)}
+      >
+        <PopupRapport
+          popupType={popupType}
+          onClose={() => setShowPopup(false)}
+          setPdv={setPdv}
+          pdv={pdv}
+          rapportName={rapportName}
+          link={link}
+          ani={ani}
+        />
+      </Modal>
         <Footer ani={ani} />
         </NativeBaseProvider>
 

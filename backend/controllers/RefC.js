@@ -149,8 +149,26 @@ const RefbyCateg = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-
+const AddObj = async (req, res) => {
+  const nomRef = req.body.nomRef;
+  const objectif = req.body.objectif;
+  
+  try {
+    const reference = await Reference.findOne({ where: { Referencename: nomRef } });
+    
+    if (reference) {
+      await Reference.update({ objectif }, { where: { Referencename: nomRef } });
+      const updatedReference = await Reference.findOne({ where: { Referencename: nomRef } });
+      res.status(200).json(updatedReference);
+    } else {
+      res.status(404).json({ message: 'Reference not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching references:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+ 
 const getMCref = async (req, res) => {
   const idMarque = req.body.Marque_idMarque;
   const idCategory = req.body.Category_idCategory;
@@ -177,5 +195,6 @@ module.exports = {
   getidcategory,
   getidmarque,
   RefbyCateg,
-  getrefbyname
+  getrefbyname,
+  AddObj 
 };
