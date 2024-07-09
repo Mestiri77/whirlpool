@@ -7,7 +7,10 @@ const Reference = sequelize.define('Reference', {
       primaryKey: true,
       autoIncrement: true
     },
-    Referencename: DataTypes.STRING
+    Referencename: DataTypes.STRING,
+    objectif :{
+      type :  DataTypes.INTEGER
+     } 
   });
 
   module.exports=Reference;

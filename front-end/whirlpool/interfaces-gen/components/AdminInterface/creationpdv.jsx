@@ -39,7 +39,7 @@ const [nomcateg,setNomcateg]=React.useState('')
 const [nommarq,setNommar]=React.useState('')
 const [nomref,setNomref]=React.useState("")
 const [objct,setObjct]=React.useState('')
-const [obj,setObj]=React.useState("")
+const [obj,setObj]=React.useState(null)
 const [region,setRegion]=React.useState('Region')
 
 const [idcateg,setIdcateg]=React.useState(null)
@@ -82,26 +82,15 @@ const Fetchallref=async()=>{
 //   }
 // }
 
-const handleClick = async (pdvName,refName,obj) => {
+const handleClick = async (refName, obj) => {
   try {
-    // Replace pdvName and refName with actual values from state
-    const pdvResponse = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdvName}`);
-    const pdv = pdvResponse.data;
-
-    const seloutResponse = await axios.get(`http://${port}:3000/api/sellout/sellouts`);
-    const selout = seloutResponse.data;
-
-    const refResponse = await axios.get(`http://${port}:3000/api/reference/referencess/${refName}`);
-    const ref = refResponse.data;
-
-    const seloutFiltered = selout.filter(e => e.PDV_idPDV === pdv.idPDV);
-    
-
-    await axios.put(`http://${port}:3000/api/refsel/addobjct/${ref.idReference}/${seloutFiltered[0].idSellout}`,{objectif:obj})
-    console.log(obj); 
-
+    const response = await axios.put("http://"+port+":3000/api/reference/addObject", {
+      nomRef: refName,
+      objectif: obj
+    });
+    console.log('Update successful:', response.data);
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error updating data:', error);
   }
 };
 const Fetchallmarq=async()=>{
@@ -638,8 +627,7 @@ const affectanim = async (nameanim, namepdv) => {
       </Center>
       <Center flex={1} px="3">
       <Example text={"Reference"} />
-      <Example text={"Point de Vente"} />
-      <TouchableOpacity onPress={()=>{handleClick(nompdv,nomref,obj)}} style={styles.btns}>
+      <TouchableOpacity onPress={()=>{handleClick(nomref,obj)}} style={styles.btns}>
         <Text style={styles.btnText}>Valider</Text>
       </TouchableOpacity>
       </Center>
