@@ -14,5 +14,6 @@ router.get('/articledet/:category/:pdv/:date',articleController.getArticleDetail
 router.post('/articlesCU',articleController.GettingArticlebyCU)
 router.post('/arcticlebyCC/:id',articleController.getArticleByCouleurAndCapcite)
 router.get('/colors',articleController.getAllColors)
+router.put('/price/:id',articleController.updatprice)
 
 module.exports = router;

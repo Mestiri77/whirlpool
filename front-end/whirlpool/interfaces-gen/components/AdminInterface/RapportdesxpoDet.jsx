@@ -106,7 +106,8 @@ function RapportExpodet() {
   const handleModifyClick = (article) => {
     const refData = refs[article.Reference_idReference];
     const marqueData = marques[refData?.Marque_idMarque];
-    setPopupData({ article, refData, marqueData });
+    const price = article.idArticle
+    setPopupData({ article, refData, marqueData,price });
     setShowpop(true);
   };
   return (
@@ -132,7 +133,7 @@ function RapportExpodet() {
                   <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{article.prix}</Text></View>
-                  <TouchableOpacity onPress={() => console.log(categ)}>
+                  <TouchableOpacity onPress={() => handleModifyClick(article)}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>

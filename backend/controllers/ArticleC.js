@@ -239,6 +239,23 @@ async function getAllColors(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function updatprice(req, res) {
+  try {
+    const { id } = req.params;
+    const {  prix } = req.body;
+    const article = await Article.findByPk(id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    await article.update({ prix });
+    res.status(200).json(article);
+  } catch (error) {
+    console.error('Error updating article:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
 
 module.exports = {
   createArticle,
@@ -251,5 +268,6 @@ module.exports = {
   getArticleDetails,
   GettingArticlebyCU,
   getArticleByCouleurAndCapcite,
-  getAllColors
+  getAllColors,
+  updatprice
 };
