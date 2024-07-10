@@ -30,14 +30,13 @@ function WelcomeAnime() {
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
 
-  const [status, setStatus] = React.useState(false);
+  const [status, setStatus] = React.useState(null);
 
   const [city,setCity]= React.useState("");
 
   const [iduser,setIdUser]= React.useState(ani.idusers);
   const [idpdv,setIdpdv]= React.useState(ani.PDV_idPDV);
 
-console.log('heerrrree',ani);
 
 
  const onligne={
@@ -45,7 +44,7 @@ console.log('heerrrree',ani);
   checkin:new Date().toLocaleTimeString(),
   checkout:null,
   position:city,
-  status:false,
+  status:true,
   Users_idusers:iduser,
   PDV_idPDV:idpdv
  }
@@ -53,7 +52,7 @@ console.log('heerrrree',ani);
  const offligne={
   datePr:formatDateWithoutTime(new Date()),
   timecheckout:new Date().toLocaleTimeString(),
-  status:true,
+  status:false,
  }
 
 //  const datalog={
@@ -104,23 +103,29 @@ console.log('heerrrree',ani);
     }
   }
   
-  const getlastidpresence=async(userIdd,pdvIdd)=>{
-    try{
-      console.log(userIdd,pdvIdd);
+  const getlastidpresence = async (userIdd, pdvIdd) => {
+    try {
+      console.log("Fetching latest presence for user ID:", userIdd, "and PDV ID:", pdvIdd);
       const response = await axios.post(`http://${port}:3000/api/presences/presence/latest`, {
-        userId:userIdd ,
+        userId: userIdd,
         pdvId: pdvIdd
       });
-      console.log("hello",response.data.idPresence);
-      setLastpres(response.data.idPresence)
-      console.log("hello2",response.data.status);
-
-      setStatus(response.data.status)
-    }
-    catch (error) {
+      if (response && response.data && response.data.idPresence) {
+        console.log("Received presence data:", response.data);
+        setLastpres(response.data.idPresence);
+        setStatus(response.data.status);
+      } else {
+        console.log("No presence data found for user, setting status to offline");
+        setLastpres(response.data.idPresence);
+        setStatus(false); // User is offline when no presence data is found
+      }
+    } catch (error) {
       console.error('Error handling lastpres:', error);
+      setLastpres(null);
+      setStatus(false); // Set status to offline in case of error
     }
-  }
+  };
+  
 
   const presence = async () => {
     try {
@@ -143,24 +148,40 @@ console.log('heerrrree',ani);
 
 
   const Example = () => {
+    const handleToggle = async () => {
+      try {
+        if (!status) {
+          const response = await axios.post(`http://${port}:3000/api/presences/presences`, onligne);
+          setLastpres(response.data.idPresence);
+        } else {
+          if (lastpres) {
+            await axios.put(`http://${port}:3000/api/presences/presences/checkout/${lastpres}`, offligne);
+          } else {
+            console.error('Latest presence ID is invalid');
+          }
+        }
+        setStatus(!status); // Met à jour le statut après la requête
+      } catch (error) {
+        console.error('Error handling presence:', error);
+      }
+    };
+  
     return (
       <HStack alignItems="center" space={4} ml={9}>
-        <Text style={{ color: !status ? "#FDC100" : "#D0D3D4", fontSize: 18 }}>
-          {status ? "Off ligne" : "On ligne"}
+        <Text style={{ color: status ? "#FDC100" : "#D0D3D4", fontSize: 18 }}>
+          {status ? "On ligne" : "Off ligne"}
         </Text>
         <Switch
           size="sm"
-          isChecked={!status}
+          isChecked={status}
           onTrackColor="#FDC100"
           offTrackColor="#D0D3D4"
-          onToggle={() => {
-            setStatus(!status);
-            presence();
-          }}
+          onToggle={handleToggle} // Appelle la fonction handleToggle lors du changement
         />
       </HStack>
     );
   };
+  
 
   React.useEffect(() => {
     getlastidpresence(ani.idusers,ani.PDV_idPDV)
@@ -185,7 +206,7 @@ console.log('heerrrree',ani);
             </View>
           </View>
           <View style={styles.view10}>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
               <View style={styles.view11}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -193,7 +214,7 @@ console.log('heerrrree',ani);
                 <Image resizeMode="contain" source={image03} style={styles.image3} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
               <View style={styles.view13}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Exposition</Text>
@@ -206,7 +227,7 @@ console.log('heerrrree',ani);
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link,{ ani })}>
+            <TouchableOpacity key={index} disabled={!status} onPress={() => navigation.navigate(item.link,{ ani })}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />
