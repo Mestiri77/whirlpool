@@ -121,7 +121,7 @@ function RapportExpodet() {
       <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.view1}>
         <Header />
-        <ScrollView style={{ marginTop: -350 }}>
+        <ScrollView style={{ marginTop: -150 }}>
           <View>
             <View>
               <Text style={styles.textexpo}>{categ}</Text>

@@ -19,13 +19,12 @@ function RapportLog() {
   const [log, setLog] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
   const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
-
+ console.log(log);
  
 
   const getPdvs = async (pdv) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdv}`);
-      console.log(response.data)
       setPdvs(response.data);
     } catch (error) {
       console.error('Error fetching pdvs:', error);
@@ -36,7 +35,6 @@ function RapportLog() {
     try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
       const presences = response.data.filter(e => e.PDV_idPDV === pdvs.idPDV);
-      console.log(presences);
       setPres(presences);
     } catch (error) {
       console.error('Error fetching presence:', error);
@@ -46,9 +44,9 @@ function RapportLog() {
   const fetchLog = async () => {
     try {
       const response = await axios.get(`http://${port}:3000/api/logs/logs`);
-      const logs = response.data.filter(e => e.Presence_idPresence === pdvs.idPDV && new Date(e.createdAt).getMonth() === month - 1);
+      const logs = response.data.filter(e => e.Presence_idPresence === pdvs.idPDV && new Date(e.createdAt).getMonth() === month -1);
       setLog(logs);
-console.log(logs);
+console.log(logs,"hhh");
     } catch (error) {
       console.error('Error fetching logs:', error);
     }

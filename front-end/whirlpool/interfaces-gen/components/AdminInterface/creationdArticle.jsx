@@ -22,6 +22,7 @@ const [creatArt,setCreatArt]=React.useState(false)
 const [modifArt,setModifArt]=React.useState(false)
 const [showpop,setShowpop]=React.useState(false);
 const [validmodif,setValidmodif]=React.useState(false)
+const [selectAll, setSelectAll] = React.useState(false);
 
 const [modif,setModif]=React.useState("")
 
@@ -286,33 +287,55 @@ const handleCheckboxChange = (values) => {
   setSelectedPdvIds(newSelectedPdvIds);
   setGroupValue(values || []);
 };
+const handleSelectAllChange = () => {
+  if (selectAll) {
+    setGroupValue([]);
+    setSelectedPdvIds([]);
+  } else {
+    const allPdvNames = pdvs.map(pdv => pdv.pdvname);
+    const allPdvIds = pdvs.map(pdv => pdv.idPDV);
+    setGroupValue(allPdvNames);
+    setSelectedPdvIds(allPdvIds);
+  }
+  setSelectAll(!selectAll);
+};
 const ExampleCheck = () => {
 
   return (
+    <ScrollView>
     <Box alignItems="center" mt={5} mb={5}>
-      <VStack space={2}>
-        <HStack alignItems="baseline">
-          <Heading fontSize="lg">Points De Ventes</Heading>
-        </HStack>
-        <VStack>
-          <Box>
-            <Text>Selected: ({groupValue.length})</Text>
-          </Box>
-        </VStack>
-        <Checkbox.Group
-          colorScheme="green"
-          defaultValue={groupValue}
-          accessibilityLabel="pick an item"
-          onChange={handleCheckboxChange}
-        >
-          {pdvs.map(el => (
-            <Checkbox key={el.idPDV} value={el.pdvname} my="1">
-              {el.pdvname}
-            </Checkbox>
-          ))}
-        </Checkbox.Group>
+    <VStack space={2}>
+      <HStack alignItems="baseline">
+        <Heading fontSize="lg">Points De Ventes</Heading>
+      </HStack>
+      <VStack>
+        <Box>
+          <Text>Selected: ({groupValue.length})</Text>
+        </Box>
       </VStack>
-    </Box>
+      <Checkbox
+        isChecked={selectAll}
+        onChange={handleSelectAllChange}
+        value="selectAll"
+        my="1"
+      >
+        Select All
+      </Checkbox>
+      <Checkbox.Group
+        colorScheme="green"
+        defaultValue={groupValue}
+        accessibilityLabel="pick an item"
+        onChange={handleCheckboxChange}
+      >
+        {pdvs.map(el => (
+          <Checkbox key={el.idPDV} value={el.pdvname} my="1">
+            {el.pdvname}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </VStack>
+  </Box>
+  </ScrollView>
   );
 };
 const ExampleAlert = ({ status, message, onClose }) => {
@@ -584,7 +607,6 @@ const hideAlert = () => {
           <Center flex={1} px="3" mt="2">
           <Text style={styles.textprop}>Choisir la réfèrence :</Text>
           </Center>
-
           <Example text={'Reference'} />
           <Stack mb="8" mt="1" direction={{
           base: "row",
