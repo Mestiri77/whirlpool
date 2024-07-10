@@ -112,16 +112,47 @@ async function deleteArticle(req, res) {
 const getArticlesByCategory = async (req, res) => {
   try {
     // Extraire le nom de la catégorie des paramètres de la requête
-    const { categoryName } = req.params;
+    const { Categoryname } = req.params;
 
     // Récupérer les articles avec les références et les catégories associées
     const articles = await Article.findAll({
       include: {
         model: Reference,
+        required: true,
         include: {
           model: Category,
+          required: true,
           where: {
-            Categoryname: categoryName,
+            Categoryname: Categoryname,
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
+const getArticlesByMarque = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    // const { marquename } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Reference,
+        required: true,
+        include: {
+          model: Marque,
+          required: true,
+          where: {
+            marquename: 'whirlpool',
           },
         },
       },
@@ -269,5 +300,6 @@ module.exports = {
   GettingArticlebyCU,
   getArticleByCouleurAndCapcite,
   getAllColors,
-  updatprice
+  updatprice,
+  getArticlesByMarque
 };

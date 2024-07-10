@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text,Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { NativeBaseProvider,Modal } from "native-base";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { NativeBaseProvider, Modal } from "native-base";
 import Header from './header';
 import Footer from './footer';
-import Modifpopup from './ModifRapExpo'
+import Modifpopup from './ModifRapExpo';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,7 +11,7 @@ import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import port from "../port";
-import {useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 function RapportExpodet() {
   const navigation = useNavigation();
@@ -21,9 +21,10 @@ function RapportExpodet() {
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
   const [refs, setRefs] = useState({});
-  const [showpopup, setShowpop]=useState(false)
+  const [showpopup, setShowpop] = useState(false);
   const [popupData, setPopupData] = useState({});
-  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+  const [dataChanged, setDataChanged] = useState(false);
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
   const fetchArticleByCategory = async (categ) => {
     try {
@@ -92,7 +93,7 @@ function RapportExpodet() {
     if (categ) {
       fetchArticleByCategory(categ);
     }
-  }, [categ]);
+  }, [categ, dataChanged]);
 
   useEffect(() => {
     articles.forEach(async article => {
@@ -106,14 +107,18 @@ function RapportExpodet() {
   const handleModifyClick = (article) => {
     const refData = refs[article.Reference_idReference];
     const marqueData = marques[refData?.Marque_idMarque];
-    const price = article.idArticle
-    setPopupData({ article, refData, marqueData,price });
+    const price = article.idArticle;
+    setPopupData({ article, refData, marqueData, price, adm });
     setShowpop(true);
   };
+
+  const handleDataChange = () => {
+    setDataChanged(!dataChanged);
+  };
+
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.view1}>
         <Header />
         <ScrollView style={{ marginTop: -350 }}>
@@ -146,9 +151,9 @@ function RapportExpodet() {
         </TouchableOpacity>
       </View>
       <Modal isOpen={showpopup} onClose={() => setShowpop(false)}>
-        <Modifpopup {...popupData} onClose={() => setShowpop(false)} />
+        <Modifpopup {...popupData} onClose={() => setShowpop(false)} onDataChange={handleDataChange} />
       </Modal>
-      <Footer adm={adm}/>
+      <Footer adm={adm} />
     </NativeBaseProvider>
   );
 }
