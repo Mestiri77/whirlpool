@@ -2,15 +2,34 @@ import * as React from "react";
 import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity} from "react-native";
 import { NativeBaseProvider, Center,Stack,Input,Icon } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from "axios";
+import port from "../port";
 
 
-function Modifpopup({ article, refData, marqueData, onClose }) {
+function Modifpopup({ article, refData, marqueData, price,onClose }) {
   // const { idref, idmarque, idarticle } = route.params;
     const [modif,setModif] = React.useState('');
-    const [reff, setReff] = React.useState(refData?.Referencename || '');
-    const [marque, setMarque] = React.useState(marqueData?.marquename || '');
-    const [prix, setPrix] = React.useState(article?.prix || null);
-    
+    const [reff, setReff] = React.useState('');
+    const [marque, setMarque] = React.useState('');
+    const [prix, setPrix] = React.useState(null);
+    const [refresh,setRefresh]=React.useState(false)
+    const modification =(reff , marque ,prix )=>{
+      
+      if (reff){
+axios.put (`http://${port}:3000/api/reference/references/${refData.idReference}`, {Referencename: reff})
+console.log('ref modifier');
+      }
+      if(marque){
+        axios.put (`http://${port}:3000/api/marques/marques/${marqueData.idMarque}`, {marquename:marque})
+        console.log('marq modifier');
+
+      }
+      if(prix){
+        axios.put (`http://${port}:3000/api/articles/price/${article.idArticle}`,{prix:prix})
+        console.log('art modifier');
+
+      }
+    }
     const RenderInput=(text, value, onChange)=>{
         if(text=="Reference"&&value==reff,onChange== setReff){    
             return(
@@ -80,12 +99,12 @@ function Modifpopup({ article, refData, marqueData, onClose }) {
         </View>
         <Center>
         <View style={styles.btnsh}>
-        <TouchableOpacity onPress={() =>{}} style={styles.btnmod}>
+        <TouchableOpacity onPress={() =>{modification(reff,marque,prix);setRefresh(!refresh)}} style={styles.btnmod}>
             <Text style={styles.btnTextmod}>Modifier</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() =>{}} style={styles.btncans}>
+        {/* <TouchableOpacity onPress={() =>{}} style={styles.btncans}>
             <Text style={styles.btnTextcans}>Supprimer</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         </View>
         <TouchableOpacity onPress={() =>{onClose()}} style={styles.btnsup}>
             <Text style={styles.btnTextcans}>Annuler</Text>

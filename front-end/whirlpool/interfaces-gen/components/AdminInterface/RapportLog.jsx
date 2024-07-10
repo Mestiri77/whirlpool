@@ -8,6 +8,7 @@ import axios from 'axios';
 import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import port from "../port";
 
 function RapportLog() {
   const route = useRoute();
@@ -19,7 +20,7 @@ function RapportLog() {
   const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
   const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
-  const port='192.168.234.6'; // Update with the correct port
+ 
 
   const getPdvs = async (pdv) => {
     try {
@@ -35,6 +36,7 @@ function RapportLog() {
     try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
       const presences = response.data.filter(e => e.PDV_idPDV === pdvs.idPDV);
+      console.log(presences);
       setPres(presences);
     } catch (error) {
       console.error('Error fetching presence:', error);
@@ -46,6 +48,7 @@ function RapportLog() {
       const response = await axios.get(`http://${port}:3000/api/logs/logs`);
       const logs = response.data.filter(e => e.Presence_idPresence === pdvs.idPDV && new Date(e.createdAt).getMonth() === month - 1);
       setLog(logs);
+console.log(logs);
     } catch (error) {
       console.error('Error fetching logs:', error);
     }

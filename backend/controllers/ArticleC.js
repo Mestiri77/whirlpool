@@ -112,16 +112,79 @@ async function deleteArticle(req, res) {
 const getArticlesByCategory = async (req, res) => {
   try {
     // Extraire le nom de la catégorie des paramètres de la requête
-    const { categoryName } = req.params;
+    const { Categoryname } = req.params;
 
     // Récupérer les articles avec les références et les catégories associées
     const articles = await Article.findAll({
       include: {
         model: Reference,
+        required: true,
         include: {
           model: Category,
+          required: true,
           where: {
-            Categoryname: categoryName,
+            Categoryname: Categoryname,
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
+const getArticlesByMarque = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    // const { marquename } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Reference,
+        required: true,
+        include: {
+          model: Marque,
+          required: true,
+          where: {
+            marquename: 'whirlpool',
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
+const getArticlesBypdv = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    const { pdvname,mois } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Exposition,
+        required: true,
+        where: {
+          dateCr: mois,
+        },
+        include: {
+          model: PDV,
+          required: true,
+          where: {
+            pdvname: pdvname,
           },
         },
       },
@@ -239,6 +302,23 @@ async function getAllColors(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+async function updatprice(req, res) {
+  try {
+    const { id } = req.params;
+    const {  prix } = req.body;
+    const article = await Article.findByPk(id);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+    await article.update({ prix });
+    res.status(200).json(article);
+  } catch (error) {
+    console.error('Error updating article:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
 
 module.exports = {
   createArticle,
@@ -251,5 +331,8 @@ module.exports = {
   getArticleDetails,
   GettingArticlebyCU,
   getArticleByCouleurAndCapcite,
-  getAllColors
+  getAllColors,
+  updatprice,
+  getArticlesByMarque,
+  getArticlesBypdv
 };

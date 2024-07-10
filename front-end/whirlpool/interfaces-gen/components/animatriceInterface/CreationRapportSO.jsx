@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "rea
 import { Select, Box, Center, NativeBaseProvider, Modal, Button } from "native-base";
 import axios from 'axios';
 import port from '../port';
-
+import Toast from 'react-native-simple-toast';
 import Header from './header';
 import Footer from './footer';
 import { useRoute } from '@react-navigation/native';
@@ -142,6 +142,11 @@ function CreationRapportSO() {
 
     const confirmIncrement = async () => {
         try {
+            if (!couleur || !capacitee) {
+                Toast.show("remplire tou les champ svp.", Toast.LONG);
+                return;
+            }
+            
             if (selectedReferenceId !== null) {
                 const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${selectedReferenceId}`, {
                     couleur: couleur,
@@ -168,7 +173,7 @@ function CreationRapportSO() {
                         }
                     }
                 }));
-
+                Toast.show("Ajout avec succès!", Toast.SHORT);
                 setModalVisibleAdd(false); // Cacher le modal après validation
                 setCouleur("");
                 setCapacitee("");
@@ -180,6 +185,10 @@ function CreationRapportSO() {
 
     const confirmDecrement = async () => {
         try {
+            if (!couleur || !capacitee) {
+                Toast.show("remplire tout les champs svp.", Toast.LONG);
+                return;
+            }
             if (selectedReferenceId !== null) {
                 const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${selectedReferenceId}`, {
                     couleur: couleur,
@@ -206,7 +215,7 @@ function CreationRapportSO() {
                         }
                     }
                 }));
-    
+                Toast.show("Correction avec succès!", Toast.SHORT);
                 setModalVisibleSup(false); // Cacher le modal après validation
                 setCouleur("");
                 setCapacitee("");

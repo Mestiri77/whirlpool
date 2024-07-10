@@ -125,16 +125,16 @@ function RapportExpodet() {
                 <View style={styles.cell}><Text>Marques</Text></View>
                 <View style={styles.cell}><Text>Référence</Text></View>
                 <View style={styles.cell}><Text>Prix</Text></View>
-                <View style={styles.cell}><Text>Action</Text></View>
+                {/* <View style={styles.cell}><Text>Action</Text></View> */}
               </View>
               {articles.map((article, index) => (
                 <View style={styles.row} key={index}>
                   <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{article.prix}</Text></View>
-                  <TouchableOpacity onPress={() => console.log(categ)}>
+                  {/* <TouchableOpacity onPress={() =>handleModifyClick(article)}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               ))}
             </View>
