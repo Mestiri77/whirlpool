@@ -16,5 +16,6 @@ router.post('/arcticlebyCC/:id',articleController.getArticleByCouleurAndCapcite)
 router.get('/colors',articleController.getAllColors)
 router.put('/price/:id',articleController.updatprice)
 router.get('/whirlpool',articleController.getArticlesByMarque)
+router.get('/artpdv/:pdvname/:mois',articleController.getArticlesBypdv)
 
 module.exports = router;

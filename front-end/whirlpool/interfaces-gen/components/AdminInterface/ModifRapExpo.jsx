@@ -8,7 +8,7 @@ import Toast from 'react-native-simple-toast';
 import { useNavigation } from '@react-navigation/native';
 
 
-function Modifpopup({ article, refData, marqueData, price,onClose }) {
+function Modifpopup({ article, refData, marqueData, price,onClose,setDataChanged,dataChanged }) {
   // const { idref, idmarque, idarticle } = route.params;
   const navigation = useNavigation();
     const [modif,setModif] = React.useState('');
@@ -39,6 +39,7 @@ console.log('ref modifier');
 
       }else 
       Toast.show("les champs est vide .", Toast.LONG);
+    setDataChanged(!dataChanged)
       
     }
     const RenderInput=(text, value, onChange)=>{

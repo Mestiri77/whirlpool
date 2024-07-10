@@ -102,13 +102,13 @@ function RapportExpodet() {
         fetchMarque(refData.Marque_idMarque);
       }
     });
-  }, [articles]);
+  }, [articles,dataChanged]);
 
   const handleModifyClick = (article) => {
     const refData = refs[article.Reference_idReference];
     const marqueData = marques[refData?.Marque_idMarque];
     const price = article.idArticle;
-    setPopupData({ article, refData, marqueData, price, adm });
+    setPopupData({ article, refData, marqueData, price, setDataChanged,dataChanged });
     setShowpop(true);
   };
 

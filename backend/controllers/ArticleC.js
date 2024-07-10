@@ -167,6 +167,38 @@ const getArticlesByMarque = async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching articles' });
   }
 };
+const getArticlesBypdv = async (req, res) => {
+  try {
+    // Extraire le nom de la catégorie des paramètres de la requête
+    const { pdvname,mois } = req.params;
+
+    // Récupérer les articles avec les références et les catégories associées
+    const articles = await Article.findAll({
+      include: {
+        model: Exposition,
+        required: true,
+        where: {
+          dateCr: mois,
+        },
+        include: {
+          model: PDV,
+          required: true,
+          where: {
+            pdvname: pdvname,
+          },
+        },
+      },
+    });
+
+    // Renvoyer les articles en tant que réponse JSON
+    return res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+
+    // Renvoyer une réponse d'erreur
+    return res.status(500).json({ error: 'An error occurred while fetching articles' });
+  }
+};
 const getArticleDetails = async (req, res) => {
   try {
     const { categoryname, pdvname,dateC} = req.params;
@@ -301,5 +333,6 @@ module.exports = {
   getArticleByCouleurAndCapcite,
   getAllColors,
   updatprice,
-  getArticlesByMarque
+  getArticlesByMarque,
+  getArticlesBypdv
 };
