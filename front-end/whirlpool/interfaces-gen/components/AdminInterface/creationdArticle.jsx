@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
-import { CheckIcon,Alert,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,} from "native-base";
+import { CheckIcon,Alert,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,Checkbox} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import port from '../port'
@@ -33,11 +33,12 @@ const [typeC,setTypeC]=React.useState("")
 const [capacite,setCapacite]=React.useState("")
 const [prix,setPrix]=React.useState(null)
 
+const [newidArt,setNewidArt]=React.useState(null)
 const [idref,setIdref]=React.useState(null)
 const [idmarque,setIdmarque]=React.useState(null)
 const [idcateg,setIdcateg]=React.useState(null)
 
-
+const [pdvs, setPdvs] = React.useState([]);
 const [references,setReferences]=React.useState([])
 const [marques,setMarques]=React.useState([])
 const [Categories,setCategories]=React.useState([])
@@ -46,8 +47,10 @@ const couleurs = ["rouge", "bleu", "vert", "jaune", "noir", "blanc", "orange", "
 
 const [oneref,setOneref]=React.useState([])
 const [oneArticle,setOneArticle]=React.useState([])
+const [groupValue, setGroupValue] = React.useState([]);
+const [selectedPdvIds, setSelectedPdvIds] = React.useState([]);
 
-
+console.log(selectedPdvIds);
 const dataArticle={
   coloeur:couleur,
   typeC:typeC,
@@ -98,12 +101,18 @@ const PostArticle=async(data1,id,data2,showAlert )=>{
     data1.Reference_idReference=id
     console.log(data1.Reference_idReference,'idddd');
     if(data1.Reference_idReference!=null){
-      await axios.post("http://"+port+":3000/api/articles/articles",data1)
+     const response = await axios.post("http://"+port+":3000/api/articles/articles",data1)
       showAlert('success', "Un Nouveau Article a été créé");
       setLoad(!load)
-      setIdref(null)
-      setRef("")
-      setTypeC("")
+     
+      setNewidArt(response.data.idArticle)
+      await Promise.all(selectedPdvIds.map(async (id) => {
+        await axios.post("http://" + port + ":3000/api/expositions/expositions", {
+          Article_idArticle: response.data.idArticle,
+          PDV_idPDV: id,
+          dateCr: new Date()
+        });
+      }));
     }
 
     setLoad(!load)
@@ -176,7 +185,15 @@ const EditArticle=async(data,id,showAlert )=>{
   }
   
 }
-
+const fetchPdvs = async () => {
+  try {
+      const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
+      const pdvs = response.data
+      setPdvs(pdvs);
+  } catch (error) {
+      console.error('Error fetching PDVs:', error);
+  }
+};
 
 const findId = (data, name, dataname, idname, setid) => {
   const element = data.find(el => el[dataname] === name);
@@ -249,13 +266,55 @@ const validAdd=()=>{
     console.error('Error in operation:', error);
   });
 }
+React.useEffect(()=>{},[selectedPdvIds])
+
 
 React.useEffect(()=>{
   Fetchallref()
   Fetchallmarq()
   Fetchallcateg()
+  fetchPdvs()
 },[load])
 //////////////////////////////////////////////////////////////////////////////////
+
+const handleCheckboxChange = (values) => {
+  const newSelectedPdvIds = values.map((pdvName) => {
+    const pdv = pdvs.find((el) => el.pdvname === pdvName);
+    return pdv ? pdv.idPDV : null;
+  }).filter(id => id !== null);
+
+  setSelectedPdvIds(newSelectedPdvIds);
+  setGroupValue(values || []);
+};
+const ExampleCheck = () => {
+
+  return (
+    <Box alignItems="center" mt={5} mb={5}>
+      <VStack space={2}>
+        <HStack alignItems="baseline">
+          <Heading fontSize="lg">Points De Ventes</Heading>
+        </HStack>
+        <VStack>
+          <Box>
+            <Text>Selected: ({groupValue.length})</Text>
+          </Box>
+        </VStack>
+        <Checkbox.Group
+          colorScheme="green"
+          defaultValue={groupValue}
+          accessibilityLabel="pick an item"
+          onChange={handleCheckboxChange}
+        >
+          {pdvs.map(el => (
+            <Checkbox key={el.idPDV} value={el.pdvname} my="1">
+              {el.pdvname}
+            </Checkbox>
+          ))}
+        </Checkbox.Group>
+      </VStack>
+    </Box>
+  );
+};
 const ExampleAlert = ({ status, message, onClose }) => {
   return (
       <Stack space={3} w="100%" maxW="400">
@@ -620,6 +679,7 @@ const hideAlert = () => {
                 <Example text={"Type de Capacité"}/>
                 {RenderInput('Capacite',false)}
                 {RenderInput('Prix',false)}
+                <ExampleCheck />
                 <TouchableOpacity onPress={() =>{validAdd()}} style={styles.btns}>
         <Text style={styles.btnText}>Valideé</Text>
       </TouchableOpacity>

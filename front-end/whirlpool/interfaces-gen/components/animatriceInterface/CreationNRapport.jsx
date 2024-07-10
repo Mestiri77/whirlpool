@@ -191,7 +191,7 @@ console.log(datev);
     for (let ref of references) {
       let refSells = await getRefSellByidRef(ref.idReference);
       let total = 0;
-  
+      console.log(refSells);
       for (let refSell of refSells) {
         let sellout = sellouts.find(sell => sell.idSellout === refSell.Sellout_idSellout);
         if (sellout) {
