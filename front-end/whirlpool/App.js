@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View , LogBox} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from './interfaces-gen/components/login';
@@ -78,6 +78,8 @@ export default function App() {
     </View>
   );
 }
+LogBox.ignoreAllLogs(true);
+
 
 const styles = StyleSheet.create({
   container: {
