@@ -16,7 +16,7 @@ import { useRoute } from '@react-navigation/native';
 function RapportExpodet() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { adm } = route.params;
+  const { adm,sameExpoData} = route.params;
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
@@ -25,16 +25,23 @@ function RapportExpodet() {
   const [popupData, setPopupData] = useState({});
   const [dataChanged, setDataChanged] = useState(false);
   const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
-
   const fetchArticleByCategory = async (categ) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/articles/artCat/${categ}`);
-      setArticles(response.data);
+  
+      // Filtrer les articles qui ont le même idArticle dans sameExpoData
+      const filteredArticles = response.data.filter(article => {
+        return sameExpoData.some(item => item.Article_idArticle === article.idArticle);
+      });
+  
+      console.log(filteredArticles); // Vérifiez la sortie dans la console pour vous assurer que les données sont correctes
+  
+      setArticles(filteredArticles); // Mettez à jour l'état des articles avec les données filtrées
     } catch (error) {
       console.error('Error fetching articles:', error);
     }
   };
-
+  
   const fetchRef = async (id) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/reference/references/${id}`);
@@ -121,7 +128,7 @@ function RapportExpodet() {
       <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.view1}>
         <Header />
-        <ScrollView style={{ marginTop: -350 }}>
+        <ScrollView style={{ marginTop: -150 }}>
           <View>
             <View>
               <Text style={styles.textexpo}>{categ}</Text>

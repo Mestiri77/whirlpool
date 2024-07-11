@@ -16,24 +16,32 @@ import {useRoute } from '@react-navigation/native';
 function RapportExpodet() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { ani } = route.params;
+  const { ani,sameExpoData} = route.params;
   const [articles, setArticles] = useState([]);
   const [categ, setCateg] = useState('');
   const [marques, setMarques] = useState({});
   const [refs, setRefs] = useState({});
-  const [showpopup, setShowpop]=useState(false)
+  const [showpopup, setShowpop] = useState(false);
   const [popupData, setPopupData] = useState({});
-  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
-
+  const [dataChanged, setDataChanged] = useState(false);
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
   const fetchArticleByCategory = async (categ) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/articles/artCat/${categ}`);
-      setArticles(response.data);
+  
+      // Filtrer les articles qui ont le même idArticle dans sameExpoData
+      const filteredArticles = response.data.filter(article => {
+        return sameExpoData.some(item => item.Article_idArticle === article.idArticle);
+      });
+  
+      console.log(filteredArticles); // Vérifiez la sortie dans la console pour vous assurer que les données sont correctes
+  
+      setArticles(filteredArticles); // Mettez à jour l'état des articles avec les données filtrées
     } catch (error) {
       console.error('Error fetching articles:', error);
     }
   };
-
+  
   const fetchRef = async (id) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/reference/references/${id}`);
@@ -92,7 +100,7 @@ function RapportExpodet() {
     if (categ) {
       fetchArticleByCategory(categ);
     }
-  }, [categ]);
+  }, [categ, dataChanged]);
 
   useEffect(() => {
     articles.forEach(async article => {
@@ -101,21 +109,26 @@ function RapportExpodet() {
         fetchMarque(refData.Marque_idMarque);
       }
     });
-  }, [articles]);
+  }, [articles,dataChanged]);
 
   const handleModifyClick = (article) => {
     const refData = refs[article.Reference_idReference];
     const marqueData = marques[refData?.Marque_idMarque];
-    setPopupData({ article, refData, marqueData });
+    const price = article.idArticle;
+    setPopupData({ article, refData, marqueData, price, setDataChanged,dataChanged });
     setShowpop(true);
   };
+
+  const handleDataChange = () => {
+    setDataChanged(!dataChanged);
+  };
+
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.view1}>
         <Header />
-        <ScrollView style={{ marginTop: -350 }}>
+        <ScrollView style={{ marginTop: -150 }}>
           <View>
             <View>
               <Text style={styles.textexpo}>{categ}</Text>
@@ -132,7 +145,7 @@ function RapportExpodet() {
                   <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{article.prix}</Text></View>
-                  <TouchableOpacity onPress={() => console.log(categ)}>
+                  <TouchableOpacity onPress={() => handleModifyClick(article)}>
                     <View style={styles.cell2}><Text style={styles.textcell2}>Modifier</Text></View>
                   </TouchableOpacity>
                 </View>
@@ -140,11 +153,14 @@ function RapportExpodet() {
             </View>
           </View>
         </ScrollView>
+        {/* <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
+          <Text style={styles.btnText}>Exporter</Text>
+        </TouchableOpacity> */}
       </View>
       <Modal isOpen={showpopup} onClose={() => setShowpop(false)}>
-        <Modifpopup {...popupData} onClose={() => setShowpop(false)} />
+        <Modifpopup {...popupData} onClose={() => setShowpop(false)} onDataChange={handleDataChange} />
       </Modal>
-      <Footer ani={ani}/>
+      <Footer ani={ani} />
     </NativeBaseProvider>
   );
 }
