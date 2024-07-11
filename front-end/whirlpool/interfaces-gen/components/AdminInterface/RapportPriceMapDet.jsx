@@ -14,7 +14,7 @@ function RapportPriceMapDet({ route }){
   const { categoryId,adm } = route.params;
 
     const [color,setColor]=React.useState('')
-    const [onChangeValue, setOnChangeValue] = React.useState(70);
+    const [onChangeValue, setOnChangeValue] = React.useState(0);
     const [onChangeEndValue, setOnChangeEndValue] = React.useState(70);
     const [unite,setUnite]=React.useState('')
     const [marques,setMarques]=React.useState([])
@@ -148,7 +148,7 @@ function RapportPriceMapDet({ route }){
       const ExampleSlider = () => {
         return (
         <Box mr='-5'ml='5' w="100%">
-      <Slider w="130" maxW="300" defaultValue={onChangeValue} minValue={0} maxValue={100} accessibilityLabel="hello world"  step={1} 
+      <Slider w="130" maxW="300" defaultValue={onChangeValue} minValue={0} maxValue={1000} accessibilityLabel="hello world"  step={100} 
       onChange={v => {
         setOnChangeValue(Math.floor(v));
       }}
