@@ -81,6 +81,41 @@ const getidbyname =(req,res)=>{
         res.status(500).send("erreur")
     }
 }
+// const getcategorybypdv =async (req,res)=>{
+//   const { name }=req.params
+//   try {
+//     const expositions = await Category.findAll({
+//       include: [
+//         {
+//           model: Reference,
+//           include: [
+//             {
+//               model: Article,
+//               include: [
+//                 {
+//                   model: Exposition,
+//                   include: [
+//                     {
+//                       model: PDV,
+//                       where:  pdvname
+//                     }
+//                   ]
+//                 }
+//               ]
+//             }
+//           ]
+//         }
+//       ]
+//     });
+//   }
+//   catch(err){
+//     console.error(err);
+//     res.status(500).send("erreur")
+// }
+  
+// }
+
+
 
 module.exports = {
   createCategory,

@@ -13,7 +13,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { adm,month, pdv } = route.params; 
+  const { adm,month, pdv } = route.params;
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
@@ -21,6 +21,7 @@ function RapportExpo() {
   const [references, setReferences] = useState([]);
   const [marques, setMarques] = useState([]);
   const [pdvs, setPdvs] = useState({});
+  const [article,setArticle]=useState([])
   const [anim, setAnim] = useState([]);
   const [idWhirlpool, setIdwhirlpool] = useState(null);
   const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
@@ -42,7 +43,22 @@ function RapportExpo() {
       console.error('Error fetching categories:', error);
     }
   }; 
-
+ const fetchart = async (pdv) => {
+    try {
+      const response = await axios.get(`http://` + port +`:3000/api/articles/artpdv/${pdv}`);
+      setArticle(response.data);
+    } catch (error) {
+      console.error('Error fetching article:', error);
+    }
+  }; 
+  const filtreart = async () => {
+    try {
+      const response = await axios.get(`http://` + port +`:3000/api/articles/artpdv/${pdv}`);
+      setArticle(response.data);
+    } catch (error) {
+      console.error('Error fetching article:', error);
+    }
+  }; 
   const Fetchallref = async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/reference/references");
@@ -90,7 +106,7 @@ function RapportExpo() {
   };
 
   const CountSameCateg = (id) => {
-    return references.filter(el => el.Category_idCategory === id).length;
+    return article.filter(el => el.Category_idCategory === id).length;
   };
 
   const Findwhirlpool = (id) => {
@@ -140,7 +156,8 @@ function RapportExpo() {
     Fetchallcateg();
     Fetchallref();
     Fetchallmarq();
-    getpdvByID(pdv).then(() => {
+    fetchart(pdv)
+    getpdvByID(pdv).then(() => { 
       findIdWhirlpool();
       FetchAnim(pdvs.idPDV);
     });

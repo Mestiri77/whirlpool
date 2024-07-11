@@ -169,23 +169,26 @@ const getArticlesByMarque = async (req, res) => {
 };
 const getArticlesBypdv = async (req, res) => {
   try {
-    // Extraire le nom de la catégorie des paramètres de la requête
-    const { pdvname,mois } = req.params;
+    // Extraire le nom de la PDV et le mois des paramètres de la requête
+    const { pdvname, mois } = req.params;
 
-    // Récupérer les articles avec les références et les catégories associées
+    // Récupérer les articles avec les expositions et les PDV associés
     const articles = await Article.findAll({
       include: {
         model: Exposition,
+        attributes: ['dateCr'], // Inclure uniquement la date de création
         required: true,
-       
         include: {
           model: PDV,
+          attributes: [], // N'inclure aucun attribut spécifique de PDV
           required: true,
           where: {
             pdvname: pdvname,
           },
         },
       },
+      raw: true 
+
     });
 
     // Renvoyer les articles en tant que réponse JSON
@@ -197,6 +200,7 @@ const getArticlesBypdv = async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching articles' });
   }
 };
+
 const getArticleDetails = async (req, res) => {
   try {
     const { categoryname, pdvname,dateC} = req.params;
