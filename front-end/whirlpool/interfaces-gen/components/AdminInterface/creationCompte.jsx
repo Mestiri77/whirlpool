@@ -132,6 +132,10 @@ const ExampleAlert = ({ status, message, onClose }) => {
   };
 
   const RenderInput = (text,setState) => {
+    const handleTextChange = (item) => {
+      setState(item.toLowerCase());
+    };
+
 if(text=="Mot De Passe :"){
   return(
     <Stack space={4} w="100%" alignItems="center" mt="5%">
@@ -141,10 +145,10 @@ if(text=="Mot De Passe :"){
         md: "25%"
       }} 
       InputLeftElement={
-        <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+        <Icon as={<MaterialIcons name="password" />} size={5} ml="2" color="muted.400" />
       } 
       placeholder={text}
-      onChangeText={item=>setState(item)}
+      onChangeText={handleTextChange}
       secureTextEntry
       isRequired
       isEmpty={item => item.trim().length === 0} 
@@ -164,7 +168,7 @@ if(text=="Mot De Passe :"){
                 <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setState(item)}
+              onChangeText={handleTextChange}
               isRequired
               isEmpty={item => item.trim().length === 0} 
             />

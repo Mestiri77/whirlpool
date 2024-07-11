@@ -13,7 +13,7 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { adm, month, pdv } = route.params;
+  const { adm,month, pdv } = route.params;
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
@@ -23,6 +23,7 @@ function RapportExpo() {
   const [expo, setExpo] = useState([]);
   const [articles, setArticles] = useState([]);
   const [pdvs, setPdvs] = useState({});
+  const [article,setArticle]=useState([])
   const [anim, setAnim] = useState([]);
   const [expolist, setExpolist] = useState([]);
   const [idWhirlpool, setIdwhirlpool] = useState(null);

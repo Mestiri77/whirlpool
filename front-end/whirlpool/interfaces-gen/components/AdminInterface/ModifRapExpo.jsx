@@ -52,11 +52,12 @@ console.log('ref modifier');
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               value={value}
-              onChangeText={onChange}            />
+              onChangeText={(text) => onChange(text.toLowerCase())} // Convertir en minuscules ici
+              />
            
           </Stack>
           )
@@ -70,11 +71,12 @@ console.log('ref modifier');
                 md: "15%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               value={value}
-              onChangeText={onChange}            />
+              onChangeText={(text) => onChange(text.toLowerCase())} // Convertir en minuscules ici
+              />
            
           </Stack>
          )
@@ -88,7 +90,7 @@ console.log('ref modifier');
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="attach-money" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               value={value}
