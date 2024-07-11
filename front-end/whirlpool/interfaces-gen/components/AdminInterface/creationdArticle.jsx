@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FlatList,ScrollView,View,StyleSheet,Image,Text,TouchableOpacity,} from "react-native";
-import { CheckIcon,Alert,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,Checkbox} from "native-base";
+import { CheckIcon,Alert,Input,CloseIcon,HStack,IconButton, Divider,Heading, Button, Select, Box, Center, NativeBaseProvider,Stack, Icon,Skeleton, VStack,Checkbox,Modal } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import port from '../port'
@@ -22,9 +22,11 @@ const [creatArt,setCreatArt]=React.useState(false)
 const [modifArt,setModifArt]=React.useState(false)
 const [showpop,setShowpop]=React.useState(false);
 const [validmodif,setValidmodif]=React.useState(false)
+const [selectAll, setSelectAll] = React.useState(false);
+const [modalVisibleAdd, setModalVisibleAdd] = React.useState(false);
 
 const [modif,setModif]=React.useState("")
-
+const [capacitee,setCapacitee]=React.useState(null)
 const [Ref,setRef]=React.useState("")
 const [Marq,setMarq]=React.useState("")
 const [couleur,setCouleur]=React.useState("")
@@ -38,12 +40,17 @@ const [idref,setIdref]=React.useState(null)
 const [idmarque,setIdmarque]=React.useState(null)
 const [idcateg,setIdcateg]=React.useState(null)
 
+const [article, setArticle]=React.useState([]);
+const [capacites,setCapacites]=React.useState([]);
+const [couleurs,setCouleurs]=React.useState([]);
 const [pdvs, setPdvs] = React.useState([]);
 const [references,setReferences]=React.useState([])
 const [marques,setMarques]=React.useState([])
 const [Categories,setCategories]=React.useState([])
+const [Onearticlecc, setOnearticlecc]=React.useState([]);
+
 const tdc=["L", "kg", "ft³", "W", "BTU", "bar"]
-const couleurs = ["rouge", "bleu", "vert", "jaune", "noir", "blanc", "orange", "violet", "rose", "marron"]
+// const colors = ["rouge", "bleu", "vert", "jaune", "noir", "blanc", "orange", "violet", "rose", "marron"]
 
 const [oneref,setOneref]=React.useState([])
 const [oneArticle,setOneArticle]=React.useState([])
@@ -68,8 +75,38 @@ const coleurdata={
 const capacitedata={
   capacite:modif
 }
+const prixdata={
+  prix:modif
+}
 
 /////////////////////////////////////////////FUNCTIONs/////////////////////////////
+const  fetchallArticle=async (id)=>{
+  try{
+      const response = await axios.get("http://"+port+":3000/api/articles/articles")
+      const articles = response.data;
+      console.log("idd",id);
+      const couleurs = articles.map(article =>{
+          if(article.Reference_idReference===id){
+              return article.coloeur
+          }
+      });
+      const capacites = articles.map(article =>{
+          if(article.Reference_idReference===id){
+              return article.capacite
+          }
+      });
+
+      setArticle(response.data);
+      setCouleurs(couleurs)
+      setCapacites(capacites)
+      
+      console.log(couleurs,capacites);
+  }
+  catch (error) {
+      console.error('Error fetching Article:', error);
+  }
+}
+
 const Fetchallref=async()=>{
 try{
   const response=await axios.get("http://"+port+":3000/api/reference/references")
@@ -204,18 +241,19 @@ const findId = (data, name, dataname, idname, setid) => {
 }
 
 const Modifbtn = (truc) => {
-  console.log('oneref:', oneref); // Check the entire object/array
-  if(truc === 'marque')
- { if (oneref ) {
-    console.log('Marque_idMarque:', oneref.Marque_idMarque);
-    let idMarq = oneref.Marque_idMarque;
+  console.log('oneref:', Onearticlecc); // Check the entire object/array
+  if(truc === 'prix'){
+     if (Onearticlecc ) {
+    console.log('prix:', Onearticlecc.idArticle);
+    let idArticle = Onearticlecc.idArticle;
     console.log(modif);
-    EditMarque(modif, idMarq,showAlert);}
+    EditArticle(prixdata, idArticle,showAlert) 
+   }
 
   } else if (truc === 'couleur') {
         // Assuming `oneArticle` is an array of objects returned from your query
-        if (oneArticle) {
-          let idArticle = oneArticle.idArticle; // Assuming the first element has the ID you need
+        if (Onearticlecc) {
+          let idArticle = Onearticlecc.idArticle; // Assuming the first element has the ID you need
           console.log(idArticle);
           EditArticle(coleurdata, idArticle,showAlert); // Assuming `modif` is a predefined object with modification details
         } else {
@@ -225,8 +263,8 @@ const Modifbtn = (truc) => {
   }
   else if (truc === 'capacite') {
     // Assuming `oneArticle` is an array of objects returned from your query
-    if (oneArticle) {
-      let idArticle = oneArticle.idArticle; // Assuming the first element has the ID you need
+    if (Onearticlecc) {
+      let idArticle = Onearticlecc.idArticle; // Assuming the first element has the ID you need
       console.log(idArticle);
       EditArticle(capacitedata, idArticle,showAlert); // Assuming `modif` is a predefined object with modification details
     } else {
@@ -266,6 +304,21 @@ const validAdd=()=>{
     console.error('Error in operation:', error);
   });
 }
+const getOneArticleByCC=async()=>{
+  try{
+
+    if (idref!== null) {
+      const response = await axios.post(`http://${port}:3000/api/articles/arcticlebyCC/${idref}`, {
+          couleur: couleur,
+          capacite: capacitee
+      });
+      setOnearticlecc(response.data)
+  }
+  }catch(err){
+    console.error('Error fetch oneArt :', err)
+
+  }
+}
 React.useEffect(()=>{},[selectedPdvIds])
 
 
@@ -286,33 +339,55 @@ const handleCheckboxChange = (values) => {
   setSelectedPdvIds(newSelectedPdvIds);
   setGroupValue(values || []);
 };
+const handleSelectAllChange = () => {
+  if (selectAll) {
+    setGroupValue([]);
+    setSelectedPdvIds([]);
+  } else {
+    const allPdvNames = pdvs.map(pdv => pdv.pdvname);
+    const allPdvIds = pdvs.map(pdv => pdv.idPDV);
+    setGroupValue(allPdvNames);
+    setSelectedPdvIds(allPdvIds);
+  }
+  setSelectAll(!selectAll);
+};
 const ExampleCheck = () => {
 
   return (
+    <ScrollView>
     <Box alignItems="center" mt={5} mb={5}>
-      <VStack space={2}>
-        <HStack alignItems="baseline">
-          <Heading fontSize="lg">Points De Ventes</Heading>
-        </HStack>
-        <VStack>
-          <Box>
-            <Text>Selected: ({groupValue.length})</Text>
-          </Box>
-        </VStack>
-        <Checkbox.Group
-          colorScheme="green"
-          defaultValue={groupValue}
-          accessibilityLabel="pick an item"
-          onChange={handleCheckboxChange}
-        >
-          {pdvs.map(el => (
-            <Checkbox key={el.idPDV} value={el.pdvname} my="1">
-              {el.pdvname}
-            </Checkbox>
-          ))}
-        </Checkbox.Group>
+    <VStack space={2}>
+      <HStack alignItems="baseline">
+        <Heading fontSize="lg">Points De Ventes</Heading>
+      </HStack>
+      <VStack>
+        <Box>
+          <Text>Selected: ({groupValue.length})</Text>
+        </Box>
       </VStack>
-    </Box>
+      <Checkbox
+        isChecked={selectAll}
+        onChange={handleSelectAllChange}
+        value="selectAll"
+        my="1"
+      >
+        Select All
+      </Checkbox>
+      <Checkbox.Group
+        colorScheme="green"
+        defaultValue={groupValue}
+        accessibilityLabel="pick an item"
+        onChange={handleCheckboxChange}
+      >
+        {pdvs.map(el => (
+          <Checkbox key={el.idPDV} value={el.pdvname} my="1">
+            {el.pdvname}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </VStack>
+  </Box>
+  </ScrollView>
   );
 };
 const ExampleAlert = ({ status, message, onClose }) => {
@@ -379,9 +454,9 @@ const hideAlert = () => {
         );
     }
       }
-      const Example = ({text}) => {
+      const Example = ({text,type}) => {
 
-        if(text=='Reference'){
+        if(text=='Reference'&& type===""){
           return (
             <Center>
             <Box maxW="400">
@@ -400,11 +475,11 @@ const hideAlert = () => {
           </Center>
           )
         }
-        else if(text=='Marque'){
+        else if(text=='Marque'&& type==="modif"){
           return (
             <Center>
-            <Box maxW="400">
-              <Select selectedValue={Marq} minWidth="240" accessibilityLabel={text} placeholder={text} _selectedItem={{
+            <Box maxW="120"  mt={3} mr={5}>
+              <Select selectedValue={Marq} minWidth="130" accessibilityLabel={text} placeholder={text} _selectedItem={{
               bg: "teal.600",
               endIcon: <CheckIcon size="5" />
             }}
@@ -458,7 +533,67 @@ const hideAlert = () => {
           </Center>
           )
         }
-        
+        else if(text==="Couleur"){
+          return (
+              <Center>
+                  <Box maxW="400" mt={3}>
+                      <Select
+                          selectedValue={couleur}
+                          minWidth="280"
+                          accessibilityLabel={text}
+                          placeholder={text}
+                          onValueChange={(itemValue) => setCouleur(itemValue)}
+                      >
+                          {couleurs.map(el => {
+                              if(el){
+                                  return(<Select.Item label={el} value={el} />)
+                              }  
+                          })}
+                      </Select>
+                  </Box>
+              </Center>
+          );
+      }
+      else if(text==="Capacite"){
+          return (
+              <Center>
+                  <Box maxW="400" mt={3}>
+                      <Select
+                          selectedValue={capacitee}
+                          minWidth="280"
+                          accessibilityLabel={text}
+                          placeholder={text}
+                          onValueChange={(itemValue) => setCapacitee(itemValue)}
+                      >
+                          {capacites.map(el =>{
+                              if(el){
+                                  return(<Select.Item label={el} value={el} />)
+                              }
+                          })}
+                      </Select>
+                  </Box>
+              </Center>
+          );
+      }
+      else if(text==="Reference"&& type==="modif"){
+        return (
+          <Center>
+          <Box maxW="120" mt={3} mr={5}>
+            <Select selectedValue={Ref} minWidth="130" accessibilityLabel={text} placeholder={text} _selectedItem={{
+            bg: "teal.600",
+            endIcon: <CheckIcon size="5" />
+          }}
+          InputLeftElement={
+            <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
+          }  mt={1} onValueChange={itemValue => {setRef(itemValue),setLoad(!load)}}>
+            {references.map(el=>(
+              <Select.Item label={el.Referencename} value={el.Referencename}/>
+            ))}
+            </Select>
+          </Box>
+        </Center>
+        )
+    }
       };
 
       const RenderInput= (text,modif)=>{
@@ -560,7 +695,10 @@ const hideAlert = () => {
             setIdref(idReference);
             getOneRef(idReference);
             getOneArticlebyref(idReference);
+            fetchallArticle(idReference)
             setShowpop(false);
+            setModifArt(false)
+            setModalVisibleAdd(true)
           }
         }
         else{
@@ -573,7 +711,7 @@ const hideAlert = () => {
     }
       const renderPopup=()=>{
         return(
-                  <View style={{marginTop:'20%'}}>
+          <View style={{marginTop:'20%'}}>
                   <Center flex={1} px="3">
                   <Center w="100%">
         <VStack w="90%" maxW="400" borderWidth="1" space={8} overflow="hidden" rounded="md" _dark={{
@@ -585,7 +723,7 @@ const hideAlert = () => {
           <Text style={styles.textprop}>Choisir la réfèrence :</Text>
           </Center>
 
-          <Example text={'Reference'} />
+          <Example text={'Reference'} type={""}/>
           <Stack mb="8" mt="1" direction={{
           base: "row",
           md: "row"
@@ -621,7 +759,7 @@ const hideAlert = () => {
                     base: "auto",
                     md: "0",
                   }}>              
-            {RenderInput('Reference',true)}
+                <Example text={"Reference"} type={"modif"}/>
             <TouchableOpacity onPress={() =>{Editref(modif,idref,showAlert)}} style={styles.btns}>
     <Text style={styles.btnText}>Modifier</Text>
   </TouchableOpacity>
@@ -634,8 +772,8 @@ const hideAlert = () => {
                     base: "auto",
                     md: "0",
                   }}>
-            {RenderInput('Marque',true)}
-            <TouchableOpacity onPress={() =>{Modifbtn('marque')}} style={styles.btns}>
+            {RenderInput('Prix',true)}   
+             <TouchableOpacity onPress={() =>{Modifbtn('prix')}} style={styles.btns}>
     <Text style={styles.btnText}>Modifier</Text>
   </TouchableOpacity>
           </Stack>
@@ -672,7 +810,7 @@ const hideAlert = () => {
 
                 <View style={styles.inputs}>
                 <Center flex={1} px="3">
-                <Example text={"Reference"}/>
+                <Example text={"Reference"} type={""}/>
                 {/* <Example text={"Marque"} /> */}
                 {RenderInput('couleur',false)}
                 {/* <Example text={"categorie"}/> */}
@@ -692,13 +830,17 @@ const hideAlert = () => {
               renderPopup()
             )
         }
-        else if (!showpop){
+        else if (!showpop && modifArt){
           return(
             renderModif()
           )
         }
       }
-
+const etape2=async()=>{
+  await getOneArticleByCC()
+  setModifArt(true)
+  setModalVisibleAdd(false)
+}
     return (
         <NativeBaseProvider>
                 <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
@@ -729,6 +871,27 @@ const hideAlert = () => {
           </View>
     
         </View>
+        <Modal isOpen={modalVisibleAdd} onClose={() => setModalVisibleAdd(false)}>
+                    <Modal.Content>
+                        <Modal.Header>Confirmation</Modal.Header>
+                        <Modal.Body>
+                            <View style={{margin:5}}>
+                                <Text>Choisir le Couleur :</Text>
+                                <Example text={'Couleur'} />
+                            </View>
+                            <View style={{margin:5}}>
+                                <Text>Choisir la Capacite :</Text>
+                                <Example text={'Capacite'} />
+                            </View>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button.Group space={2}>
+                                <Button onPress={() => setModalVisibleAdd(false)}>Annuler</Button>
+                                <Button colorScheme="teal" onPress={()=>{etape2()}}>Valider</Button>
+                            </Button.Group>
+                        </Modal.Footer>
+                    </Modal.Content>
+                </Modal>
         <Footer adm ={adm}/>
         </NativeBaseProvider>
       );
