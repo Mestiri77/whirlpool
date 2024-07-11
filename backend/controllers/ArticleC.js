@@ -177,9 +177,7 @@ const getArticlesBypdv = async (req, res) => {
       include: {
         model: Exposition,
         required: true,
-        where: {
-          dateCr: mois,
-        },
+       
         include: {
           model: PDV,
           required: true,

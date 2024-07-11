@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text,Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -12,15 +12,13 @@ import port from "../port";
 
 function RapportLog() {
   const route = useRoute();
-  const { adm,month, pdv } = route.params;
+  const { adm, month, pdv } = route.params;
   const [date, setDate] = useState(""); 
-  const [pdvs,setPdvs]=useState([])
+  const [pdvs, setPdvs] = useState(null);
   const [pres, setPres] = useState([]);
   const [log, setLog] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Nouvel état isLoading
-  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
- console.log(log);
- 
+  const [isLoading, setIsLoading] = useState(true);
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
   const getPdvs = async (pdv) => {
     try {
@@ -29,73 +27,28 @@ function RapportLog() {
     } catch (error) {
       console.error('Error fetching pdvs:', error);
     }
-    
   };
-  const getPresence = async () => {
+
+  const getPresence = async (pdvId) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
-      const presences = response.data.filter(e => e.PDV_idPDV === pdvs.idPDV);
+      const presences = response.data.filter(e => e.PDV_idPDV === pdvId);
       setPres(presences);
     } catch (error) {
       console.error('Error fetching presence:', error);
     }
   };
 
-  const fetchLog = async () => {
+  const fetchLog = async (presences) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/logs/logs`);
-      const logs = response.data.filter(e => e.Presence_idPresence === pdvs.idPDV && new Date(e.createdAt).getMonth() === month -1);
+      const logs = response.data.filter(log => 
+        presences.some(pres => pres.idPresence === log.Presence_idPresence && new Date(log.createdAt).getMonth() === month - 1)
+      );
       setLog(logs);
-console.log(logs,"hhh");
     } catch (error) {
       console.error('Error fetching logs:', error);
     }
-  };
-
-  const Example = ({ text }) => {
-    return (
-      <Center>
-        <Box maxW="400">
-          <Select
-            selectedValue={date}
-            minWidth="100%"
-            accessibilityLabel="Choose Service"
-            placeholder={text}
-            _selectedItem={{
-              bg: "teal.600",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            mt={1}
-            onValueChange={(itemValue) => setDate(itemValue)}
-          >
-            <Select.Item label="AM" value="AM" />
-            <Select.Item label="PM" value="PM" />
-          </Select>
-        </Box>
-      
-      </Center>
-    );
-  };
-
-  const Tableaux = () => {
-    return (
-      <View style={{ marginTop: 20 }}>
-        <View style={styles.container2}>
-          <View style={styles.row}>
-            <View style={styles.cell}><Text>Date</Text></View>
-            <View style={styles.cell}><Text>Time</Text></View>
-            <View style={styles.cell3}><Text>Activite</Text></View>
-          </View>
-          {log.map((logEntry, index) => (
-            <View style={styles.row} key={index}>
-              <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleDateString()}</Text></View>
-              <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleTimeString()}</Text></View>
-              <View style={styles.cell2}><Text>{logEntry.messageAc}</Text></View>
-            </View>
-          ))}
-        </View>
-      </View>
-    );
   };
 
   const exportToExcel = async () => {
@@ -104,7 +57,7 @@ console.log(logs,"hhh");
       ...log.map(logEntry => [
         new Date(logEntry.createdAt).toLocaleDateString(),
         new Date(logEntry.createdAt).toLocaleTimeString(),
-        logEntry.activity
+        logEntry.messageAc
       ])
     ];
 
@@ -121,20 +74,63 @@ console.log(logs,"hhh");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await Promise.all([fetchLog(), getPdvs(pdv), getPresence()]);
-        setIsLoading(false); // Mettre à jour isLoading une fois que toutes les données sont chargées
+        await getPdvs(pdv);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
-  }, [isLoading]);
+  }, []);
+
+  useEffect(() => {
+    if (pdvs) {
+      const fetchPresenceData = async () => {
+        try {
+          await getPresence(pdvs.idPDV);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchPresenceData();
+    }
+  }, [pdvs]);
+
+  useEffect(() => {
+    if (pres.length > 0) {
+      const fetchLogData = async () => {
+        try {
+          await fetchLog(pres);
+          setIsLoading(false);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      fetchLogData();
+    }
+  }, [pres]);
+
+  const Tableaux = () => (
+    <View style={{ marginTop: 20 }}>
+      <View style={styles.container2}>
+        <View style={styles.row}>
+          <View style={styles.cell}><Text>Date</Text></View>
+          <View style={styles.cell}><Text>Time</Text></View>
+          <View style={styles.cell3}><Text>Activite</Text></View>
+        </View>
+        {log.map((logEntry, index) => (
+          <View style={styles.row} key={index}>
+            <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleDateString()}</Text></View>
+            <View style={styles.cell1}><Text>{new Date(logEntry.createdAt).toLocaleTimeString()}</Text></View>
+            <View style={styles.cell2}><Text>{logEntry.messageAc}</Text></View>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
 
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
       <View style={styles.container}>
         <Header />
         <Center flex={1} mt={'-140%'}>
@@ -148,7 +144,7 @@ console.log(logs,"hhh");
             <Text style={styles.btnText}>Exporter</Text>
           </TouchableOpacity>
         </Center>
-        <Footer adm={adm}/>
+        <Footer adm={adm} />
       </View>
     </NativeBaseProvider>
   );
