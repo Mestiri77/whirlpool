@@ -1,33 +1,37 @@
 import React from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import Footer from './footer';
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const image01 = require('../../../assets/image1+.png');
 const image02 = require('../../../assets/image2.png');
 const image03 = require('../../../assets/image3.png');
 const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
-const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
 function WelcomeAdmin() {
   const navigation = useNavigation();
   const route = useRoute();
   const { adm } = route.params;
-  const [load, setLoad] = React.useState(true);
   const [historique, setHistorique] = React.useState([]);
+  const [loading, setLoading] = React.useState(false); // État pour contrôler le chargement
 
   const hundlehistorique = (zone) => {
-    setLoad(!load);
-    setHistorique((prevHistorique) => [...prevHistorique, zone]);
-  };
+    setLoading(true); // Afficher l'indicateur de chargement
 
-  React.useEffect(() => {}, [load]);
+    // Utiliser setTimeout pour simuler un délai de 3 secondes avant de naviguer
+    setTimeout(() => {
+      setHistorique((prevHistorique) => [...prevHistorique, zone]);
+      setLoading(false); // Masquer l'indicateur de chargement après 3 secondes
+      navigation.navigate(zone.link, { adm });
+    }, 3000); // 3000 ms = 3 secondes
+  };
 
   return (
     <>
       <ScrollView>
-      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+        <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
 
         <View style={styles.view1}>
           <View style={styles.view2}>
@@ -40,10 +44,7 @@ function WelcomeAdmin() {
           </View>
           <View style={styles.view5}>
             <TouchableOpacity
-              onPress={() => {
-                hundlehistorique({ name: 'Création de compte', link: 'CreationCompte', image: image01 });
-                navigation.navigate("CreationCompte",{adm});
-              }}
+              onPress={() => hundlehistorique({ name: 'Création de compte', link: 'CreationCompte', image: image01 })}
             >
               <View style={styles.view6}>
                 <View style={styles.view7}>
@@ -53,10 +54,7 @@ function WelcomeAdmin() {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                hundlehistorique({ name: 'Création de point de vente', link: 'Creationpdv', image: image02 });
-                navigation.navigate("Creationpdv",{adm});
-              }}
+              onPress={() => hundlehistorique({ name: 'Création de point de vente', link: 'Creationpdv', image: image02 })}
             >
               <View style={styles.view8}>
                 <View style={styles.view9}>
@@ -68,10 +66,7 @@ function WelcomeAdmin() {
           </View>
           <View style={styles.view10}>
             <TouchableOpacity
-              onPress={() => {
-                hundlehistorique({ name: "Création d'articles", link: 'CreationArt', image: image04 });
-                navigation.navigate("CreationArt",{adm});
-              }}
+              onPress={() => hundlehistorique({ name: "Création d'articles", link: 'CreationArt', image: image04 })}
             >
               <View style={styles.view11}>
                 <View style={styles.view12}>
@@ -81,10 +76,7 @@ function WelcomeAdmin() {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                hundlehistorique({ name: 'Consultation des rapports', link: 'ConsultRapports', image: image03 });
-                navigation.navigate("ConsultRapports",{adm});
-              }}
+              onPress={() => hundlehistorique({ name: 'Consultation des rapports', link: 'ConsultRapports', image: image03 })}
             >
               <View style={styles.view13}>
                 <View style={styles.view12}>
@@ -112,6 +104,16 @@ function WelcomeAdmin() {
           ))}
         </View>
       </ScrollView>
+
+      {/* Afficher l'indicateur de chargement conditionnellement */}
+      {loading && (
+        <View style={[StyleSheet.absoluteFill, styles.loadingIndicator]}>
+          <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.loadingLogo} />
+          
+          <ActivityIndicator size="large" color="#FFCC30" />
+        </View>
+      )}
+
       <Footer adm={adm}/>
     </>
   );
@@ -125,10 +127,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
   },
+  loadingLogo: {
+    width: 125,
+    height: 95,
+  },
   view2: {
     alignItems: "stretch",
     marginBottom: 15,
-    flexDirection:"row"
+    flexDirection: "row"
   },
   view3: {
     marginBottom: 5,
@@ -294,6 +300,16 @@ const styles = StyleSheet.create({
   image5: {
     width: 30,
     height: 30,
+  },
+  loadingIndicator: {
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#263238",
   },
 });
 

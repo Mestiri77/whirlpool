@@ -14,7 +14,7 @@ const InputField = ({ label, placeholder, isPassword, onChangeText }) => (
       placeholder={placeholder}
       secureTextEntry={isPassword}
       autoCapitalize="none"
-      onChangeText={onChangeText}
+      onChangeText={(text) => onChangeText(text.toLowerCase())} // Convertir en minuscules ici
     />
   </>
 );

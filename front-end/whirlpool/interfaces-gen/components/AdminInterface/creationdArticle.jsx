@@ -462,6 +462,7 @@ const hideAlert = () => {
       };
 
       const RenderInput= (text,modif)=>{
+     
         if(modif==true){
           return(
             <Stack space={4} w="50%" alignItems="center" mt="5%">
@@ -471,10 +472,10 @@ const hideAlert = () => {
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="update" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setModif(item)}
+              onChangeText={item=>setModif(item.toLowerCase())}
             />
            
           </Stack>
@@ -492,7 +493,7 @@ const hideAlert = () => {
                 <Icon as={<MaterialIcons name="palette" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setCouleur(item)}
+              onChangeText={item=>setCouleur(item.toLowerCase())}
             />
            
           </Stack>
@@ -510,7 +511,7 @@ const hideAlert = () => {
                 <Icon as={<MaterialIcons name="sync" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
-              onChangeText={item=>setCapacite(item)}
+              onChangeText={item=>setCapacite(item.toLowerCase())}
             />
            
           </Stack>
@@ -524,7 +525,7 @@ const hideAlert = () => {
                 md: "25%"
               }} 
               InputLeftElement={
-                <Icon as={<MaterialIcons name="person" />} size={5} ml="2" color="muted.400" />
+                <Icon as={<MaterialIcons name="attach-money" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder={text}
               onChangeText={item=>setPrix(item)}

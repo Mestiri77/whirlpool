@@ -345,7 +345,7 @@ const affectanim = async (nameanim, namepdv) => {
               <Icon as={<MaterialIcons name="store" />} size={5} ml="2" color="muted.400" />
             } 
             mt={1}
-            onValueChange={itemValue => setNompdv(itemValue)}
+            onValueChange={itemValue => setNompdv(itemValue.toLowerCase())}
           >
             {nomspdv.map((el, index) => (
               <Select.Item key={index} label={el} value={el} />
@@ -526,7 +526,7 @@ const affectanim = async (nameanim, namepdv) => {
                 <Icon as={<MaterialIcons name="store" />} size={5} ml="2" color="muted.400" />
               } 
               placeholder="Point de vente" 
-              onChangeText={item=>setNompdv(item)}
+              onChangeText={item=>setNompdv(item.toLowerCase())}
             />
            
           </Stack>
@@ -563,7 +563,7 @@ const affectanim = async (nameanim, namepdv) => {
           <Input mx="3" placeholder="Category" 
             InputLeftElement={
               <Icon as={<MaterialIcons name="category" />} size={5} ml="2" color="muted.400" />
-            } onChangeText={item=>setNomcateg(item)}  w="100%" />
+            } onChangeText={item=>setNomcateg(item.toLowerCase())}  w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
@@ -582,7 +582,7 @@ const affectanim = async (nameanim, namepdv) => {
           <Input mx="3" placeholder="Marque"
             InputLeftElement={
               <Icon as={<MaterialIcons name="sell" />} size={5} ml="2" color="muted.400" />
-            } onChangeText={item=>setNommar(item)} w="100%" />
+            } onChangeText={item=>setNommar(item.toLowerCase())} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
@@ -601,7 +601,7 @@ const affectanim = async (nameanim, namepdv) => {
           <Input mx="3" placeholder="Reference" 
             InputLeftElement={
               <Icon as={<MaterialIcons name="tag" />} size={5} ml="2" color="muted.400" />
-            } onChangeText={item=>setNomref(item)} w="100%" />
+            } onChangeText={item=>setNomref(item.toLocaleLowerCase())} w="100%" />
         </Box>
       </Center>
       <Center flex={1} px="3">
