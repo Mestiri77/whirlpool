@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { CheckIcon, Center, NativeBaseProvider, Box, Select, View, Icon } from "native-base";
+import { CheckIcon, Center, NativeBaseProvider, Box, Select, View, Icon, Spinner } from "native-base";
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";  // Importing the icons from @expo/vector-icons
@@ -13,15 +13,20 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
     const { adm } = route.params;
     const [month, setMonth] = React.useState("");
     const [nomspdv, setNomspdv] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [buttonLoading, setButtonLoading] = React.useState(false);
     const [warningVisible, setWarningVisible] = React.useState(false);
 
     const fetchPdvsname = async () => {
         try {
+            setLoading(true); // Start loading
             const response = await axios.get(`http://${port}:3000/api/pdvs/pdvs`);
             const pdvNames = response.data.map(pdv => pdv.pdvname);
             setNomspdv(pdvNames);
         } catch (error) {
             console.error('Error fetching PDVs:', error);
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -94,7 +99,9 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
         if (month === "" || pdv === "") {
             setWarningVisible(true);
         } else {
+            setButtonLoading(true);
             navigation.navigate(link, { month, pdv, adm });
+            setButtonLoading(false);
         }
     };
 
@@ -109,22 +116,34 @@ function PopupRapport({ popupType, onClose, setPdv, setDate, date, pdv, rapportN
                 <Center style={styles.center}>
                     <Box style={styles.modal}>
                         <Text style={styles.title}>{rapportName}</Text>
-                        <ExampleMonth text={'Mois :'} setOption={setMonth} option={month} />
-                        <Example text={'Point De Vente'} setOption={setPdv} option={pdv} />
+                        {loading ? (
+                            <Spinner size="lg" color="#FDC100" />
+                        ) : (
+                            <>
+                                <ExampleMonth text={'Mois :'} setOption={setMonth} option={month} />
+                                <Example text={'Point De Vente'} setOption={setPdv} option={pdv} />
+                            </>
+                        )}
                         <Center mt={10}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <TouchableOpacity
-                                    onPress={handleVerifyPress}
-                                    style={styles.btns}
-                                >
-                                    <Text style={styles.btnText}>Vérifier</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={onClose}
-                                    style={styles.btns}
-                                >
-                                    <Text style={styles.btnText}>Fermer</Text>
-                                </TouchableOpacity>
+                                {buttonLoading ? (
+                                    <Spinner size="lg" color="#FDC100" />
+                                ) : (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={handleVerifyPress}
+                                            style={styles.btns}
+                                        >
+                                            <Text style={styles.btnText}>Vérifier</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={onClose}
+                                            style={styles.btns}
+                                        >
+                                            <Text style={styles.btnText}>Fermer</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
                             </View>
                         </Center>
                     </Box>

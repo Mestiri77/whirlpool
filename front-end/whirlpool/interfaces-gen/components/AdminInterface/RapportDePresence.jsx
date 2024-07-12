@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
+import { NativeBaseProvider, Center, Box, Select, CheckIcon, Spinner } from "native-base";
 import Header from './header';
 import Footer from './footer';
 import { useRoute } from '@react-navigation/native';
@@ -12,12 +12,13 @@ import port from "../port";
 
 function RapportDePresence() {
   const route = useRoute();
-  const { adm,month, pdv } = route.params;
+  const { adm, month, pdv } = route.params;
   const [pdvs, setPdvs] = useState({});
   const [pres, setPres] = useState([]);
   const [users, setUsers] = useState({});
   const [date, setDate] = useState("");
-  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png')
+  const [isLoading, setIsLoading] = useState(true);
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
   const getPdvs = async (pdv) => {
     try {
@@ -40,6 +41,7 @@ function RapportDePresence() {
       console.error('Error fetching users:', error);
     }
   };
+
   const getPresence = async () => {
     try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
@@ -47,6 +49,7 @@ function RapportDePresence() {
       setPres(presences);
       const userIds = [...new Set(presences.map(p => p.Users_idusers))];
       await getUsers(userIds);
+      setIsLoading(false); // Stop loading when data is fetched
     } catch (error) {
       console.error('Error fetching presence:', error);
     }
@@ -139,9 +142,9 @@ function RapportDePresence() {
           {/* Contenu dynamique basé sur les présences */}
           {filteredPresences.map((presence, index) => (
             <View key={index} style={styles.row}>
-            <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}>
-              <Text style={styles.textcell1}>{users[presence.Users_idusers]?.name}</Text>
-            </View>
+              <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}>
+                <Text style={styles.textcell1}>{users[presence.Users_idusers]?.name}</Text>
+              </View>
               <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
               <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkout)}</Text></View>
               <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{presence.position}</Text></View>
@@ -163,15 +166,21 @@ function RapportDePresence() {
             <Example text={'Time AM/PM'} />
           </View>
         </Center>
-        <ScrollView style={styles.scrollView}>
-          <Tableaux />
-        </ScrollView>
+        {isLoading ? (
+          <Center flex={1}>
+            <Spinner size="lg" color="#FDC100"/>
+          </Center>
+        ) : (
+          <ScrollView style={styles.scrollView}>
+            <Tableaux />
+          </ScrollView>
+        )}
         <Center>
           <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
             <Text style={styles.btnText}>Exporter</Text>
           </TouchableOpacity>
         </Center>
-        <Footer adm ={adm}/>
+        <Footer adm={adm} />
       </View>
     </NativeBaseProvider>
   );

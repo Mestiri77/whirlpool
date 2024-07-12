@@ -23,7 +23,8 @@ function CreationRapportExpo(){
     const [rapportName, setRapportName] = React.useState("hello");
     const [pdv, setPdv] = React.useState("");
     const [link, setLink] = React.useState("");
-  
+    const [isLoading, setIsLoading] = React.useState(true);
+
     const handleRowItemPress = (report) => {
       setPopupType(report.popupType);
       setRapportName(report.text);

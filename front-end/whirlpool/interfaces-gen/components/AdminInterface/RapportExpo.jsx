@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,ActivityIndicator  } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from './header';
@@ -26,6 +26,8 @@ function RapportExpo() {
   const [article,setArticle]=useState([])
   const [anim, setAnim] = useState([]);
   const [expolist, setExpolist] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [idWhirlpool, setIdwhirlpool] = useState(null);
   const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
@@ -188,91 +190,97 @@ function RapportExpo() {
       await getExpo();
       await getAllArticle();
       await getpdvByID(pdv);
+      setLoading(false); // Mettre à jour l'état de chargement ici
     };
-
+  
     initializeData().then(() => {
       findIdWhirlpool();
       if (pdvs.idPDV) {
         FetchAnim(pdvs.idPDV);
       }
     });
-  }, [pdvs.idPDV, pdv, Fetchallcateg, Fetchallref, Fetchallmarq, getExpo, getAllArticle, getpdvByID, findIdWhirlpool]);
+  }, [pdvs.idPDV, pdv]);
+  
 
   return (
     <NativeBaseProvider>
       <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
       <View style={styles.view1}>
         <Header />
-        <ScrollView style={{ marginTop: -50 }}>
-          <View>
+        {loading ? (
+          <Center flex={1}>
+            <ActivityIndicator size="large" color="#FDC100" />
+          </Center>
+        ) : (
+          <ScrollView style={{ marginTop: -50 }}>
             <View>
-              <Text style={styles.textexpo}>Date :{month}</Text>
-              <Text style={styles.textexpo}>Zone :{pdvs.location}</Text>
-              <Text style={styles.textexpo}>Magasin :{pdv}</Text>
-              <Text style={styles.textexpo}>Animatrice : {anim.length > 0 ? anim[0].name : "Loading..."}</Text>
-            </View>
-            <View style={styles.container2}>
-              {/* Première colonne */}
-              <View style={styles.column}>
-                <View style={styles.cell}><Text>Famille de produit</Text></View >
-                {categ.map(el => (
-                  <View style={styles.cell1} key={el.idCategory}>
-                    <Text>{el.Categoryname}</Text>
-                  </View>
-                ))}
-                <View style={styles.cell}><Text>Total</Text></View>
+              <View>
+                <Text style={styles.textexpo}>Date : {month}</Text>
+                <Text style={styles.textexpo}>Zone : {pdvs.location}</Text>
+                <Text style={styles.textexpo}>Magasin : {pdv}</Text>
+                <Text style={styles.textexpo}>Animatrice : {anim.length > 0 ? anim[0].name : "Loading..."}</Text>
               </View>
-
-              {/* Deuxième colonne */}
-              <View style={styles.column}>
-                <View style={styles.cell}><Text>Expo Globale</Text></View>
-                {categ.map(el => (
-                  <TouchableOpacity key={el.idCategory} onPress={() => {
-                    const sameExpoData = CountSameCateg2(el.idCategory);
-                    navigation.navigate('RapportExpoDet', { adm,sameExpoData }); storeData('category', el.Categoryname); }}>
-                    <View style={styles.cell2}>
-                      <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
+              <View style={styles.container2}>
+                {/* Première colonne */}
+                <View style={styles.column}>
+                  <View style={styles.cell}><Text>Famille de produit</Text></View >
+                  {categ.map(el => (
+                    <View style={styles.cell1} key={el.idCategory}>
+                      <Text>{el.Categoryname}</Text>
                     </View>
-                  </TouchableOpacity>
-                ))}
-                <View style={styles.cell}><Text>{TotalExpoGlob()}</Text></View>
+                  ))}
+                  <View style={styles.cell}><Text>Total</Text></View>
+                </View>
+                {/* Deuxième colonne */}
+                <View style={styles.column}>
+                  <View style={styles.cell}><Text>Expo Globale</Text></View>
+                  {categ.map(el => (
+                    <TouchableOpacity key={el.idCategory} onPress={() => {
+                      const sameExpoData = CountSameCateg2(el.idCategory);
+                      navigation.navigate('RapportExpoDet', { adm, sameExpoData });
+                      storeData('category', el.Categoryname);
+                    }}>
+                      <View style={styles.cell2}>
+                        <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                  <View style={styles.cell}><Text>{TotalExpoGlob()}</Text></View>
+                </View>
+                {/* Troisième colonne */}
+                <View style={styles.column}>
+                  <View style={styles.cell}><Text>Expo Whirlpool</Text></View>
+                  {categ.map(el => (
+                    <View style={styles.cell1} key={el.idCategory}>
+                      <Text>{Findwhirlpool(el.idCategory)}</Text>
+                    </View>
+                  ))}
+                  <View style={styles.cell}><Text>{TotalExpoWhirl()}</Text></View>
+                </View>
+                {/* Quatrième colonne */}
+                <View style={styles.column}>
+                  <View style={styles.cell}><Text>Taux D'exposition</Text></View>
+                  {categ.map(el => (
+                    <View style={styles.cell1} key={el.idCategory}>
+                      <Text>{CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory))}%</Text>
+                    </View>
+                  ))}
+                  <View style={styles.cell}><Text>{TotalTaux()}%</Text></View>
+                </View>
               </View>
-
-              {/* Troisième colonne */}
-              <View style={styles.column}>
-                <View style={styles.cell}><Text>Expo Whirlpool</Text></View>
-                {categ.map(el => (
-                  <View style={styles.cell1} key={el.idCategory}>
-                    <Text>{Findwhirlpool(el.idCategory)}</Text>
-                  </View>
-                ))}
-                <View style={styles.cell}><Text>{TotalExpoWhirl()}</Text></View>
-              </View>
-
-              {/* Quatrième colonne */}
-              <View style={styles.column}>
-                <View style={styles.cell}><Text>Taux D'exposition</Text></View>
-                {categ.map(el => (
-                  <View style={styles.cell1} key={el.idCategory}>
-                    <Text>{CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory))}%</Text>
-                  </View>
-                ))}
-                <View style={styles.cell}><Text>{TotalTaux()}%</Text></View>
-              </View>
+              <Center>
+                <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
+                  <Text style={styles.btnText}>Exporter</Text>
+                </TouchableOpacity>
+              </Center>
             </View>
-            <Center>
-              <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
-                <Text style={styles.btnText}>Exporter</Text>
-              </TouchableOpacity>
-            </Center>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
       </View>
-
       <Footer adm={adm} />
     </NativeBaseProvider>
   );
+  
 }
 
 const styles = StyleSheet.create({

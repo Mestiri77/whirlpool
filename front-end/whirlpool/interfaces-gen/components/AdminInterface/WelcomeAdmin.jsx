@@ -25,7 +25,7 @@ function WelcomeAdmin() {
       setHistorique((prevHistorique) => [...prevHistorique, zone]);
       setLoading(false); // Masquer l'indicateur de chargement après 3 secondes
       navigation.navigate(zone.link, { adm });
-    }, 3000); // 3000 ms = 3 secondes
+    }, 1000); // 3000 ms = 3 secondes
   };
 
   return (
@@ -90,7 +90,7 @@ function WelcomeAdmin() {
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link)}>
+            <TouchableOpacity key={index} onPress={() => navigation.navigate(item.link,{adm})}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image,ActivityIndicator } from "react-native";
 import { Select, Box, Center, NativeBaseProvider, Modal, Button } from "native-base";
 import axios from 'axios';
 import port from '../port';
@@ -23,6 +23,7 @@ function CreationRapportSO() {
     const [article, setArticle]=useState([]);
     const [couleurs,setCouleurs]=useState([]);
     const [capacites,setCapacites]=useState([]);
+const [isLoading, setIsLoading] = useState(true);
 
     const [sales, setSales] = useState({});
 
@@ -85,6 +86,7 @@ function CreationRapportSO() {
                 return acc;
             }, {});
             setSales(initialSales);
+            setIsLoading(false)
             await fetchExistingSales(response.data, initialSales);
         } catch (error) {
             console.error('Error fetching references:', error);
@@ -354,7 +356,11 @@ function CreationRapportSO() {
                     <Text style={styles.headerCell}>Corriger</Text>
                 </View>
                 <ScrollView>
-                    {references.map((item, index) => (
+                {isLoading ? (
+  <ActivityIndicator size="large" color="#FDC100" style={{ marginTop: 20 }} />
+) : (
+
+                    references.map((item, index) => (
                         <View style={styles.row} key={index}>
                             <TouchableOpacity style={styles.cell1} onPress={() => handleReferenceClick(item.idReference)}>
                                 <Text style={styles.textcell1}>{item.Referencename}</Text>
@@ -366,7 +372,7 @@ function CreationRapportSO() {
                                 <Text style={styles.textcell1}>Corriger</Text>
                             </TouchableOpacity>
                         </View>
-                    ))}
+                    )))}
                 </ScrollView>
             </View>
         );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { NativeBaseProvider, Center, Box, Select, CheckIcon } from "native-base";
+import { NativeBaseProvider, Center, Spinner } from "native-base";
 import Header from './header';
 import Footer from './footer';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -136,9 +136,15 @@ function RapportLog() {
         <Center flex={1} mt={'-140%'}>
           <Text style={styles.title}>Rapport Log</Text>
         </Center>
-        <ScrollView style={styles.scrollView}>
-          {Tableaux()}
-        </ScrollView>
+        {isLoading ? (
+          <Center flex={1}>
+            <Spinner size="lg" color="#FDC100"/>
+          </Center>
+        ) : (
+          <ScrollView style={styles.scrollView}>
+            {Tableaux()}
+          </ScrollView>
+        )}
         <Center>
           <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
             <Text style={styles.btnText}>Exporter</Text>

@@ -1,19 +1,18 @@
 import React from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Switch, HStack, Center, NativeBaseProvider } from "native-base";
+import { View, StyleSheet, Image, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { Switch, HStack, NativeBaseProvider } from "native-base";
 import Header from './header';
 import Footer from './footer';
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
-import port from '../port'
+import port from '../port';
 
 const image01 = require('../../../assets/image1+.png');
 const image02 = require('../../../assets/image2.png');
 const image03 = require('../../../assets/image3.png');
 const image04 = require('../../../assets/image4.png');
 const image05 = require('../../../assets/fleche.png');
-const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
-
+const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
 function WelcomeAnime() {
   const route = useRoute();
@@ -21,94 +20,92 @@ function WelcomeAnime() {
   const navigation = useNavigation();
   const [load, setLoad] = React.useState(true);
 
-  const [historique, setHistorique] = React.useState([]);
-  const [lastpres,setLastpres]= React.useState(null);
-  const [allpres,setAllpres]=React.useState([])
-  const [alluser,setAllusers]=React.useState([])
+  // Ajout d'un état pour le chargement
+  const [loading, setLoading] = React.useState(false);
 
+  const [historique, setHistorique] = React.useState([]);
+  const [lastpres, setLastpres] = React.useState(null);
+  const [allpres, setAllpres] = React.useState([]);
+  const [alluser, setAllusers] = React.useState([]);
 
   const [checkOn, setCheckOn] = React.useState('');
   const [checkOff, setCheckOff] = React.useState('');
 
   const [status, setStatus] = React.useState(null);
 
-  const [city,setCity]= React.useState("");
+  const [city, setCity] = React.useState("");
 
-  const [iduser,setIdUser]= React.useState(ani.idusers);
-  const [idpdv,setIdpdv]= React.useState(ani.PDV_idPDV);
+  const [iduser, setIdUser] = React.useState(ani.idusers);
+  const [idpdv, setIdpdv] = React.useState(ani.PDV_idPDV);
 
+  const onligne = {
+    datePr: formatDateWithoutTime(new Date()),
+    checkin: new Date().toLocaleTimeString(),
+    checkout: null,
+    position: city,
+    status: true,
+    Users_idusers: iduser,
+    PDV_idPDV: idpdv
+  };
 
+  const offligne = {
+    datePr: formatDateWithoutTime(new Date()),
+    timecheckout: new Date().toLocaleTimeString(),
+    status: false,
+  };
 
- const onligne={
-  datePr:formatDateWithoutTime(new Date()),
-  checkin:new Date().toLocaleTimeString(),
-  checkout:null,
-  position:city,
-  status:true,
-  Users_idusers:iduser,
-  PDV_idPDV:idpdv
- }
+  function formatDateWithoutTime(date) {
+    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+    return date.toLocaleDateString("fr-FR", options);
+  }
 
- const offligne={
-  datePr:formatDateWithoutTime(new Date()),
-  timecheckout:new Date().toLocaleTimeString(),
-  status:false,
- }
+  const handleCityChange = (newCity) => {
+    setCity(newCity);
+  };
 
-//  const datalog={
-//   messageAc:,
-//   dateAc:, 
-//   TimeAc:
-//  }
-
- function formatDateWithoutTime(date) {
-  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-  return date.toLocaleDateString("fr-FR", options);
-}
- const handleCityChange = (newCity) => {
-  setCity(newCity);
-};
-  const hundlehistorique = (zone,message) => {
+  const hundlehistorique = (zone, message) => {
     setLoad(!load);
-    logHistory(message)
+    logHistory(message);
     setHistorique((prevHistorique) => [...prevHistorique, zone]);
   };
 
-  const Allpresence=async()=>{
-    try{
+  const Allpresence = async () => {
+    try {
       const response = await axios.get(`http://${port}:3000/api/presences/presences`);
-      setAllpres(response.data)
-    }
-    catch (error) {
+      setAllpres(response.data);
+    } catch (error) {
       console.error('Error handling getallpresence:', error);
     }
-  }
-  const Allusers=async()=>{
-    try{
-      const response = await axios.get("http://"+port+":3000/api/users/animateur")
-      setAllusers(response.data)
-    }
-    catch (error) {
+  };
+
+  const Allusers = async () => {
+    try {
+      const response = await axios.get(`http://${port}:3000/api/users/animateur`);
+      setAllusers(response.data);
+    } catch (error) {
       console.error('Error handling getallAnnime:', error);
     }
-  }
+  };
 
-
-  const logHistory= async (message)=>{
-    try{
-        await axios.post("http://"+port+":3000/api/logs/logs",{messageAc:message,dateAc:formatDateWithoutTime(new Date()),TimeAc:new Date().toLocaleTimeString(),Presence_idPresence:lastpres})
-    }
-    catch (error) {
+  const logHistory = async (message) => {
+    try {
+      await axios.post(`http://${port}:3000/api/logs/logs`, {
+        messageAc: message,
+        dateAc: formatDateWithoutTime(new Date()),
+        TimeAc: new Date().toLocaleTimeString(),
+        Presence_idPresence: lastpres,
+      });
+    } catch (error) {
       console.error('Error handling Log:', error);
     }
-  }
-  
+  };
+
   const getlastidpresence = async (userIdd, pdvIdd) => {
     try {
       console.log("Fetching latest presence for user ID:", userIdd, "and PDV ID:", pdvIdd);
       const response = await axios.post(`http://${port}:3000/api/presences/presence/latest`, {
         userId: userIdd,
-        pdvId: pdvIdd
+        pdvId: pdvIdd,
       });
       if (response && response.data && response.data.idPresence) {
         console.log("Received presence data:", response.data);
@@ -125,7 +122,6 @@ function WelcomeAnime() {
       setStatus(false); // Set status to offline in case of error
     }
   };
-  
 
   const presence = async () => {
     try {
@@ -143,9 +139,6 @@ function WelcomeAnime() {
       console.error('Error handling presence:', error);
     }
   };
-  
-
-
 
   const Example = () => {
     const handleToggle = async () => {
@@ -165,7 +158,7 @@ function WelcomeAnime() {
         console.error('Error handling presence:', error);
       }
     };
-  
+
     return (
       <HStack alignItems="center" space={4} ml={9}>
         <Text style={{ color: status ? "#FDC100" : "#D0D3D4", fontSize: 18 }}>
@@ -181,19 +174,32 @@ function WelcomeAnime() {
       </HStack>
     );
   };
-  
 
   React.useEffect(() => {
-    getlastidpresence(ani.idusers,ani.PDV_idPDV)
-    Allpresence()
-    Allusers()
+    getlastidpresence(ani.idusers, ani.PDV_idPDV);
+    Allpresence();
+    Allusers();
   }, [load]);
+
+  // Fonction pour gérer le chargement pendant la navigation
+  const handleNavigation = async (routeName) => {
+    setLoading(true); // Activer le chargement
+
+    // Attendre un court instant pour simuler le chargement
+    setTimeout(() => {
+      navigation.navigate(routeName, { ani });
+      setLoading(false); // Désactiver le chargement une fois la navigation terminée
+    }, 1000); // Temps simulé de chargement, ajustez selon vos besoins
+  };
 
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
 
-      <ScrollView style={{marginTop:10}}>
+      {/* Affichage du chargement si loading est vrai */}
+   
+
+      <ScrollView style={{ marginTop: 10 }}>
         <Header onCityChange={handleCityChange} />
         <Example />
         <View style={styles.view1}>
@@ -206,7 +212,7 @@ function WelcomeAnime() {
             </View>
           </View>
           <View style={styles.view10}>
-            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); navigation.navigate('CreationRapportSO',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: "Mes Rapports Sell-Out", link: 'CreationRapportSO', image: image03 },"Création d'articles"); handleNavigation('CreationRapportSO'); }}>
               <View style={styles.view11}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Sell-out</Text>
@@ -214,7 +220,7 @@ function WelcomeAnime() {
                 <Image resizeMode="contain" source={image03} style={styles.image3} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); navigation.navigate('CreationRapportExpo',{ ani }) }}>
+            <TouchableOpacity disabled={!status} onPress={() => { hundlehistorique({ name: 'Mes Rapports Exposition', link: 'CreationRapportExpo', image: image03 },"Consultation des rapports"); handleNavigation('CreationRapportExpo'); }}>
               <View style={styles.view13}>
                 <View style={styles.view12}>
                   <Text style={styles.textCreation}>Mes Rapports Exposition</Text>
@@ -227,7 +233,7 @@ function WelcomeAnime() {
             <Text style={styles.textRecentActivities}>Recent Activities</Text>
           </View>
           {historique.map((item, index) => (
-            <TouchableOpacity key={index} disabled={!status} onPress={() => navigation.navigate(item.link,{ ani })}>
+            <TouchableOpacity key={index} disabled={!status} onPress={() => handleNavigation(item.link)}>
               <View style={styles.view15}>
                 <View style={styles.view16}>
                   <Image resizeMode="contain" source={item.image} style={styles.image4} />
@@ -241,23 +247,38 @@ function WelcomeAnime() {
           ))}
         </View>
       </ScrollView>
+      {loading && (
+        <View style={[StyleSheet.absoluteFill, styles.loadingContainer]}>
+            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.loadingLogo} />
+          <ActivityIndicator size="large" color="#FFCC30" />
+        </View>
+      )}
       <Footer ani={ani} />
     </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
+   loadingContainer: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   view1: {
-    marginTop: 15,
+    marginTop: 85,
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
     paddingHorizontal: 24,
   },
+  loadingLogo: {
+    width: 125,
+    height: 95,
+  },
   view2: {
     alignItems: "stretch",
     marginBottom: 15,
-    flexDirection: "row",
+    flexDirection: "row"
   },
   view3: {
     marginBottom: 5,
@@ -358,11 +379,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   image3: {
-    width: 88,
-    height: 88,
+    width: 68,
+    height: 68,
     position: "absolute",
-    top: 80,
-    left: -30,
+    top: 90,
+    left: -5,
   },
   image03: {
     width: 88,
@@ -392,6 +413,7 @@ const styles = StyleSheet.create({
   textRecentActivities: {
     fontSize: 14,
     color: "#263238",
+    fontFamily: "Open Sans, sans-serif",
     fontWeight: "700",
   },
   view15: {
@@ -422,6 +444,16 @@ const styles = StyleSheet.create({
   image5: {
     width: 30,
     height: 30,
+  },
+  loadingIndicator: {
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#263238",
   },
 });
 

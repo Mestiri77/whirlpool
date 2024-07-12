@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet,Image, Button, TouchableOpacity,ScrollView } from "react-native";
+import { View, Text, StyleSheet,Image, Button, TouchableOpacity,ScrollView,ActivityIndicator  } from "react-native";
 import { NativeBaseProvider, Center } from "native-base";
 import Header from './header';
 import Footer from './footer';
@@ -25,6 +25,8 @@ function RapportSellOut() {
     const [sellouts,setSellouts]=React.useState([])
     const [sellRef,setSellRef]=React.useState([])
     const [nbrDventes,setNbrDvents]=React.useState([])
+    const [loading, setLoading] = useState(true);
+
     const [daysBetweenDates, setDaysBetweenDates] = useState([]);
     const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
 
@@ -36,6 +38,7 @@ const Fetchallref=async()=>{
     try{
       const response=await axios.get("http://"+port+":3000/api/reference/references")
       setReferences(response.data)
+      setLoading(false)
     }catch (error) {
         console.error('Error fetching :', error)
       }
@@ -44,6 +47,7 @@ const GetAllSellouts=async()=>{
     try{
         const response=await axios.get("http://"+port+":3000/api/sellout/sellouts")
         setSellouts(response.data)
+        setLoading(false)
     }catch (error) {
         console.error('Error fetching :', error)
       }
@@ -52,6 +56,7 @@ const GetRefSel=async()=>{
     try{
         const response=await axios.get("http://"+port+":3000/api/refsel/ReferenceSel")
         setSellRef(response.data)
+        setLoading(false)
         console.log(response.data); 
     }catch (error) {
         console.error('Error fetching :', error)
@@ -61,6 +66,7 @@ const getPdvs = async (pdv) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${pdv}`);
       setPdvs(response.data);
+      setLoading(false)
     } catch (error) {
       console.error('Error fetching pdvs:', error);
     }
@@ -88,14 +94,16 @@ const exportToExcel = async () => {
     await Sharing.shareAsync(uri);
 };
 
-React.useEffect(()=>{
-    Fetchallref()
-    GetAllSellouts()
-    GetRefSel()
-    getPdvs(pdv)
+React.useEffect(() => {
+    setLoading(true); // Démarrer le chargement
+    Fetchallref();
+    GetAllSellouts();
+    GetRefSel();
+    getPdvs(pdv);
     const daysArray = calculateDaysBetweenDates(startDate, endDate);
     setDaysBetweenDates(daysArray);
-  },[startDate, endDate])
+  }, [startDate, endDate]);
+  
 /////////////////////////////////////////////////////////////////////////////////////
 
     const handleStartDateChange = (event, selectedDate) => {
@@ -275,30 +283,38 @@ React.useEffect(()=>{
         );
       };
 
-    return (
+      return (
         <NativeBaseProvider>
-                  <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
-            <View style={styles.container}>
-                <Header />
-                <Center flex={1} mt={'-140%'}>
-                        <Text style={styles.title}>Rapport Sell-Out</Text>
-                    <View style={styles.content}>
-                       {showStartDatePickerHandler()}
-                    </View>
-                </Center>
+          <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+          <View style={styles.container}>
+            <Header />
+            <Center flex={1} mt={'-140%'}>
+              <Text style={styles.title}>Rapport Sell-Out</Text>
+              <View style={styles.content}>
+                {showStartDatePickerHandler()}
+              </View>
+            </Center>
+            {loading ? (
+               <View style={styles.loadingContainer}>
+               <ActivityIndicator size="large" color="#FDC100" />
+             </View>
+            ) : (
+              <>
                 <ScrollView style={styles.scrollView}>
-                {Tableaux()}
+                  {Tableaux()}
                 </ScrollView>
                 <Center>
-                <TouchableOpacity onPress={() =>{exportToExcel}} style={styles.btns}>
-                <Text style={styles.btnText}>Exporter</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
+                    <Text style={styles.btnText}>Exporter</Text>
+                  </TouchableOpacity>
                 </Center>
-                <Footer adm={adm} />
-            </View>
+              </>
+            )}
+            <Footer adm={adm} />
+          </View>
         </NativeBaseProvider>
-    );
+      );
+      
 }
 const styles = StyleSheet.create({
     container: {
@@ -424,6 +440,11 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 15,
+      },
+      loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       },
 });
 

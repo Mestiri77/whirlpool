@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text,Image, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { View, Text,Image, StyleSheet,Button, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity,ActivityIndicator  } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Stack,Input,Icon} from "native-base";
 import Header from './header'
 import Footer from './footer'
@@ -13,7 +13,7 @@ function RapportPriceMap(){
   const route = useRoute();
   const { adm,month, pdv } = route.params;
 
-  const [load,setLoad]=React.useState(false)
+  const [loading, setLoading] = useState(true);
 
   const [pdvs,setPdvs]=React.useState([])
   const [categ,setCateg]=React.useState([])
@@ -28,30 +28,35 @@ function RapportPriceMap(){
 
 ///////////////////////////////Functions//////////////////////////////
 
-const getAllPdvs=async()=>{
-  try{
-    let response=await axios.get("http://"+port+":3000/api/pdvs/pdvs")
-    setPdvs(response.data)
+const getAllPdvs = async () => {
+  try {
+    let response = await axios.get("http://" + port + ":3000/api/pdvs/pdvs");
+    setPdvs(response.data);
+  } catch (error) {
+    console.error('Error fetching PDVs:', error);
   }
-  catch (error) {
-    console.error('Error fetching PDVs:', error)
-  }
-}
-const Fetchallcateg=async()=>{
-  try{
-    const response=await axios.get("http://"+port+":3000/api/categories/categorie")
-    console.log(response.data);
-    setCateg(response.data)
-  }
-  catch (error) {
-    console.error('Error fetching :', error)
-  }
-}
+};
 
-React.useEffect(()=>{
-  getAllPdvs()
-  Fetchallcateg()
-},[])
+const Fetchallcateg = async () => {
+  try {
+    const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
+    console.log(response.data);
+    setCateg(response.data);
+  } catch (error) {
+    console.error('Error fetching:', error);
+  }
+};
+
+React.useEffect(() => {
+  const fetchData = async () => {
+    await getAllPdvs();
+    await Fetchallcateg();
+    setLoading(false); // Mettre à jour l'état de chargement ici
+  };
+
+  fetchData();
+}, []);
+
 /////////////////////////////////////////////////////////////////////
 
 
@@ -122,35 +127,47 @@ const RenderInput=(text)=>{
           )
         }
 
-return(
-    <NativeBaseProvider>
+        return (
+          <NativeBaseProvider>
             <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
-        <View style={styles.view1}>
-        <Header />  
-        <Center flex={8}>
-            <Text style={{fontSize:18,fontWeight:600,marginBottom:30} }> Rapports Price Map : </Text>
-            <View style={styles.View2}>
-           <Text style={{fontSize:18,fontWeight:300}}>Date : {month}</Text>
-           <Text style={{fontSize:18,fontWeight:300}}>Point De Vente : {pdv}</Text>
-        </View>
-        <View style={styles.categtext} >
-          <Text style={{fontSize:18,fontWeight:300}}>Categories</Text>
-          </View>
-        <ScrollView style={styles.viewbtns}>
-            <View  >
-              {categ.map(el=>(
-                <TouchableOpacity style={styles.btns}onPress={()=>{navigation.navigate('RapportPriceMapDet',{ categoryId: el.idCategory , adm})}}>
-                <Text style={styles.btnText}>{el.Categoryname}</Text>
-               </TouchableOpacity>
-              ))}
+            <View style={styles.view1}>
+              <Header />
+              {loading ? (
+                <Center flex={1}>
+                  <ActivityIndicator size="large" color="#FDC100" />
+                </Center>
+              ) : (
+                <Center flex={8}>
+                  <Text style={{ fontSize: 18, fontWeight: 600, marginBottom: 30 }}>Rapports Price Map :</Text>
+                  <View style={styles.View2}>
+                    <Text style={{ fontSize: 18, fontWeight: 300 }}>Date : {month}</Text>
+                    <Text style={{ fontSize: 18, fontWeight: 300 }}>Point De Vente : {pdv}</Text>
+                  </View>
+                  <View style={styles.categtext}>
+                    <Text style={{ fontSize: 18, fontWeight: 300 }}>Categories</Text>
+                  </View>
+                  <ScrollView style={styles.viewbtns}>
+                    <View>
+                      {categ.map(el => (
+                        <TouchableOpacity
+                          style={styles.btns}
+                          key={el.idCategory}
+                          onPress={() => {
+                            navigation.navigate('RapportPriceMapDet', { categoryId: el.idCategory, adm });
+                          }}
+                        >
+                          <Text style={styles.btnText}>{el.Categoryname}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </ScrollView>
+                </Center>
+              )}
             </View>
-        </ScrollView>
-        </Center>
-        </View>
-        <Footer adm={adm}/>
-    </NativeBaseProvider>
-)
+            <Footer adm={adm} />
+          </NativeBaseProvider>
+        );
+        
 
 }
 const styles = StyleSheet.create({

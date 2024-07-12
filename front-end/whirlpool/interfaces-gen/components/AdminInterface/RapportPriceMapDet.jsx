@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet,Button,Image, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet,Button,Image, PermissionsAndroid, ScrollView, LogBox,TouchableOpacity,ActivityIndicator } from "react-native";
 import { NativeBaseProvider, Center,Box,Select,CheckIcon,Slider, Stack} from "native-base";
 import Header from './header'
 import Footer from './footer'
@@ -21,6 +21,8 @@ function RapportPriceMapDet({ route }){
     const [references,setReferences]=React.useState([])
     const [categories,setCategories]=React.useState([])
     const [prix,setPrix]=React.useState([])
+    const [loading, setLoading] = useState(true);
+
     const [marqueNames, setMarqueNames] = useState([]); // State to store fetched marque names
     const [articles,setArticles]= useState([])
     const [colors,setColors]=useState([])
@@ -37,11 +39,12 @@ function RapportPriceMapDet({ route }){
       try {
         const response = await axios.get(`http://${port}:3000/api/reference/referencebycateg/${categoryId}`);
         setReferences(response.data);
-        fetchMarqueNames(response.data); // Fetch marque names after references are fetched
+        await fetchMarqueNames(response.data); // Fetch marque names after references are fetched
       } catch (error) {
         console.error('Error fetching references:', error);
       }
     };
+    
     const fetchcolor = async () => {
       try {
         const response = await axios.get(`http://${port}:3000/api/articles/colors`);
@@ -50,6 +53,7 @@ function RapportPriceMapDet({ route }){
         console.error('Error fetching references:', error);
       }
     };
+    
     // Fetch marque names based on IDs from references
     const fetchMarqueNames = async (references) => {
       try {
@@ -61,7 +65,7 @@ function RapportPriceMapDet({ route }){
         console.error('Error fetching marque names:', error);
       }
     };
-  
+    
     // Fetch marque name by ID
     const fetchMarqueById = async (id) => {
       try {
@@ -72,25 +76,32 @@ function RapportPriceMapDet({ route }){
         return ''; // Return an empty string in case of error to prevent rendering an object
       }
     };
-    const fetchArticlbyCU =async (colorr,unitee)=>{
-      try{
-        if(colorr===color && unitee===unite){
-          const response =await axios.post("http://"+port+":3000/api/articles/articlesCU",{
+    
+    const fetchArticlbyCU = async (colorr, unitee) => {
+      try {
+        if (colorr === color && unitee === unite) {
+          const response = await axios.post(`http://${port}:3000/api/articles/articlesCU`, {
             couleur: colorr,
             unite: unitee
-          })
-          setArticles(response.data)
+          });
+          setArticles(response.data);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching Article:', error);
       }
-    }
-    React.useEffect(()=>{
-      fetchReferences()
-      fetchArticlbyCU(color,unite)
-     fetchcolor()
-    },[color,unite])
+    };
+    
+    React.useEffect(() => {
+      const fetchData = async () => {
+        await fetchReferences();
+        await fetchArticlbyCU(color, unite);
+        await fetchcolor();
+        setLoading(false); // Mettre à jour l'état de chargement ici
+      };
+    
+      fetchData();
+    }, [color, unite]);
+    
     /////////////////////////Functions///////////////////////////
 
     const Example = ({text}) => {
@@ -211,35 +222,40 @@ const Tableaux = () => {
   );
 };
 
-    return(
-        <NativeBaseProvider>
-                <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
-
-        <View style={styles.container}>
-            <Header />
-            <ScrollView style={styles.scrollView}>
-                <Center>
-                    <Text style={styles.title}>Rapports Price Map :</Text>
-                    <Example text={'Couleur'} />
-                    <View style={styles.row1}>
-                        <Text style={styles.label}>Capacité</Text>
-                        <Text>{onChangeValue}</Text>
-                        <ExampleSlider />
-                        <Example text={'Unite'} />
-                    </View>
-                </Center>
-                {Tableaux()}
-            </ScrollView>
-            <Center>
-            <TouchableOpacity onPress={() =>{exportToExcel()}} style={styles.btns}>
-        <Text style={styles.btnText}>Exporter</Text>
-      </TouchableOpacity>
+return (
+  <NativeBaseProvider>
+    <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+    <View style={styles.container}>
+      <Header />
+      {loading ? (
+        <Center flex={1}>
+          <ActivityIndicator size="large" color="#FDC100" />
+        </Center>
+      ) : (
+        <ScrollView style={styles.scrollView}>
+          <Center>
+            <Text style={styles.title}>Rapports Price Map :</Text>
+            <Example text={'Couleur'} />
+            <View style={styles.row1}>
+              <Text style={styles.label}>Capacité</Text>
+              <Text>{onChangeValue}</Text>
+              <ExampleSlider />
+              <Example text={'Unite'} />
+            </View>
+          </Center>
+          {Tableaux()}
+        </ScrollView>
+      )}
+      <Center>
+        <TouchableOpacity onPress={exportToExcel} style={styles.btns}>
+          <Text style={styles.btnText}>Exporter</Text>
+        </TouchableOpacity>
       </Center>
-            <Footer adm={adm} />
-        </View>
-    </NativeBaseProvider>
+      <Footer adm={adm} />
+    </View>
+  </NativeBaseProvider>
+);
 
-    )
 }
 const styles = StyleSheet.create({
     container: {
