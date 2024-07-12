@@ -47,7 +47,7 @@ console.log(refresh);
       setPdv("");
       setLink("");
     }
-  }, [refresh]);
+  }, [!refresh]);
 
   return (
     <>

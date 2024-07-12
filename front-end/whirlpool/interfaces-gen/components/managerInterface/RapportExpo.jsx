@@ -238,7 +238,7 @@ function RapportExpo() {
                   {categ.map(el => (
                     <TouchableOpacity key={el.idCategory} onPress={() => {
                       const sameExpoData = CountSameCateg2(el.idCategory);
-                      navigation.navigate('RapportExpoDet', { adm, sameExpoData });
+                      navigation.navigate('ManagerExpoDet', { adm, sameExpoData });
                       storeData('category', el.Categoryname);
                     }}>
                       <View style={styles.cell2}>
