@@ -176,16 +176,10 @@ React.useEffect(()=>{
         return nbrDVArray;
     };
     const FetchObjectif = (referenceId) => {
-        const sellout = sellRef.find(elrefsel => 
-            elrefsel.Reference_idReference === referenceId &&
-            sellouts.some(elsel => elrefsel.Sellout_idSellout === elsel.idSellout)
-        );
-    
-        if (sellout) {
-            const matchingSellout = sellouts.find(elsel => elsel.idSellout === sellout.Sellout_idSellout);
-            return matchingSellout ? matchingSellout.objectif : null;
-        }
-        return 0;
+        const object=references.find(el=>
+            el.idReference===referenceId
+        )
+        return object.objectif
     };
     const fetchSalesByDate = (referenceId, date) => {
         const selloutsByReference = sellRef.filter(elrefsel =>
