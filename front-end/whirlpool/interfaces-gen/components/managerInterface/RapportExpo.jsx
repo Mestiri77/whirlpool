@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { View, Text,Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { NativeBaseProvider, Center, } from "native-base";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { NativeBaseProvider, Center } from "native-base";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from './header';
 import Footer from './footer';
@@ -13,17 +13,21 @@ import * as Sharing from 'expo-sharing';
 
 function RapportExpo() {
   const route = useRoute();
-  const { adm,month, pdv } = route.params; 
+  const { adm,month, pdv } = route.params;
   const navigation = useNavigation();
 
   const [load, setLoad] = useState(false);
   const [categ, setCateg] = useState([]);
   const [references, setReferences] = useState([]);
   const [marques, setMarques] = useState([]);
+  const [expo, setExpo] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [pdvs, setPdvs] = useState({});
+  const [article,setArticle]=useState([])
   const [anim, setAnim] = useState([]);
+  const [expolist, setExpolist] = useState([]);
   const [idWhirlpool, setIdwhirlpool] = useState(null);
-  const WHIRLPOOL_LOGO=require('../../../assets/WHIRLPOOL_LOGO.png')
+  const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
 
   const storeData = async (key, category) => {
     try {
@@ -34,67 +38,107 @@ function RapportExpo() {
   };
 
   // Functions
-  const Fetchallcateg = async () => {
+  const getExpo = useCallback(async () => {
+    try {
+      const response = await axios.get("http://" + port + ":3000/api/expositions/expositions");
+      setExpo(response.data);
+    } catch (error) {
+      console.error('Error fetching Expositions:', error);
+    }
+  }, []);
+
+  const getAllArticle = useCallback(async () => {
+    try {
+      const response = await axios.get("http://" + port + ":3000/api/articles/articles");
+      setArticles(response.data);
+    } catch (error) {
+      console.error('Error fetching Articles:', error);
+    }
+  }, []);
+
+  const Fetchallcateg = useCallback(async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/categories/categorie");
       setCateg(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  }; 
+  }, []);
 
-  const Fetchallref = async () => {
+  const Fetchallref = useCallback(async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/reference/references");
       setReferences(response.data);
     } catch (error) {
       console.error('Error fetching references:', error);
     }
-  };
- 
-  const Fetchallmarq = async () => {
+  }, []);
+
+  const Fetchallmarq = useCallback(async () => {
     try {
       const response = await axios.get("http://" + port + ":3000/api/marques/marques");
       setMarques(response.data);
     } catch (error) {
       console.error('Error fetching marques:', error);
     }
-  };
+  }, []);
 
-  const getpdvByID = async (name) => {
+  const getpdvByID = useCallback(async (name) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/pdvs/getId/${name}`);
       setPdvs(response.data);
-      setLoad(!load);
     } catch (error) {
       console.error('Error fetching PDVs:', error);
     }
-  };
- 
-  const FetchAnim = async (idpdv) => {
+  }, []);
+
+  const FetchAnim = useCallback(async (idpdv) => {
     try {
       const response = await axios.get(`http://${port}:3000/api/user/user/${idpdv}`);
       setAnim(response.data);
-      
     } catch (error) {
       console.log('Error fetching animators:', error);
     }
-  };
+  }, []);
 
-  const findIdWhirlpool = () => {
-    const marqueselement = marques.find(el => el.marquename === 'whirlpool'); 
-    setLoad(!load)
+  const findIdWhirlpool = useCallback(() => {
+    const marqueselement = marques.find(el => el.marquename === 'whirlpool');
     if (marqueselement) {
       setIdwhirlpool(marqueselement.idMarque);
     }
+  }, [marques]);
+
+  const CountSameCateg2 = (id) => {
+    const refByCateg = references.filter(el => el.Category_idCategory === id);
+    const idArts = articles.filter(article =>
+      refByCateg.some(ref => ref.idReference === article.Reference_idReference)
+    );
+    const someExpo = expo.filter(elem =>
+      idArts.some(article => article.idArticle === elem.Article_idArticle) && pdvs.idPDV === elem.PDV_idPDV
+    );
+   return someExpo ;
   };
 
   const CountSameCateg = (id) => {
-    return references.filter(el => el.Category_idCategory === id).length;
+    const refByCateg = references.filter(el => el.Category_idCategory === id);
+    const idArts = articles.filter(article =>
+      refByCateg.some(ref => ref.idReference === article.Reference_idReference)
+    );
+    const someExpo = expo.filter(elem =>
+      idArts.some(article => article.idArticle === elem.Article_idArticle) && pdvs.idPDV === elem.PDV_idPDV
+    );
+    return someExpo.length ;
   };
 
   const Findwhirlpool = (id) => {
-    return references.filter(el => el.Marque_idMarque === idWhirlpool && el.Category_idCategory === id).length;
+    const refByCategMar = references.filter(el => el.Marque_idMarque === idWhirlpool && el.Category_idCategory === id);
+    const idArts = articles.filter(article =>
+      refByCategMar.some(ref => ref.idReference === article.Reference_idReference)
+    );
+    const someExpo = expo.filter(elem =>
+      idArts.some(article => article.idArticle === elem.Article_idArticle) && pdvs.idPDV === elem.PDV_idPDV
+    );
+    return someExpo.length;
   };
 
   const CountTaux = (total, partie) => {
@@ -111,7 +155,7 @@ function RapportExpo() {
   };
 
   const TotalTaux = () => {
-    return categ.reduce((total, el) => total + CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)),0);
+    return categ.reduce((total, el) => total + CountTaux(CountSameCateg(el.idCategory), Findwhirlpool(el.idCategory)), 0);
   };
 
   const exportToExcel = async () => {
@@ -137,18 +181,26 @@ function RapportExpo() {
   };
 
   useEffect(() => {
-    Fetchallcateg();
-    Fetchallref();
-    Fetchallmarq();
-    getpdvByID(pdv).then(() => {
+    const initializeData = async () => {
+      await Fetchallcateg();
+      await Fetchallref();
+      await Fetchallmarq();
+      await getExpo();
+      await getAllArticle();
+      await getpdvByID(pdv);
+    };
+
+    initializeData().then(() => {
       findIdWhirlpool();
-      FetchAnim(pdvs.idPDV);
+      if (pdvs.idPDV) {
+        FetchAnim(pdvs.idPDV);
+      }
     });
   }, [pdvs.idPDV, pdv]);
 
   return (
     <NativeBaseProvider>
-            <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
+      <Image resizeMode="contain" source={WHIRLPOOL_LOGO} style={styles.image12} />
 
       <View style={styles.view1}>
         <Header />
@@ -176,7 +228,9 @@ function RapportExpo() {
               <View style={styles.column}>
                 <View style={styles.cell}><Text>Expo Globale</Text></View>
                 {categ.map(el => (
-                  <TouchableOpacity key={el.idCategory} onPress={() => { navigation.navigate('ManagerExpoDet',{adm}); storeData('category', el.Categoryname); }}>
+                  <TouchableOpacity key={el.idCategory} onPress={() => {
+                    const sameExpoData = CountSameCateg2(el.idCategory);
+                    navigation.navigate('ManagerExpoDet', { adm,sameExpoData }); storeData('category', el.Categoryname); }}>
                     <View style={styles.cell2}>
                       <Text style={styles.textcell2}>{CountSameCateg(el.idCategory)}</Text>
                     </View>
@@ -216,7 +270,7 @@ function RapportExpo() {
         </ScrollView>
       </View>
 
-      <Footer adm={adm}/>
+      <Footer adm={adm} />
     </NativeBaseProvider>
   );
 }

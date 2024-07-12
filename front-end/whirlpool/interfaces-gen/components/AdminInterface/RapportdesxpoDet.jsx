@@ -24,6 +24,11 @@ function RapportExpodet() {
   const [showpopup, setShowpop] = useState(false);
   const [popupData, setPopupData] = useState({});
   const [dataChanged, setDataChanged] = useState(false);
+  const [sortedArticles, setSortedArticles] = useState([]);
+  const sortArticlesByPrice = () => {
+    const sorted = [...articles].sort((a, b) => b.prix - a.prix);
+    setSortedArticles(sorted);
+  };
   const WHIRLPOOL_LOGO = require('../../../assets/WHIRLPOOL_LOGO.png');
   const fetchArticleByCategory = async (categ) => {
     try {
@@ -101,7 +106,9 @@ function RapportExpodet() {
       fetchArticleByCategory(categ);
     }
   }, [categ, dataChanged]);
-
+  useEffect(() => {
+    sortArticlesByPrice();
+  }, [articles, dataChanged]);
   useEffect(() => {
     articles.forEach(async article => {
       const refData = await fetchRef(article.Reference_idReference);
@@ -140,7 +147,7 @@ function RapportExpodet() {
                 <View style={styles.cell}><Text>Prix</Text></View>
                 <View style={styles.cell}><Text>Action</Text></View>
               </View>
-              {articles.map((article, index) => (
+              {sortedArticles.map((article, index) => (
                 <View style={styles.row} key={index}>
                   <View style={styles.cell1}><Text>{marques[refs[article.Reference_idReference]?.Marque_idMarque]?.marquename || ''}</Text></View>
                   <View style={styles.cell1}><Text>{refs[article.Reference_idReference]?.Referencename || ''}</Text></View>

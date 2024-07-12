@@ -187,7 +187,7 @@ function RapportExpo() {
       await Fetchallmarq();
       await getExpo();
       await getAllArticle();
-      await getpdvByID(pdv);
+       getpdvByID(pdv);
     };
 
     initializeData().then(() => {
@@ -196,7 +196,7 @@ function RapportExpo() {
         FetchAnim(pdvs.idPDV);
       }
     });
-  }, [pdvs.idPDV, pdv, Fetchallcateg, Fetchallref, Fetchallmarq, getExpo, getAllArticle, getpdvByID, findIdWhirlpool]);
+  }, [pdvs.idPDV, pdv]);
 
   return (
     <NativeBaseProvider>

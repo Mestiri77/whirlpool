@@ -139,12 +139,12 @@ function RapportDePresence() {
           {/* Contenu dynamique basé sur les présences */}
           {filteredPresences.map((presence, index) => (
             <View key={index} style={styles.row}>
-            <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}>
+            <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}>
               <Text style={styles.textcell1}>{users[presence.Users_idusers]?.name}</Text>
             </View>
-              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
-              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkout)}</Text></View>
-              <View style={[styles.cell1, presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{presence.position}</Text></View>
+              <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkin)}</Text></View>
+              <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{(presence.checkout)}</Text></View>
+              <View style={[styles.cell1, !presence.status ? styles.cellFail : styles.cellSuccess]}><Text style={styles.textcell1}>{presence.position}</Text></View>
             </View>
           ))}
         </View>
